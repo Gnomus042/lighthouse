@@ -1,0 +1,641 @@
+PREFIX :   <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX techdoc: <http://schema.org/>
+PREFIX js: <http://shex.io/extensions/javascript/>
+BASE <http://schema.org/shex>
+
+
+<#Action> @<#Thing> AND EXTRA a {
+	a [schema:PerformAction schema:SearchAction schema:LikeAction schema:EatAction schema:RsvpAction schema:ResumeAction schema:DrinkAction schema:CancelAction schema:DepartAction schema:CheckInAction schema:DownloadAction schema:ReceiveAction schema:WinAction schema:WatchAction schema:TakeAction schema:DrawAction schema:GiveAction schema:WantAction schema:InteractAction schema:AssessAction schema:CheckOutAction schema:QuoteAction schema:FindAction schema:ReadAction schema:IgnoreAction schema:PreOrderAction schema:LendAction schema:ApplyAction schema:TransferAction schema:EndorseAction schema:UpdateAction schema:ListenAction schema:DeleteAction schema:SellAction schema:OrderAction schema:MarryAction schema:RejectAction schema:SendAction schema:LeaveAction schema:TradeAction schema:ControlAction schema:CheckAction schema:ShareAction schema:DisagreeAction schema:CommentAction schema:RegisterAction schema:ArriveAction schema:UnRegisterAction schema:ReactAction schema:ReserveAction schema:BefriendAction schema:BookmarkAction schema:InsertAction schema:LoseAction schema:DeactivateAction schema:InviteAction schema:ConfirmAction schema:SuspendAction schema:DiscoverAction schema:AskAction schema:DonateAction schema:ScheduleAction schema:ExerciseAction schema:OrganizeAction schema:TrackAction schema:ReplaceAction schema:AppendAction schema:ReviewAction schema:VoteAction schema:UseAction schema:ActivateAction schema:BorrowAction schema:AchieveAction schema:PaintAction schema:FilmAction schema:ChooseAction schema:SubscribeAction schema:AcceptAction schema:CookAction schema:AuthorizeAction schema:TieAction schema:TravelAction schema:DislikeAction schema:PayAction schema:PhotographAction schema:PlayAction schema:BuyAction schema:RentAction schema:TipAction schema:AllocateAction schema:CommunicateAction schema:PlanAction schema:AssignAction schema:InformAction schema:ConsumeAction schema:ReturnAction schema:AgreeAction schema:FollowAction schema:JoinAction schema:WearAction schema:ReplyAction schema:PrependAction schema:MoveAction schema:InstallAction schema:AddAction schema:CreateAction schema:ViewAction schema:WriteAction schema:Action];
+	schema:actionStatus { a [schema:ActionStatusType] } *;
+	schema:agent (@<#Person> OR { a [schema:Organization] }) *;
+	schema:endTime (@<#DateTime> OR @<#Time>) *;
+	schema:error @<#Thing> *;
+	schema:instrument @<#Thing> *;
+	schema:location ({ a [schema:VirtualLocation] } OR { a [schema:Place] } OR @<#Text> OR { a [schema:PostalAddress] }) *;
+	schema:object @<#Thing> *;
+	schema:participant ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:result @<#Thing> *;
+	schema:startTime (@<#Time> OR @<#DateTime>) *;
+	schema:target { a [schema:EntryPoint] } *;
+}
+
+
+<#AggregateRating> @<#Rating> AND EXTRA a {
+	a [schema:EmployerAggregateRating schema:AggregateRating];
+	schema:itemReviewed @<#Thing> * ;
+	schema:ratingCount @<#Integer> * ;
+	schema:reviewCount @<#Integer> * ;
+}
+
+
+<#Boolean> LITERAL OR xsd:boolean
+
+
+<#CreativeWork> @<#Thing> AND EXTRA a {
+	a [schema:ItemPage schema:DataDownload schema:HowTo schema:DiscussionForumPosting schema:MusicRelease schema:TechArticle schema:VideoGame schema:WebPageElement schema:Course schema:DigitalDocument schema:Code schema:HowToTip schema:Article schema:PublicationVolume schema:Map schema:VideoGameClip schema:Episode schema:SoftwareSourceCode schema:Season schema:Clip schema:MediaObject schema:WPSideBar schema:MusicAlbum schema:HowToSection schema:WPAdBlock schema:Comment schema:MusicRecording schema:RadioSeason schema:PresentationDigitalDocument schema:ContactPage schema:SpreadsheetDigitalDocument schema:BlogPosting schema:WebApplication schema:CheckoutPage schema:MenuSection schema:LiveBlogPosting schema:ProfilePage schema:EmailMessage schema:CreativeWorkSeason schema:RadioSeries schema:ClaimReview schema:Report schema:MusicVideoObject schema:TVSeason schema:SearchResultsPage schema:SiteNavigationElement schema:VisualArtwork schema:MobileApplication schema:Blog schema:Sculpture schema:ImageGallery schema:WPHeader schema:ImageObject schema:CreativeWorkSeries schema:VideoGallery schema:MusicComposition schema:TVClip schema:Movie schema:Question schema:WebSite schema:TVEpisode schema:Recipe schema:MusicPlaylist schema:TVSeries schema:Table schema:Message schema:SoftwareApplication schema:DataFeed schema:AboutPage schema:Barcode schema:APIReference schema:AudioObject schema:WebPage schema:Review schema:RadioEpisode schema:VideoObject schema:SocialMediaPosting schema:Menu schema:DataCatalog schema:BookSeries schema:Dataset schema:MediaGallery schema:ScholarlyArticle schema:CollectionPage schema:Game schema:TextDigitalDocument schema:MovieSeries schema:FAQPage schema:Answer schema:Periodical schema:HowToDirection schema:Conversation schema:NoteDigitalDocument schema:Book schema:Painting schema:VideoGameSeries schema:QAPage schema:NewsArticle schema:RadioClip schema:PublicationIssue schema:Photograph schema:HowToStep schema:WPFooter schema:MovieClip schema:CreativeWork];
+	schema:about @<#Thing> *;
+	schema:accessMode (@<#Text> AND /auditory|tactile|textual|visual|colorDependent|chartOnVisual|chemOnVisual|diagramOnVisual|mathOnVisual|musicOnVisual|textOnVisual/) *;
+	schema:accessModeSufficient { a [schema:ItemList] } *;
+	schema:accessibilityAPI @<#Text> *;
+	schema:accessibilityControl @<#Text> *;
+	schema:accessibilityFeature @<#Text> *;
+	schema:accessibilityHazard @<#Text> *;
+	schema:accessibilitySummary @<#Text> *;
+	schema:accountablePerson @<#Person> *;
+	schema:aggregateRating @<#AggregateRating> *;
+	schema:alternativeHeadline @<#Text> *;
+	schema:associatedMedia @<#MediaObject> *;
+	schema:audience { a [schema:Audience] } *;
+	schema:audio ({ a [schema:AudioObject] } OR { a [schema:Clip] } OR { a [schema:MusicRecording] }) *;
+	schema:author (@<#Person> OR { a [schema:Organization] }) *;
+	schema:award @<#Text> *;
+	schema:awards @<#Text> *;
+	schema:character @<#Person> *;
+	schema:citation (@<#CreativeWork> OR @<#Text>) *;
+	schema:comment { a [schema:Comment] } *;
+	schema:commentCount @<#Integer> *;
+	schema:contentLocation { a [schema:Place] } *;
+	schema:contentRating (@<#Text> OR @<#Rating>) *;
+	schema:contributor ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:copyrightHolder (@<#Person> OR { a [schema:Organization] }) *;
+	schema:copyrightYear @<#Number> *;
+	schema:creator ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:dateCreated (@<#Date> OR @<#DateTime>) *;
+	schema:dateModified (@<#Date> OR @<#DateTime>) *;
+	schema:datePublished (@<#Date> OR @<#DateTime>) * %js:{ !isNaN(Date.parse(RdfTerm.getLiteralValue(ctx.object))) %} ;
+	schema:discussionUrl @<#URL> *;
+	schema:editor @<#Person> *;
+	schema:educationalAlignment { a [schema:AlignmentObject] } *;
+	schema:educationalUse @<#Text> *;
+	schema:encoding @<#MediaObject> *;
+	schema:encodingFormat (@<#URL> OR @<#Text>) *;
+	schema:encodings @<#MediaObject> *;
+	schema:exampleOfWork @<#CreativeWork> *;
+	schema:expires @<#Date> *;
+	schema:funder ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:genre (@<#Text> OR @<#URL>) *;
+	schema:hasPart @<#CreativeWork> *;
+	schema:headline @<#Text> *;
+	schema:inLanguage (@<#Text> OR { a [schema:Language] }) *;
+	schema:interactionStatistic { a [schema:InteractionCounter] } *;
+	schema:interactivityType (@<#Text> AND /active|expositive|mixed/) *;
+	schema:isAccessibleForFree @<#Boolean> *;
+	schema:isBasedOn ({ a [schema:Product] } OR @<#CreativeWork> OR @<#URL>) *;
+	schema:isBasedOnUrl ({ a [schema:Product] } OR @<#URL> OR @<#CreativeWork>) *;
+	schema:isFamilyFriendly @<#Boolean> *;
+	schema:isPartOf (@<#URL> OR @<#CreativeWork>) *;
+	schema:keywords @<#Text> *;
+	schema:learningResourceType @<#Text> *;
+	schema:license (@<#URL> OR @<#CreativeWork>) *;
+	schema:locationCreated { a [schema:Place] } *;
+	schema:mainEntity @<#Thing> *;
+	schema:material ({ a [schema:Product] } OR @<#URL> OR @<#Text>) *;
+	schema:mentions @<#Thing> *;
+	schema:offers ({ a [schema:Demand] } OR { a [schema:Offer] }) *;
+	schema:position (@<#Integer> OR @<#Text>) *;
+	schema:producer (@<#Person> OR { a [schema:Organization] }) *;
+	schema:provider (@<#Person> OR { a [schema:Organization] }) *;
+	schema:publication { a [schema:PublicationEvent] } *;
+	schema:publisher (@<#Person> OR { a [schema:Organization] }) *;
+	schema:publishingPrinciples (@<#CreativeWork> OR @<#URL>) *;
+	schema:recordedAt { a [schema:Event] } *;
+	schema:releasedEvent { a [schema:PublicationEvent] } *;
+	schema:review { a [schema:Review] } *;
+	schema:reviews { a [schema:Review] } *;
+	schema:schemaVersion (@<#Text> OR @<#URL>) *;
+	schema:sourceOrganization { a [schema:Organization] } *;
+	schema:spatial { a [schema:Place] } *;
+	schema:spatialCoverage { a [schema:Place] } *;
+	schema:sponsor ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:temporal (@<#Text> OR @<#DateTime>) *;
+	schema:temporalCoverage (@<#Text> OR @<#URL> OR @<#DateTime>) *;
+	schema:text @<#Text> *;
+	schema:thumbnailUrl @<#URL> *;
+	schema:timeRequired @<#Duration> *;
+	schema:translator ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:typicalAgeRange @<#Text> *;
+	schema:version (@<#Text> OR @<#Number>) *;
+	schema:video ({ a [schema:Clip] } OR { a [schema:VideoObject] }) *;
+	schema:workExample @<#CreativeWork> *;
+}
+
+
+<#Dataset> @<#CreativeWork> AND EXTRA a {
+	a [schema:DataFeed schema:Dataset];
+	schema:catalog { a [schema:DataCatalog] } * ;
+	schema:datasetTimeInterval @<#DateTime> * ;
+	schema:distribution { a [schema:DataDownload] } * ;
+	schema:includedDataCatalog { a [schema:DataCatalog] } *;
+	schema:includedInDataCatalog { a [schema:DataCatalog] } *;
+	schema:issn @<#Text> *;
+}
+
+
+# TODO need to use semantic actions
+<#Date> xsd:date OR @<#Text>
+
+
+
+# TODO need to use semantic actions
+<#DateTime> xsd:dateTime OR @<#Text>
+
+
+
+<#Duration> (@<#Text> AND /^(-?)P(?=[0-9]|T[0-9])(?:([0-9]+)Y)?(?:([0-9]+)M)?(?:([0-9]+)([DW]))?(?:T(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9]+(?:\.[0-9]+)?)S)?)?$/)
+
+
+
+<#HowTo> @<#CreativeWork> AND EXTRA a {
+	a [schema:Recipe schema:HowTo];
+	schema:estimatedCost ({ a [schema:MonetaryAmount] } OR @<#Text>) *;
+	schema:performTime @<#Duration> *;
+	schema:prepTime @<#Duration> *;
+	schema:step ({ a [schema:HowToStep] } OR @<#Text> OR @<#CreativeWork> OR { a [schema:HowToSection] }) *;
+	schema:steps (@<#CreativeWork> OR { a [schema:ItemList] } OR @<#Text>) *;
+	schema:supply ({ a [schema:HowToSupply] } OR @<#Text>) *;
+	schema:tool ({ a [schema:HowToTool] } OR @<#Text>) *;
+	schema:totalTime @<#Duration> *;
+	schema:yield ({ a [schema:QuantitativeValue] } OR @<#Text>) *;
+}
+
+
+<#Intangible> @<#Thing> AND EXTRA a {
+	a [schema:BroadcastFrequencySpecification schema:AlignmentObject schema:CableOrSatelliteService schema:Occupation schema:AggregateRating schema:QualitativeValue schema:Ticket schema:HowToItem schema:BankAccount schema:GeoCircle schema:Periodical schema:Enumeration schema:OfferItemCondition schema:SteeringPositionValue schema:Series schema:RadioSeries schema:BusinessFunction schema:WarrantyScope schema:DatedMoneySpecification schema:LocationFeatureSpecification schema:VideoGameSeries schema:RestrictedDiet schema:GeoCoordinates schema:Rating schema:OwnershipInfo schema:ReservationPackage schema:TypeAndQuantityNode schema:BroadcastService schema:ProgramMembership schema:FoodService schema:MovieSeries schema:FMRadioChannel schema:Energy schema:Offer schema:FinancialProduct schema:EntryPoint schema:BedType schema:DigitalDocumentPermission schema:Quantity schema:EducationalAudience schema:PriceSpecification schema:HowToTip schema:PerformanceRole schema:ParcelService schema:GovernmentPermit schema:GeoShape schema:UnitPriceSpecification schema:GamePlayMode schema:Audience schema:DataFeedItem schema:Invoice schema:Brand schema:ComputerLanguage schema:InvestmentOrDeposit schema:PaymentCard schema:ContactPointOption schema:Mass schema:DayOfWeek schema:Demand schema:ActionAccessSpecification schema:HowToSection schema:AMRadioChannel schema:FoodEstablishmentReservation schema:PropertyValue schema:HowToTool schema:GameServer schema:Permit schema:PaymentMethod schema:PeopleAudience schema:DepositAccount schema:BookFormatType schema:CompoundPriceSpecification schema:LoanOrCredit schema:DigitalDocumentPermissionType schema:OrderStatus schema:LodgingReservation schema:BroadcastChannel schema:TaxiReservation schema:MediaSubscription schema:RsvpResponseType schema:QuantitativeValueDistribution schema:SpeakableSpecification schema:FlightReservation schema:MapCategoryType schema:PaymentService schema:WarrantyPromise schema:PaymentChargeSpecification schema:ListItem schema:BusReservation schema:Taxi schema:DeliveryChargeSpecification schema:EmployerAggregateRating schema:Role schema:DeliveryMethod schema:EmployeeRole schema:ItemList schema:ItemListOrderType schema:HowToDirection schema:ParentAudience schema:ServiceChannel schema:TrainTrip schema:MusicAlbumReleaseType schema:Service schema:ParcelDelivery schema:BusTrip schema:BoardingPolicyType schema:NutritionInformation schema:OrderItem schema:DriveWheelConfigurationValue schema:PaymentStatusType schema:BusinessEntityType schema:RentalCarReservation schema:GameServerStatus schema:Trip schema:HowToStep schema:RadioChannel schema:MonetaryAmountDistribution schema:OfferCatalog schema:ActionStatusType schema:BreadcrumbList schema:Order schema:CreditCard schema:CreativeWorkSeries schema:JobPosting schema:MusicReleaseFormatType schema:MenuItem schema:MonetaryAmount schema:BusinessAudience schema:Flight schema:OrganizationRole schema:EventStatusType schema:Distance schema:CurrencyConversionService schema:MusicAlbumProductionType schema:PropertyValueSpecification schema:EndorsementRating schema:ReservationStatusType schema:TVSeries schema:StructuredValue schema:Seat schema:TelevisionChannel schema:OpeningHoursSpecification schema:ItemAvailability schema:TrainReservation schema:BedDetails schema:EngineSpecification schema:Reservation schema:ContactPoint schema:TaxiService schema:GenderType schema:EventReservation schema:GovernmentService schema:Specialty schema:QuantitativeValue schema:PostalAddress schema:Language schema:LockerDelivery schema:AggregateOffer schema:BookSeries schema:Duration schema:InteractionCounter schema:HowToSupply schema:Intangible];
+}
+
+
+<#Integer> (@<#Text> AND /^([1-9][0-9]*|0)$/) OR xsd:integer
+
+
+<#MediaObject> @<#CreativeWork> AND EXTRA a {
+	a [schema:Barcode schema:DataDownload schema:MusicVideoObject schema:AudioObject schema:ImageObject schema:VideoObject schema:MediaObject];
+	schema:associatedArticle { a [schema:NewsArticle] } *;
+	schema:bitrate @<#Text> *;
+	schema:contentSize @<#Text> *;
+	schema:contentUrl @<#URL> *;
+	schema:duration @<#Duration> *;
+	schema:embedUrl @<#URL> *;
+	schema:encodesCreativeWork @<#CreativeWork> *;
+	schema:encodingFormat (@<#URL> OR @<#Text>) *;
+	schema:endTime (@<#DateTime> OR @<#Time>) *;
+	schema:height ({ a [schema:QuantitativeValue] } OR { a [schema:Distance] }) *;
+	schema:playerType @<#Text> *;
+	schema:productionCompany { a [schema:Organization] } *;
+	schema:regionsAllowed { a [schema:Place] } *;
+	schema:requiresSubscription ({ a [schema:MediaSubscription] } OR @<#Boolean>) *;
+	schema:startTime (@<#Time> OR @<#DateTime>) *;
+	schema:uploadDate @<#Date> *;
+	schema:width ({ a [schema:QuantitativeValue] } OR { a [schema:Distance] }) *;
+}
+
+
+
+<#Number> LITERAL OR xsd:decimal OR @<#Integer>
+
+
+<#Person> @<#Text> OR @<#URL> OR ( @<#Thing> AND EXTRA a {
+	a [schema:Person];
+	schema:additionalName @<#Text> * ;
+	schema:address ({ a [schema:PostalAddress] } OR @<#Text>) * ;
+	schema:affiliation { a [schema:Organization] } * ;
+	schema:alumniOf ({ a [schema:EducationalOrganization] } OR { a [schema:Organization] }) * ;
+	schema:award @<#Text> * ;
+	schema:awards @<#Text> * ;
+	schema:birthDate @<#Date> * ;
+	schema:birthPlace { a [schema:Place] } * ;
+	schema:brand ({ a [schema:Brand] } OR { a [schema:Organization] }) * ;
+	schema:children @<#Person> * ;
+	schema:colleague (@<#URL> OR @<#Person>) * ;
+	schema:colleagues @<#Person> * ;
+	schema:contactPoint { a [schema:ContactPoint] } * ;
+	schema:contactPoints { a [schema:ContactPoint] } * ;
+	schema:deathDate @<#Date> * ;
+	schema:deathPlace { a [schema:Place] } * ;
+	schema:duns @<#Text> * ;
+	schema:email @<#Text> * ;
+	schema:familyName @<#Text> * ;
+	schema:faxNumber @<#Text> * ;
+	schema:follows @<#Person> * ;
+	schema:funder ({ a [schema:Organization] } OR @<#Person>) * ;
+	schema:givenName @<#Text> * ;
+	schema:globalLocationNumber @<#Text> * ;
+	schema:hasOccupation { a [schema:Occupation] } * ;
+	schema:hasOfferCatalog { a [schema:OfferCatalog] } * ;
+	schema:hasPOS { a [schema:Place] } * ;
+	schema:height ({ a [schema:QuantitativeValue] } OR { a [schema:Distance] }) * ;
+	schema:homeLocation ({ a [schema:ContactPoint] } OR { a [schema:Place] }) * ;
+	schema:honorificPrefix @<#Text> * ;
+	schema:honorificSuffix @<#Text> * ;
+	schema:interactionStatistic { a [schema:InteractionCounter] } * ;
+	schema:isicV4 @<#Text> * ;
+	schema:knows @<#Person> * ;
+	schema:makesOffer { a [schema:Offer] } * ;
+	schema:memberOf ({ a [schema:Organization] } OR { a [schema:ProgramMembership] }) * ;
+	schema:naics @<#Text> * ;
+	schema:nationality { a [schema:Country] } * ;
+	schema:netWorth ({ a [schema:MonetaryAmount] } OR { a [schema:PriceSpecification] }) * ;
+	schema:owns ({ a [schema:OwnershipInfo] } OR { a [schema:Product] }) * ;
+	schema:parent @<#Person> * ;
+	schema:parents @<#Person> * ;
+	schema:performerIn { a [schema:Event] } * ;
+	schema:publishingPrinciples (@<#CreativeWork> OR @<#URL>) * ;
+	schema:relatedTo @<#Person> * ;
+	schema:seeks { a [schema:Demand] } * ;
+	schema:sibling @<#Person> * ;
+	schema:siblings @<#Person> * ;
+	schema:sponsor ({ a [schema:Organization] } OR @<#Person>) * ;
+	schema:spouse @<#Person> * ;
+	schema:taxID @<#Text> * ;
+	schema:telephone @<#Text> * ;
+	schema:vatID @<#Text> * ;
+	schema:weight { a [schema:QuantitativeValue] } * ;
+	schema:workLocation ({ a [schema:ContactPoint] } OR { a [schema:Place] }) * ;
+	schema:worksFor { a [schema:Organization] } * ;
+})
+
+
+<#PropertyValue> @<#StructuredValue> AND EXTRA a {
+	a [schema:LocationFeatureSpecification schema:PropertyValue];
+	schema:maxValue @<#Number> *;
+	schema:minValue @<#Number> *;
+	schema:propertyID (@<#Text> OR @<#URL>) *;
+	schema:unitCode (@<#URL> OR @<#Text>) *;
+	schema:unitText @<#Text> *;
+	schema:value (@<#Boolean> OR @<#StructuredValue> OR @<#Number> OR @<#Text>) *;
+	schema:valueReference (@<#PropertyValue> OR @<#StructuredValue> OR { a [schema:QualitativeValue] } OR { a [schema:QuantitativeValue] } OR { a [schema:Enumeration] }) *;
+}
+
+
+<#Rating> @<#Intangible> AND EXTRA a {
+	a [schema:EmployerAggregateRating schema:AggregateRating schema:EndorsementRating schema:Rating];
+	schema:author (@<#Person> OR { a [schema:Organization] }) * ;
+	schema:bestRating (@<#Number> OR @<#Text>) * ;
+	schema:ratingValue (@<#Number> OR @<#Text>) * ;
+	schema:reviewAspect @<#Text> * ;
+	schema:worstRating (@<#Text> OR @<#Number>) * ;
+}
+
+
+<#Recipe> @<#HowTo> AND EXTRA a {
+	a [schema:Recipe];
+	schema:cookTime  @<#Duration> *;
+	schema:cookingMethod  @<#Text> *;
+	schema:ingredients  @<#Text> *;
+	schema:nutrition  { a [schema:NutritionInformation] } *;
+	schema:recipeCategory  @<#Text> *;
+	schema:recipeCuisine  @<#Text> *;
+	schema:recipeIngredient  @<#Text> *;
+	schema:recipeInstructions ( @<#CreativeWork> OR  { a [schema:ItemList] } OR  @<#Text>) *;
+	schema:recipeYield ({ a [schema:QuantitativeValue] } OR @<#Text>) *;
+	schema:suitableForDiet (@<#Text> AND /http:\/\/schema.org\/(DiabeticDiet|GlutenFreeDiet|HalalDiet|HinduDiet|KosherDiet|LowCalorieDiet|LowFatDiet|LowLactoseDiet|LowSaltDiet|VeganDiet|VegetarianDiet)/) OR
+	    { a [schema:DiabeticDiet schema:GlutenFreeDiet schema:HalalDiet schema:HinduDiet schema:KosherDiet schema:LowCalorieDiet schema:LowFatDiet schema:LowLactoseDiet schema:LowSaltDiet schema:VeganDiet schema:VegetarianDiet] } *;
+}
+
+
+<#StructuredValue> @<#Intangible> AND EXTRA a {
+	a [schema:DeliveryChargeSpecification schema:MonetaryAmount schema:GeoShape schema:UnitPriceSpecification schema:GeoCircle schema:DatedMoneySpecification schema:LocationFeatureSpecification schema:GeoCoordinates schema:OpeningHoursSpecification schema:NutritionInformation schema:OwnershipInfo schema:TypeAndQuantityNode schema:PropertyValue schema:EngineSpecification schema:CompoundPriceSpecification schema:ContactPoint schema:MonetaryAmountDistribution schema:QuantitativeValue schema:PostalAddress schema:QuantitativeValueDistribution schema:WarrantyPromise schema:InteractionCounter schema:PaymentChargeSpecification schema:PriceSpecification schema:StructuredValue];
+}
+
+
+<#Text> LITERAL OR xsd:string
+
+
+<#Thing>  EXTRA a {
+	a [schema:CollectionPage schema:PhotographAction schema:Airline schema:HealthAndBeautyBusiness schema:Periodical schema:LiveBlogPosting schema:SteeringPositionValue schema:Electrician schema:SomeProducts schema:Series schema:AutoPartsStore schema:BikeStore schema:WarrantyScope schema:Painting schema:VideoGameSeries schema:UserInteraction schema:QAPage schema:BuddhistTemple schema:WearAction schema:TravelAgency schema:MoveAction schema:UserCheckins schema:CreativeWork schema:LegislativeBuilding schema:GardenStore schema:AddAction schema:JewelryStore schema:MovieSeries schema:ViewAction schema:WPFooter schema:FMRadioChannel schema:FinancialProduct schema:HowTo schema:VideoGallery schema:Quantity schema:PublicationEvent schema:EducationalAudience schema:Hostel schema:LikeAction schema:Course schema:Code schema:MovingCompany schema:ParcelService schema:DrinkAction schema:Movie schema:Question schema:WebSite schema:CityHall schema:AutoRental schema:DownloadAction schema:ComedyEvent schema:Synagogue schema:HotelRoom schema:TireShop schema:DonateAction schema:Audience schema:PoliceStation schema:Brand schema:Restaurant schema:OrganizeAction schema:HealthClub schema:SoftwareApplication schema:MusicAlbum schema:HowToSection schema:UserComments schema:ReviewAction schema:AssessAction schema:Person schema:UseAction schema:AnimalShelter schema:APIReference schema:BorrowAction schema:PaintAction schema:FilmAction schema:ChooseAction schema:WorkersUnion schema:SportsActivityLocation schema:LendAction schema:PerformingArtsTheater schema:Room schema:QuantitativeValueDistribution schema:FoodEstablishment schema:WarrantyPromise schema:SportingGoodsStore schema:TransferAction schema:ScholarlyArticle schema:ListenAction schema:BusinessEvent schema:ChildCare schema:CommunicateAction schema:MusicAlbumReleaseType schema:Pharmacy schema:PaymentStatusType schema:InternetCafe schema:PublicationIssue schema:GameServerStatus schema:DefenceEstablishment schema:Church schema:LiquorStore schema:BreadcrumbList schema:VideoGame schema:WebPageElement schema:Article schema:UserTweets schema:MusicAlbumProductionType schema:Clip schema:Seat schema:ItemAvailability schema:WantAction schema:TaxiService schema:ReadAction schema:Specialty schema:Plumber schema:PayAction schema:CableOrSatelliteService schema:TextDigitalDocument schema:EducationalOrganization schema:HighSchool schema:BuyAction schema:UserDownloads schema:Ticket schema:PawnShop schema:BankAccount schema:PlanAction schema:Waterfall schema:AssignAction schema:Conversation schema:TrainStation schema:HinduTemple schema:DatedMoneySpecification schema:OfficeEquipmentStore schema:TVSeason schema:SearchResultsPage schema:OwnershipInfo schema:UserBlocks schema:GatedResidenceCommunity schema:Bakery schema:TypeAndQuantityNode schema:DanceEvent schema:BookStore schema:Country schema:SportsClub schema:PlaceOfWorship schema:Bridge schema:ClothingStore schema:MovieTheater schema:Pond schema:PerformAction schema:EntryPoint schema:BedType schema:DigitalDocumentPermission schema:Embassy schema:Mountain schema:FoodEvent schema:ReserveAction schema:DigitalDocument schema:OutletStore schema:Volcano schema:HowToTip schema:SportsTeam schema:PerformanceRole schema:InviteAction schema:UserLikes schema:TVEpisode schema:UnitPriceSpecification schema:Recipe schema:ReceiveAction schema:AdministrativeArea schema:VideoGameClip schema:Casino schema:ExerciseAction schema:MusicStore schema:ComputerLanguage schema:UserPlays schema:Crematorium schema:MusicGroup schema:ContactPointOption schema:AmusementPark schema:CivicStructure schema:GroceryStore schema:DayOfWeek schema:Demand schema:AboutPage schema:PropertyValue schema:Action schema:InsuranceAgency schema:GameServer schema:DepositAccount schema:Motel schema:AudioObject schema:QuoteAction schema:LoanOrCredit schema:DigitalDocumentPermissionType schema:LodgingReservation schema:PreOrderAction schema:SubscribeAction schema:TaxiReservation schema:SeaBodyOfWater schema:MediaSubscription schema:PresentationDigitalDocument schema:ContactPage schema:Dataset schema:ListItem schema:CampingPitch schema:BlogPosting schema:WebApplication schema:Vehicle schema:RoofingContractor schema:DeleteAction schema:ExhibitionEvent schema:Taxi schema:RVPark schema:RentAction schema:ChildrensEvent schema:CollegeOrUniversity schema:UserPageVisits schema:TipAction schema:EmployeeRole schema:SingleFamilyResidence schema:ItemListOrderType schema:ComedyClub schema:HowToDirection schema:Apartment schema:HobbyShop schema:NoteDigitalDocument schema:ClaimReview schema:ServiceChannel schema:Book schema:Service schema:BusTrip schema:IndividualProduct schema:StadiumOrArena schema:NewsArticle schema:RadioClip schema:AgreeAction schema:FollowAction schema:OrderItem schema:EmploymentAgency schema:ReplyAction schema:PrependAction schema:BusinessEntityType schema:TennisComplex schema:RentalCarReservation schema:ConvenienceStore schema:InstallAction schema:FireStation schema:Photograph schema:HowToStep schema:Trip schema:CourseInstance schema:SubwayStation schema:Hotel schema:DepartmentStore schema:OfferCatalog schema:MobileApplication schema:ActionStatusType schema:Campground schema:Order schema:CreditCard schema:WholesaleStore schema:CreativeWorkSeries schema:Intangible schema:SkiResort schema:UnRegisterAction schema:AutomatedTeller schema:ElectronicsStore schema:Courthouse schema:Canal schema:BefriendAction schema:Distillery schema:NGO schema:LoseAction schema:TVClip schema:Flight schema:OrganizationRole schema:NailSalon schema:ShoppingCenter schema:HardwareStore schema:ConfirmAction schema:Distance schema:SuspendAction schema:AskAction schema:MusicPlaylist schema:TVSeries schema:ReservationStatusType schema:State schema:StructuredValue schema:Playground schema:BarOrPub schema:TrackAction schema:TelevisionChannel schema:VisualArtsEvent schema:DataFeed schema:AppendAction schema:Barcode schema:BedDetails schema:ContactPoint schema:EventReservation schema:FinancialService schema:Review schema:VideoObject schema:GovernmentService schema:QuantitativeValue schema:AcceptAction schema:CookAction schema:DeliveryEvent schema:MensClothingStore schema:AuthorizeAction schema:Menu schema:BeautySalon schema:Language schema:GovernmentBuilding schema:BookSeries schema:Duration schema:EmergencyService schema:MediaGallery schema:InteractionCounter schema:ParkingFacility schema:ProfessionalService schema:CheckoutPage schema:Accommodation schema:Beach schema:AutoRepair schema:HowToItem schema:ExerciseGym schema:BodyOfWater schema:ProfilePage schema:BusStop schema:RadioSeries schema:MusicVideoObject schema:MarryAction schema:DanceGroup schema:ReservationPackage schema:HomeAndConstructionBusiness schema:ControlAction schema:ShareAction schema:CheckAction schema:ProgramMembership schema:DisagreeAction schema:WPHeader schema:ImageObject schema:ItemPage schema:DiscussionForumPosting schema:TouristAttraction schema:Notary schema:PriceSpecification schema:ReactAction schema:Car schema:LocalBusiness schema:DeactivateAction schema:FastFoodRestaurant schema:PublicationVolume schema:CancelAction schema:DataFeedItem schema:Season schema:InvestmentOrDeposit schema:Message schema:DryCleaningOrLaundry schema:PaymentCard schema:DrawAction schema:MotorcycleDealer schema:VoteAction schema:CheckOutAction schema:BookFormatType schema:AchieveAction schema:MusicRecording schema:OrderStatus schema:IgnoreAction schema:SocialMediaPosting schema:RealEstateAgent schema:MapCategoryType schema:Park schema:ApplyAction schema:SportsOrganization schema:EndorseAction schema:DeliveryChargeSpecification schema:FAQPage schema:EmployerAggregateRating schema:Event schema:PlayAction schema:Role schema:DeliveryMethod schema:ItemList schema:City schema:Winery schema:Organization schema:InformAction schema:ConsumeAction schema:LandmarksOrHistoricalBuildings schema:Mosque schema:ReturnAction schema:SiteNavigationElement schema:NutritionInformation schema:JoinAction schema:RiverBodyOfWater schema:DriveWheelConfigurationValue schema:AdultEntertainment schema:VisualArtwork schema:TradeAction schema:MeetingRoom schema:LegalService schema:MonetaryAmountDistribution schema:CatholicChurch schema:CreateAction schema:ApartmentComplex schema:ScheduleAction schema:WriteAction schema:RegisterAction schema:MovieClip schema:HousePainter schema:ScreeningEvent schema:HVACBusiness schema:ArriveAction schema:Attorney schema:SearchAction schema:ProductModel schema:TaxiStand schema:BookmarkAction schema:RsvpAction schema:GeneralContractor schema:MusicEvent schema:ToyStore schema:MonetaryAmount schema:BusinessAudience schema:Store schema:ResumeAction schema:Suite schema:HairSalon schema:Landform schema:DaySpa schema:MovieRentalStore schema:DiscoverAction schema:WinAction schema:PropertyValueSpecification schema:EndorsementRating schema:WatchAction schema:Episode schema:SoftwareSourceCode schema:ElementarySchool schema:EducationEvent schema:ReplaceAction schema:Locksmith schema:GiveAction schema:OpeningHoursSpecification schema:TrainReservation schema:EngineSpecification schema:MusicVenue schema:ActivateAction schema:GenderType schema:AutoWash schema:OceanBodyOfWater schema:Reservoir schema:RadioEpisode schema:MedicalOrganization schema:EventVenue schema:PostalAddress schema:TieAction schema:AggregateOffer schema:Corporation schema:Museum schema:SpreadsheetDigitalDocument schema:TravelAction schema:DislikeAction schema:HowToSupply schema:PostOffice schema:BroadcastFrequencySpecification schema:AlignmentObject schema:Occupation schema:AggregateRating schema:SellAction schema:OrderAction schema:MenuSection schema:ArtGallery schema:QualitativeValue schema:Place schema:GeoCircle schema:Enumeration schema:OfferItemCondition schema:TattooParlor schema:EmailMessage schema:CreativeWorkSeason schema:Report schema:BusinessFunction schema:BusStation schema:AutoDealer schema:CafeOrCoffeeShop schema:MobilePhoneStore schema:LocationFeatureSpecification schema:Dentist schema:RestrictedDiet schema:GeoCoordinates schema:GovernmentOffice schema:RejectAction schema:Rating schema:SendAction schema:AutomotiveBusiness schema:LeaveAction schema:SaleEvent schema:MiddleSchool schema:BroadcastService schema:MotorcycleRepair schema:BowlingAlley schema:Blog schema:GasStation schema:Sculpture schema:CommentAction schema:ImageGallery schema:FoodService schema:ComputerStore schema:FurnitureStore schema:RadioStation schema:Energy schema:Offer schema:DataDownload schema:MusicRelease schema:Product schema:BankOrCreditUnion schema:TechArticle schema:MusicComposition schema:SocialEvent schema:Resort schema:EatAction schema:GolfCourse schema:Continent schema:Library schema:TouristInformationCenter schema:InsertAction schema:GovernmentPermit schema:LiteraryEvent schema:GeoShape schema:EntertainmentBusiness schema:DepartAction schema:GamePlayMode schema:Map schema:SportsEvent schema:Aquarium schema:Invoice schema:Table schema:TheaterEvent schema:SelfStorage schema:TakeAction schema:GovernmentOrganization schema:Mass schema:WPSideBar schema:ActionAccessSpecification schema:AMRadioChannel schema:UserPlusOnes schema:Preschool schema:InteractAction schema:FoodEstablishmentReservation schema:HowToTool schema:Permit schema:PaymentMethod schema:CompoundPriceSpecification schema:AutoBodyShop schema:Comment schema:PeopleAudience schema:ShoeStore schema:BroadcastEvent schema:WebPage schema:Residence schema:PetStore schema:Zoo schema:Physician schema:HomeGoodsStore schema:BroadcastChannel schema:Florist schema:LakeBodyOfWater schema:School schema:OnDemandEvent schema:TelevisionStation schema:RsvpResponseType schema:DataCatalog schema:SpeakableSpecification schema:FlightReservation schema:PaymentService schema:PaymentChargeSpecification schema:BusReservation schema:NightClub schema:Game schema:Brewery schema:Answer schema:AllocateAction schema:IceCreamShop schema:ParentAudience schema:TrainTrip schema:ParcelDelivery schema:TheaterGroup schema:BoardingPolicyType schema:PublicSwimmingPool schema:RadioChannel schema:PerformingGroup schema:AccountingService schema:MediaObject schema:Cemetery schema:JobPosting schema:MusicReleaseFormatType schema:MenuItem schema:Airport schema:BedAndBreakfast schema:EventStatusType schema:CheckInAction schema:CurrencyConversionService schema:House schema:LodgingBusiness schema:RecyclingCenter schema:WPAdBlock schema:Hospital schema:Festival schema:Reservation schema:FindAction schema:RadioSeason schema:LockerDelivery schema:UpdateAction schema:Thing];
+	schema:additionalType @<#URL> *;
+	schema:alternateName @<#Text> *;
+	schema:description @<#Text> *;
+	schema:disambiguatingDescription @<#Text> *;
+	schema:identifier (@<#Text> OR @<#PropertyValue> OR @<#URL>) *;
+	schema:image (@<#URL> OR { a [schema:ImageObject] }) *;
+	schema:mainEntityOfPage (@<#CreativeWork> OR @<#URL>) *;
+	schema:name @<#Text> *;
+	schema:potentialAction @<#Action> *;
+	schema:sameAs @<#URL> *;
+	schema:subjectOf ({ a [schema:Event] } OR @<#CreativeWork>) *;
+	schema:url @<#URL> *;
+}
+
+
+# TODO add semantic actions
+<#Time> (xsd:time OR (@<#Text> AND /^([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$/))
+
+
+
+<#URL> ((IRI OR LITERAL) AND CLOSED {}  AND /^(https?|gopher|ftps?):/)
+
+
+
+
+
+<#GoogleDataset> @<#Dataset> AND EXTRA a {
+    schema:description @<#Text> MINLENGTH 50 AND MAXLENGTH 500
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "A short summary describing a dataset.";
+
+    schema:name @<#Text>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "A descriptive name of a dataset.";
+}
+
+<#GoogleDatasetStrict> @<#Dataset> AND EXTRA a {
+    schema:alternateName @<#Text> +
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "Alternative names that have been used to refer to this dataset, such as aliases or abbreviations.";
+    
+    schema:creator @<#Person> OR { a [schema:Organization] } +
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "The creator or author of this dataset.";
+
+    schema:citation @<#Text> OR @<#CreativeWork>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "Identifies academic articles that are recommended by the data provider be cited in addition to the dataset itself.";
+
+    schema:hasPart @<#URL> OR @<#Dataset> +
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "If the dataset is a collection of smaller datasets, use the hasPart property to denote such relationship.";
+
+    schema:isPartOf @<#URL> OR @<#Dataset>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "If the dataset is a collection of smaller datasets, use the hasPart property to denote such relationship.";
+
+    schema:identifier @<#URL> OR @<#Text> OR @<#PropertyValue>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "An identifier, such as a DOI or a Compact Identifier.";
+
+    schema:keywords @<#Text>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "Keywords summarizing the dataset.";
+
+    schema:license @<#URL> OR @<#CreativeWork>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "A license under which the dataset is distributed.";
+
+    schema:measurementTechnique @<#Text> OR @<#URL>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "The technique, technology, or methodology used in a dataset, which can correspond to the variable(s) described in variableMeasured.";
+
+    schema:sameAs @<#URL>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "URL of a reference Web page that unambiguously indicates the dataset's identity, usually in a different repository.";
+
+    schema:spatialCoverage @<#Text> OR { a [schema:Place] }
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "You can provide a single point that describes the spatial aspect of the dataset. ";
+
+    schema:temporalCoverage @<#Text>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "The data in the dataset covers a specific time interval.";
+
+    schema:variableMeasured @<#Text> OR @<#PropertyValue>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "The variable that this dataset measures.";
+
+    schema:version @<#Text> OR @<#Number>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "The version number for the dataset.";
+
+    schema:url @<#URL>
+    // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
+    // techdoc:description "Location of a page describing the dataset.";
+}
+
+
+
+
+
+
+
+
+<#BingRecipe> @<#Recipe> AND {
+    schema:name .
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "Required. Name of the recipe.";
+
+    schema:author . +
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "The author of the recipe."
+    // techdoc:identifier "warning";
+
+    schema:datePublished .
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "The date the recipe was published."
+    // techdoc:identifier "warning";
+
+    schema:recipeCategory .
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "The type of dish. For example, the dish could be an appetizer, main course, or desert."
+    // techdoc:identifier "warning";
+
+    schema:description .
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "Summary describing the recipe."
+    // techdoc:identifier "warning";
+
+    schema:image .
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "Picture associated with the recipe. This can be a picture of the dish or the ingredients of the dish."
+    // techdoc:identifier "warning";
+
+    schema:review .
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "Review of the recipe."
+    // techdoc:identifier "warning";
+
+    schema:prepTime .
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "The amount of time needed to prepare the ingredients of the recipe."
+    // techdoc:identifier "warning";
+
+    schema:totalTime .
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "The total time it takes to prepare the ingredients and cook the dish."
+    // techdoc:identifier "warning";
+
+    schema:recipeYield .
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "The quantity of the dish prepared by the recipe (e.g. number of servings)."
+    // techdoc:identifier "warning";
+
+	schema:nutrition .
+	// techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+	// techdoc:description "Nutritional information of the dish the recipe is used to prepare."
+    // techdoc:identifier "warning";
+
+	schema:recipeIngredient .
+	// techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+	// techdoc:description "An ingredient used in the recipe."
+    // techdoc:identifier "warning";
+
+    schema:recipeInstructions . +
+    // techdoc:url "https://www.bing.com/webmaster/help/markup-recipes-da2b3faa"
+    // techdoc:description "The steps specified by the recipe to prepare the dish."
+    // techdoc:identifier "warning";
+}
+
+
+<#GoogleRecipe> @<#Recipe> AND{
+    schema:name .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#name"
+    // techdoc:description "The name of the dish.";
+
+    schema:image . +
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe"
+    // techdoc:description "Image of the completed dish.";
+
+    schema:aggregateRating .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#aggregateRating"
+    // techdoc:description "Annotation for the average review score assigned to the item."
+    // techdoc:identifier "warning";
+
+    schema:author . +
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#author"
+    // techdoc:description "The name of the person or organization that wrote the recipe."
+    // techdoc:identifier "warning";
+
+    schema:cookTime .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#cookTime"
+    // techdoc:description "The time it takes to actually cook the dish in ISO 8601 format."
+    // techdoc:identifier "warning";
+
+    schema:datePublished .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#datePublished"
+    // techdoc:description "The date the recipe was published in ISO 8601 format."
+    // techdoc:identifier "warning";
+
+    schema:description .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#description"
+    // techdoc:description "A short summary describing the dish.."
+    // techdoc:identifier "warning";
+
+    schema:keywords .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#keywords"
+    // techdoc:description "Other terms for your recipe such as the season, the holiday, or other descriptors."
+    // techdoc:identifier "warning";
+
+    schema:prepTime .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#prepTime"
+    // techdoc:description "The length of time it takes to prepare the dish, in ISO 8601 format."
+    // techdoc:identifier "warning";
+
+    schema:recipeCategory  .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#recipeCategoty"
+    // techdoc:description "The type of meal or course your recipe is about."
+    // techdoc:identifier "warning";
+
+    schema:recipeCuisine  .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#recipeCusine"
+    // techdoc:description "The region associated with your recipe."
+    // techdoc:identifier "warning";
+
+    schema:recipeIngredient . +
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#recipeIngredient"
+    // techdoc:description "An ingredient used in the recipe.."
+    // techdoc:identifier "warning";
+
+    schema:recipeInstructions . +
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#recipeInstructions"
+    // techdoc:description "The steps to make the dish."
+    // techdoc:identifier "warning";
+
+    schema:recipeYield . +
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#recipeYield"
+    // techdoc:description "The quantity produced by the recipe. Specify the number of servings produced from this recipe with just a number."
+    // techdoc:identifier "warning";
+
+    schema:totalTime .
+    // techdoc:url "https://developers.google.com/search/docs/data-types/recipe#totalTime"
+    // techdoc:description "The total time it takes to prepare the cook the dish, in ISO 8601 format."
+    // techdoc:identifier "warning";
+}
+
+
+<#PinterestRecipe> @<#Recipe> AND EXTRA a{
+    schema:name .
+    // techdoc:url "https://developers.pinterest.com/docs/rich-pins/recipes/"
+    // techdoc:description "The name of the recipe. This title may be truncated, depending on length. All formatting and HTML tags will be removed.";
+
+    schema:ingredients  . +
+    // techdoc:url "https://developers.pinterest.com/docs/rich-pins/recipes/"
+    // techdoc:description "The ingredients used in the recipe. Annotate each individual ingredient separately.";
+
+    schema:url . +
+    // techdoc:url "https://developers.pinterest.com/docs/rich-pins/recipes/"
+    // techdoc:description "The canonical URL for the page."
+    // techdoc:identifier "warning";
+
+    schema:image . +
+    // techdoc:url "https://developers.pinterest.com/docs/rich-pins/recipes/"
+    // techdoc:description "The URL for a high-resolution image of the recipe. You can add up to 6 images.."
+    // techdoc:identifier "warning";
+
+    schema:totalTime .
+    // techdoc:url "https://developers.pinterest.com/docs/rich-pins/recipes/"
+    // techdoc:description "The total time it takes to cook and prepare the recipe."
+    // techdoc:identifier "warning";
+
+    schema:recipeYield . +
+    // techdoc:url "https://developers.pinterest.com/docs/rich-pins/recipes/"
+    // techdoc:description "The quantity or servings made by this recipe"
+    // techdoc:identifier "warning";
+
+    schema:aggregateRating .
+    // techdoc:url "https://developers.pinterest.com/docs/rich-pins/recipes/"
+    // techdoc:description "The overall rating, based on a collection of reviews or ratings, of the item."
+    // techdoc:identifier "warning";
+}
+
+
+<#YandexRecipe> @<#Recipe> AND {
+    schema:name .
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description "The recipe or dish name.";
+
+    schema:recipeIngredient . +
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description "Ingredients in the recipe and their volumes or amounts (may be several).";
+
+    schema:recipeInstructions . +
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description "cooking instructions."
+    // techdoc:identifier "warning";
+
+    schema:recipeCategory .
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description "Type of dish: for example, hot main dish, dessert."
+    // techdoc:identifier "warning";
+
+    schema:recipeYield . +
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description "Number of servings."
+    // techdoc:identifier "warning";
+
+    schema:totalTime .
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description "Cooking time (if missing, cookTime is used). Specified in the ISO 8601 format. For example, PT30M (30 minutes)."
+    // techdoc:identifier "warning";
+
+    schema:image . +
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description " URL of the cooking images (can be several). We recommend you to fill in this field for creating a better snippet."
+    // techdoc:identifier "warning";
+
+    schema:author . +
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description "Author of the recipe."
+    // techdoc:identifier "warning";
+
+    schema:recipeCuisine .
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description "National cuisine the recipe belongs to. One recipe can contain only one cuisine—type element."
+    // techdoc:identifier "warning";
+
+    schema:nutrition .
+    // techdoc:url "https://yandex.com/support/webmaster/supported-schemas/recipe.html"
+    // techdoc:description "Energy and nutrition value of the dish, meaning the number of calories and the amount of fat, protein, carbohydrates, vitamins, and so on."
+    // techdoc:identifier "warning";
+}
