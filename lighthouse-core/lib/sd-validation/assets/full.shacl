@@ -1,0 +1,1144 @@
+@prefix: <http://example.org/> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+:AggregateRating a sh:NodeShape;
+	sh:targetClass schema:AggregateRating;
+	sh:class schema:AggregateRating;
+	sh:property [
+		sh:path schema:itemReviewed;
+		sh:node :Thing;
+	];
+	sh:property [
+		sh:path schema:ratingCount;
+		sh:node :Integer;
+	];
+	sh:property [
+		sh:path schema:reviewCount;
+		sh:node :Integer;
+	].
+
+
+
+:Boolean a sh:NodeShape;
+    sh:or (
+        [sh:nodeKind sh:Literal]
+        [sh:datatype xsd:boolean]
+    ).
+
+
+:CreativeWork a sh:NodeShape;
+	sh:targetClass schema:CreativeWork;
+	sh:nodeKind sh:BlankNodeOrIRI;
+	sh:property [
+		sh:path schema:about;
+		sh:node :Thing;
+	];
+	sh:property [
+		sh:path schema:accessMode;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:accessModeSufficient;
+		sh:class schema:ItemList;
+	];
+	sh:property [
+		sh:path schema:accessibilityAPI;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:accessibilityControl;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:accessibilityFeature;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:accessibilityHazard;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:accessibilitySummary;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:accountablePerson;
+		sh:node :Person;
+	];
+	sh:property [
+		sh:path schema:aggregateRating;
+		sh:node :AggregateRating;
+	];
+	sh:property [
+		sh:path schema:alternativeHeadline;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:associatedMedia;
+		sh:node :MediaObject;
+	];
+	sh:property [
+		sh:path schema:audience;
+		sh:node :Audience;
+	];
+	sh:property [
+		sh:path schema:audio;
+		sh:or (
+			[sh:class schema:AudioObject]
+			[sh:class schema:Clip]
+			[sh:class schema:MusicRecording]
+		);
+	];
+	sh:property [
+		sh:path schema:author;
+		sh:or (
+		    [sh:node :Text]
+		    [sh:node :URL]
+			[sh:node :Person]
+			[sh:class schema:Organization]
+		);
+	];
+	sh:property [
+		sh:path schema:award;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:awards;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:character;
+		sh:node :Person;
+	];
+	sh:property [
+		sh:path schema:citation;
+		sh:or (
+			[sh:node :CreativeWork]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:comment;
+		sh:node :Comment;
+	];
+	sh:property [
+		sh:path schema:commentCount;
+		sh:node :Integer;
+	];
+	sh:property [
+		sh:path schema:contentLocation;
+		sh:node :Place;
+	];
+	sh:property [
+		sh:path schema:contentRating;
+		sh:or (
+			[sh:node :Text]
+			[sh:class schema:Rating]
+		);
+	];
+	sh:property [
+		sh:path schema:contributor;
+		sh:or (
+			[sh:class schema:Organization]
+			[sh:node :Person]
+		);
+	];
+	sh:property [
+		sh:path schema:copyrightHolder;
+		sh:or (
+			[sh:node :Person]
+			[sh:class schema:Organization]
+		);
+	];
+	sh:property [
+		sh:path schema:copyrightYear;
+		sh:node :Number;
+	];
+	sh:property [
+		sh:path schema:creator;
+		sh:or (
+			[sh:class schema:Organization]
+			[sh:node :Person]
+		);
+	];
+	sh:property [
+		sh:path schema:dateCreated;
+		sh:or (
+			[sh:node :Date]
+			[sh:node :DateTime]
+		);
+	];
+	sh:property [
+		sh:path schema:dateModified;
+		sh:or (
+			[sh:node :DateTime]
+			[sh:node :Date]
+		);
+	];
+	sh:property [
+		sh:path schema:datePublished;
+		sh:or (
+			[sh:node :Date]
+			[sh:node :DateTime]
+		);
+	];
+	sh:property [
+		sh:path schema:discussionUrl;
+		sh:node :URL;
+	];
+	sh:property [
+		sh:path schema:editor;
+		sh:node :Person;
+	];
+	sh:property [
+		sh:path schema:educationalAlignment;
+		sh:node :AlignmentObject;
+	];
+	sh:property [
+		sh:path schema:educationalUse;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:encoding;
+		sh:node :MediaObject;
+	];
+	sh:property [
+		sh:path schema:encodingFormat;
+		sh:or (
+			[sh:node :URL]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:encodings;
+		sh:node :MediaObject;
+	];
+	sh:property [
+		sh:path schema:exampleOfWork;
+		sh:node :CreativeWork;
+	];
+	sh:property [
+		sh:path schema:expires;
+		sh:node :Date;
+	];
+	sh:property [
+		sh:path schema:fileFormat;
+		sh:or (
+			[sh:node :URL]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:funder;
+		sh:or (
+			[sh:class schema:Organization]
+			[sh:node :Person]
+		);
+	];
+	sh:property [
+		sh:path schema:genre;
+		sh:or (
+			[sh:node :Text]
+			[sh:node :URL]
+		);
+	];
+	sh:property [
+		sh:path schema:hasPart;
+		sh:node :CreativeWork;
+	];
+	sh:property [
+		sh:path schema:headline;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:inLanguage;
+		sh:or (
+			[sh:node :Text]
+			[sh:class schema:Language]
+		);
+	];
+	sh:property [
+		sh:path schema:interactionStatistic;
+		sh:node :InteractionCounter;
+	];
+	sh:property [
+		sh:path schema:interactivityType;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:isAccessibleForFree;
+		sh:node :Boolean;
+	];
+	sh:property [
+		sh:path schema:isBasedOn;
+		sh:or (
+			[sh:class schema:Product]
+			[sh:node :CreativeWork]
+			[sh:node :URL]
+		);
+	];
+	sh:property [
+		sh:path schema:isBasedOnUrl;
+		sh:or (
+			[sh:class schema:Product]
+			[sh:node :URL]
+			[sh:node :CreativeWork]
+		);
+	];
+	sh:property [
+		sh:path schema:isFamilyFriendly;
+		sh:node :Boolean;
+	];
+	sh:property [
+		sh:path schema:isPartOf;
+		sh:or (
+			[sh:node :URL]
+			[sh:node :CreativeWork]
+		);
+	];
+	sh:property [
+		sh:path schema:keywords;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:learningResourceType;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:license;
+		sh:or (
+			[sh:node :URL]
+			[sh:node :CreativeWork]
+		);
+	];
+	sh:property [
+		sh:path schema:locationCreated;
+		sh:node :Place;
+	];
+	sh:property [
+		sh:path schema:mainEntity;
+		sh:node :Thing;
+	];
+	sh:property [
+		sh:path schema:material;
+		sh:or (
+			[sh:class schema:Product]
+			[sh:node :URL]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:mentions;
+		sh:node :Thing;
+	];
+	sh:property [
+		sh:path schema:offers;
+		sh:or (
+			[sh:class schema:Demand]
+			[sh:class schema:Offer]
+		);
+	];
+	sh:property [
+		sh:path schema:position;
+		sh:or (
+			[sh:node :Integer]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:producer;
+		sh:or (
+			[sh:node :Person]
+			[sh:class schema:Organization]
+		);
+	];
+	sh:property [
+		sh:path schema:provider;
+		sh:or (
+			[sh:node :Person]
+			[sh:class schema:Organization]
+		);
+	];
+	sh:property [
+		sh:path schema:publication;
+		sh:node :PublicationEvent;
+	];
+	sh:property [
+		sh:path schema:publisher;
+		sh:or (
+			[sh:node :Person]
+			[sh:class schema:Organization]
+		);
+	];
+	sh:property [
+		sh:path schema:publishingPrinciples;
+		sh:or (
+			[sh:node :CreativeWork]
+			[sh:node :URL]
+		);
+	];
+	sh:property [
+		sh:path schema:recordedAt;
+		sh:class schema:Event;
+	];
+	sh:property [
+		sh:path schema:releasedEvent;
+		sh:node :PublicationEvent;
+	];
+	sh:property [
+		sh:path schema:review;
+		sh:node :Review;
+	];
+	sh:property [
+		sh:path schema:reviews;
+		sh:node :Review;
+	];
+	sh:property [
+		sh:path schema:schemaVersion;
+		sh:or (
+			[sh:node :Text]
+			[sh:node :URL]
+		);
+	];
+	sh:property [
+		sh:path schema:sourceOrganization;
+		sh:class schema:Organization;
+	];
+	sh:property [
+		sh:path schema:spatial;
+		sh:node :Place;
+	];
+	sh:property [
+		sh:path schema:spatialCoverage;
+		sh:node :Place;
+	];
+	sh:property [
+		sh:path schema:sponsor;
+		sh:or (
+			[sh:class schema:Organization]
+			[sh:node :Person]
+		);
+	];
+	sh:property [
+		sh:path schema:temporal;
+		sh:or (
+			[sh:node :Text]
+			[sh:node :DateTime]
+		);
+	];
+	sh:property [
+		sh:path schema:temporalCoverage;
+		sh:or (
+			[sh:node :Text]
+			[sh:node :URL]
+			[sh:node :DateTime]
+		);
+	];
+	sh:property [
+		sh:path schema:text;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:thumbnailUrl;
+		sh:node :URL;
+	];
+	sh:property [
+		sh:path schema:timeRequired;
+		sh:node :Duration;
+	];
+	sh:property [
+		sh:path schema:translator;
+		sh:or (
+			[sh:class schema:Organization]
+			[sh:node :Person]
+		);
+	];
+	sh:property [
+		sh:path schema:typicalAgeRange;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:version;
+		sh:or (
+			[sh:node :Text]
+			[sh:node :Number]
+		);
+	];
+	sh:property [
+		sh:path schema:video;
+		sh:or (
+			[sh:class schema:Clip]
+			[sh:class schema:VideoObject]
+		);
+	];
+	sh:property [
+		sh:path schema:workExample;
+		sh:node :CreativeWork;
+	].
+
+
+
+:Date a sh:NodeShape;
+    sh:node :Text;
+    sh:pattern ".*".
+
+
+:DateTime a sh:NodeShape;
+    sh:node :Text;
+    sh:pattern ".*".
+
+
+:Duration a sh:NodeShape;
+    sh:node :Text;
+    sh:pattern "^(-?)P(?=[0-9]|T[0-9])(?:([0-9]+)Y)?(?:([0-9]+)M)?(?:([0-9]+)([DW]))?(?:T(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9]+(?:\\.[0-9]+)?)S)?)?$".
+
+
+:HowTo a sh:NodeShape;
+	sh:targetClass schema:HowTo;
+	sh:class schema:HowTo;
+	sh:property [
+		sh:path schema:estimatedCost;
+		sh:or (
+			[sh:class schema:MonetaryAmount]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:performTime;
+		sh:node :Duration;
+	];
+	sh:property [
+		sh:path schema:prepTime;
+		sh:node :Duration;
+	];
+	sh:property [
+		sh:path schema:step;
+		sh:or (
+			[sh:class schema:HowToStep]
+			[sh:node :Text]
+			[sh:node :CreativeWork]
+			[sh:class schema:HowToSection]
+		);
+	];
+	sh:property [
+		sh:path schema:steps;
+		sh:or (
+			[sh:node :CreativeWork]
+			[sh:class schema:ItemList]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:supply;
+		sh:or (
+			[sh:class schema:HowToSupply]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:tool;
+		sh:or (
+			[sh:class schema:HowToTool]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:totalTime;
+		sh:node :Duration;
+	];
+	sh:property [
+		sh:path schema:yield;
+		sh:or (
+			[sh:class schema:QuantitativeValue]
+			[sh:node :Text]
+		);
+	].
+
+
+:Integer a sh:NodeShape;
+    sh:or (
+        [
+            sh:node :Text;
+            sh:pattern "^([1-9][0-9]*|0)$"
+        ]
+        [ sh:datatype xsd:integer ]
+    ).
+
+
+
+:Number a sh:NodeShape;
+    sh:or (
+        [sh:node :Integer]
+        [sh:datatype xsd:decimal]
+    ).
+
+
+:NutritionInformation a sh:NodeShape;
+	sh:targetClass schema:NutritionInformation;
+	sh:class schema:NutritionInformation;
+	sh:property [
+		sh:path schema:calories;
+		sh:node :Energy;
+	];
+	sh:property [
+		sh:path schema:carbohydrateContent;
+		sh:node :Mass;
+	];
+	sh:property [
+		sh:path schema:cholesterolContent;
+		sh:node :Mass;
+	];
+	sh:property [
+		sh:path schema:fatContent;
+		sh:node :Mass;
+	];
+	sh:property [
+		sh:path schema:fiberContent;
+		sh:node :Mass;
+	];
+	sh:property [
+		sh:path schema:proteinContent;
+		sh:node :Mass;
+	];
+	sh:property [
+		sh:path schema:saturatedFatContent;
+		sh:node :Mass;
+	];
+	sh:property [
+		sh:path schema:servingSize;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:sodiumContent;
+		sh:node :Mass;
+	];
+	sh:property [
+		sh:path schema:sugarContent;
+		sh:node :Mass;
+	];
+	sh:property [
+		sh:path schema:transFatContent;
+		sh:node :Mass;
+	];
+	sh:property [
+		sh:path schema:unsaturatedFatContent;
+		sh:node :Mass;
+	].
+
+
+:Person a sh:NodeShape;
+	sh:targetClass schema:Person;
+	sh:or(
+	    [sh:node :Text]
+	    [sh:node :URL]
+	    [
+	        sh:class schema:Person;
+            	sh:property [
+            		sh:path schema:additionalName;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:address;
+            		sh:or (
+            			[sh:class schema:PostalAddress]
+            			[sh:node :Text]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:affiliation;
+            		sh:class schema:Organization;
+            	];
+            	sh:property [
+            		sh:path schema:alumniOf;
+            		sh:or (
+            			[sh:class schema:EducationalOrganization]
+            			[sh:class schema:Organization]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:award;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:awards;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:birthDate;
+            		sh:node :Date;
+            	];
+            	sh:property [
+            		sh:path schema:birthPlace;
+            		sh:class schema:Place;
+            	];
+            	sh:property [
+            		sh:path schema:brand;
+            		sh:or (
+            			[sh:class schema:Brand]
+            			[sh:class schema:Organization]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:children;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:colleague;
+            		sh:or (
+            			[sh:node :URL]
+            			[sh:node :Person]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:colleagues;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:contactPoint;
+            		sh:class schema:ContactPoint;
+            	];
+            	sh:property [
+            		sh:path schema:contactPoints;
+            		sh:class schema:ContactPoint;
+            	];
+            	sh:property [
+            		sh:path schema:deathDate;
+            		sh:node :Date;
+            	];
+            	sh:property [
+            		sh:path schema:deathPlace;
+            		sh:class schema:Place;
+            	];
+            	sh:property [
+            		sh:path schema:duns;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:email;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:familyName;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:faxNumber;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:follows;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:funder;
+            		sh:or (
+            			[sh:class schema:Organization]
+            			[sh:node :Person]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:givenName;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:globalLocationNumber;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:hasOccupation;
+            		sh:node :Occupation;
+            	];
+            	sh:property [
+            		sh:path schema:hasOfferCatalog;
+            		sh:class schema:OfferCatalog;
+            	];
+            	sh:property [
+            		sh:path schema:hasPOS;
+            		sh:class schema:Place;
+            	];
+            	sh:property [
+            		sh:path schema:height;
+            		sh:or (
+            			[sh:class schema:QuantitativeValue]
+            			[sh:class schema:Distance]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:homeLocation;
+            		sh:or (
+            			[sh:class schema:ContactPoint]
+            			[sh:class schema:Place]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:honorificPrefix;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:honorificSuffix;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:interactionStatistic;
+            		sh:node :InteractionCounter;
+            	];
+            	sh:property [
+            		sh:path schema:isicV4;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:knows;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:makesOffer;
+            		sh:class schema:Offer;
+            	];
+            	sh:property [
+            		sh:path schema:memberOf;
+            		sh:or (
+            			[sh:class schema:Organization]
+            			[sh:class schema:ProgramMembership]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:naics;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:nationality;
+            		sh:node :Country;
+            	];
+            	sh:property [
+            		sh:path schema:netWorth;
+            		sh:or (
+            			[sh:class schema:MonetaryAmount]
+            			[sh:class schema:PriceSpecification]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:owns;
+            		sh:or (
+            			[sh:class schema:OwnershipInfo]
+            			[sh:class schema:Product]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:parent;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:parents;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:performerIn;
+            		sh:class schema:Event;
+            	];
+            	sh:property [
+            		sh:path schema:publishingPrinciples;
+            		sh:or (
+            			[sh:node :CreativeWork]
+            			[sh:node :URL]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:relatedTo;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:seeks;
+            		sh:class schema:Demand;
+            	];
+            	sh:property [
+            		sh:path schema:sibling;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:siblings;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:sponsor;
+            		sh:or (
+            			[sh:class schema:Organization]
+            			[sh:node :Person]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:spouse;
+            		sh:node :Person;
+            	];
+            	sh:property [
+            		sh:path schema:taxID;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:telephone;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:vatID;
+            		sh:node :Text;
+            	];
+            	sh:property [
+            		sh:path schema:weight;
+            		sh:class schema:QuantitativeValue;
+            	];
+            	sh:property [
+            		sh:path schema:workLocation;
+            		sh:or (
+            			[sh:class schema:ContactPoint]
+            			[sh:class schema:Place]
+            		);
+            	];
+            	sh:property [
+            		sh:path schema:worksFor;
+            		sh:class schema:Organization;
+            	]
+	    ]
+	).
+
+
+
+:Recipe a sh:NodeShape;
+	sh:targetClass schema:Recipe;
+	sh:class schema:Recipe;
+	sh:property [
+		sh:path schema:cookTime;
+		sh:node :Duration;
+	];
+	sh:property [
+		sh:path schema:cookingMethod;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:ingredients;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:nutrition;
+		sh:node :NutritionInformation;
+	];
+	sh:property [
+		sh:path schema:recipeCategory;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:recipeCuisine;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:recipeIngredient;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:recipeInstructions;
+		sh:or (
+			[sh:node :CreativeWork]
+			[sh:class schema:ItemList]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:recipeYield;
+		sh:or (
+			[sh:class schema:QuantitativeValue]
+			[sh:node :Text]
+		);
+	];
+	sh:property [
+		sh:path schema:suitableForDiet;
+		sh:node :RestrictedDiet;
+	].
+
+
+:Text a sh:NodeShape;
+    sh:or (
+        [sh:datatype xsd:string]
+        [sh:nodeKind sh:Literal]
+    ).
+
+
+:Thing a sh:NodeShape;
+	sh:targetClass schema:Thing;
+	sh:class schema:Thing;
+	sh:property [
+		sh:path schema:additionalType;
+		sh:node :URL;
+	];
+	sh:property [
+		sh:path schema:alternateName;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:description;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:disambiguatingDescription;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:identifier;
+		sh:or (
+			[sh:node :Text]
+			[sh:class schema:PropertyValue]
+			[sh:node :URL]
+		);
+	];
+	sh:property [
+		sh:path schema:image;
+		sh:or (
+			[sh:node :URL]
+			[sh:class schema:ImageObject]
+		);
+	];
+	sh:property [
+		sh:path schema:mainEntityOfPage;
+		sh:or (
+			[sh:node :CreativeWork]
+			[sh:node :URL]
+		);
+	];
+	sh:property [
+		sh:path schema:name;
+		sh:node :Text;
+	];
+	sh:property [
+		sh:path schema:potentialAction;
+		sh:node :Action;
+	];
+	sh:property [
+		sh:path schema:sameAs;
+		sh:node :URL;
+	];
+	sh:property [
+		sh:path schema:subjectOf;
+		sh:or (
+			[sh:class schema:Event]
+			[sh:node :CreativeWork]
+		);
+	];
+	sh:property [
+		sh:path schema:url;
+		sh:node :URL;
+	].
+
+
+
+:URL a sh:NodeShape;
+    sh:pattern "^(https?|gopher|ftps?):" .
+
+:GoogleRecipe a sh:NodeShape;
+    sh:targetClass schema:Recipe;
+    sh:property [
+        sh:path schema:name;
+        sh:minCount 1;
+        sh:severity sh:Violation;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#name";
+        schema:description "The name of the dish.";
+    ];
+    sh:property [
+        sh:path schema:image;
+        sh:minCount 1;
+        sh:severity sh:Violation;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe";
+        schema:description "Image of the completed dish.";
+    ];
+    sh:property [
+        sh:path schema:aggregateRating;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#aggregateRating";
+        schema:description "Annotation for the average review score assigned to the item.";
+    ];
+    sh:property [
+        sh:path schema:author;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#author";
+        schema:description: "The name of the person or organization that wrote the recipe.";
+    ];
+    sh:property [
+        sh:path schema:cookTime;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#cookTime";
+        schema:description "The time it takes to actually cook the dish in ISO 8601 format";
+    ];
+    sh:property [
+        sh:path schema:datePublished;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#datePublished";
+        schema:description "The date the recipe was published in ISO 8601 format";
+    ];
+    sh:property [
+        sh:path schema:description;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#description";
+        schema:description "A short summary describing the dish.";
+    ];
+    sh:property [
+        sh:path schema:keywords;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#keywords";
+        schema:description "Other terms for your recipe such as the season, the holiday, or other descriptors";
+    ];
+    sh:property [
+        sh:path schema:prepTime;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#prepTime";
+        schema:description "The length of time it takes to prepare the dish, in ISO 8601 format";
+    ];
+    sh:property [
+        sh:path schema:recipeCategory;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#recipeCategoty";
+        schema:description "The type of meal or course your recipe is about";
+    ];
+    sh:property [
+        sh:path schema:recipeCuisine;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#recipeCusine";
+        schema:description "The region associated with your recipe";
+    ];
+    sh:property [
+        sh:path schema:recipeIngredient;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#recipeIngredient";
+        schema:description "An ingredient used in the recipe.";
+    ];
+    sh:property [
+        sh:path schema:recipeInstructions;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#recipeInstructions";
+        schema:description "The steps to make the dish";
+    ];
+    sh:property [
+        sh:path schema:recipeYield;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#recipeYield";
+        schema:description "The quantity produced by the recipe. Specify the number of servings produced from this recipe with just a number";
+    ];
+    sh:property [
+        sh:path schema:totalTime;
+        sh:minCount 1;
+        sh:severity sh:Warning;
+        schema:url "https://developers.google.com/search/docs/data-types/recipe#totalTime";
+        schema:description "The total time it takes to prepare the cook the dish, in ISO 8601 format";
+    ].

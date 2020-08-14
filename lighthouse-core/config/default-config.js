@@ -335,6 +335,7 @@ const defaultConfig = {
     'seo/plugins',
     'seo/canonical',
     'seo/manual/structured-data',
+    'seo/structured-data',
   ],
 
   groups: {
