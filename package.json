@@ -11,7 +11,7 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "test-test": "node ./lighthouse-cli/index.js https://tasty.co/recipe/ratatouille --only-categories=seo",
+    "test-test": "node ./lighthouse-cli/index.js https://www.onceuponachef.com/recipes/perfect-apple-pie.html --only-categories=seo",
     "build-all": "npm-run-posix-or-windows build-all:task",
     "build-all:task": "yarn build-cdt-lib && yarn build-devtools && (yarn build-extension & yarn build-lr & yarn build-viewer & yarn build-treemap & yarn build-smokehouse-bundle & wait) && yarn build-pack",
     "build-all:task:windows": "yarn build-cdt-lib && yarn build-extension && yarn build-devtools && yarn build-lr && yarn build-viewer && yarn build-treemap && yarn build-smokehouse-bundle",
@@ -193,17 +193,11 @@
     "rimraf": "^2.6.1",
     "robots-parser": "^2.0.1",
     "semver": "^5.3.0",
-<<<<<<< HEAD
     "speedline-core": "^1.4.3",
     "third-party-web": "^0.12.2",
     "update-notifier": "^4.1.0",
-=======
     "shex": "^0.9.2",
-    "speedline-core": "1.4.2",
-    "third-party-web": "^0.11.1",
     "to-readable-stream": "^2.1.0",
-    "update-notifier": "^2.5.0",
->>>>>>> Initial commit
     "ws": "3.3.2",
     "yargs": "^16.1.1",
     "yargs-parser": "^20.2.4"
@@ -235,5 +229,18 @@
       "**/scripts/"
     ]
   },
+<<<<<<< HEAD
   "homepage": "https://github.com/GoogleChrome/lighthouse#readme"
 }
+=======
+  "homepage": "https://github.com/GoogleChrome/lighthouse#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "./.cz-config.js"
+    }
+  }
+}
+>>>>>>> Local shex shapes used for validation, added raw version of raw shapes, added support of @graph validation

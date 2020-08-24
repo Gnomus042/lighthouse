@@ -4,23 +4,22 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX techdoc: <http://schema.org/>
-PREFIX js: <http://shex.io/extensions/javascript/>
 BASE <http://schema.org/shex>
 
 
 <#Action> @<#Thing> AND EXTRA a {
 	a [schema:PerformAction schema:SearchAction schema:LikeAction schema:EatAction schema:RsvpAction schema:ResumeAction schema:DrinkAction schema:CancelAction schema:DepartAction schema:CheckInAction schema:DownloadAction schema:ReceiveAction schema:WinAction schema:WatchAction schema:TakeAction schema:DrawAction schema:GiveAction schema:WantAction schema:InteractAction schema:AssessAction schema:CheckOutAction schema:QuoteAction schema:FindAction schema:ReadAction schema:IgnoreAction schema:PreOrderAction schema:LendAction schema:ApplyAction schema:TransferAction schema:EndorseAction schema:UpdateAction schema:ListenAction schema:DeleteAction schema:SellAction schema:OrderAction schema:MarryAction schema:RejectAction schema:SendAction schema:LeaveAction schema:TradeAction schema:ControlAction schema:CheckAction schema:ShareAction schema:DisagreeAction schema:CommentAction schema:RegisterAction schema:ArriveAction schema:UnRegisterAction schema:ReactAction schema:ReserveAction schema:BefriendAction schema:BookmarkAction schema:InsertAction schema:LoseAction schema:DeactivateAction schema:InviteAction schema:ConfirmAction schema:SuspendAction schema:DiscoverAction schema:AskAction schema:DonateAction schema:ScheduleAction schema:ExerciseAction schema:OrganizeAction schema:TrackAction schema:ReplaceAction schema:AppendAction schema:ReviewAction schema:VoteAction schema:UseAction schema:ActivateAction schema:BorrowAction schema:AchieveAction schema:PaintAction schema:FilmAction schema:ChooseAction schema:SubscribeAction schema:AcceptAction schema:CookAction schema:AuthorizeAction schema:TieAction schema:TravelAction schema:DislikeAction schema:PayAction schema:PhotographAction schema:PlayAction schema:BuyAction schema:RentAction schema:TipAction schema:AllocateAction schema:CommunicateAction schema:PlanAction schema:AssignAction schema:InformAction schema:ConsumeAction schema:ReturnAction schema:AgreeAction schema:FollowAction schema:JoinAction schema:WearAction schema:ReplyAction schema:PrependAction schema:MoveAction schema:InstallAction schema:AddAction schema:CreateAction schema:ViewAction schema:WriteAction schema:Action];
-	schema:actionStatus { a [schema:ActionStatusType] } *;
-	schema:agent (@<#Person> OR { a [schema:Organization] }) *;
+	schema:actionStatus @<#ActionStatusType> *;
+	schema:agent (@<#Person> OR @<#Organization>) *;
 	schema:endTime (@<#DateTime> OR @<#Time>) *;
 	schema:error @<#Thing> *;
 	schema:instrument @<#Thing> *;
-	schema:location ({ a [schema:VirtualLocation] } OR { a [schema:Place] } OR @<#Text> OR { a [schema:PostalAddress] }) *;
+	schema:location (@<#VirtualLocation> OR @<#Place> OR @<#Text> OR @<#PostalAddress>) *;
 	schema:object @<#Thing> *;
-	schema:participant ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:participant (@<#Organization> OR @<#Person>) *;
 	schema:result @<#Thing> *;
 	schema:startTime (@<#Time> OR @<#DateTime>) *;
-	schema:target { a [schema:EntryPoint] } *;
+	schema:target @<#EntryPoint> *;
 }
 
 
@@ -39,7 +38,7 @@ BASE <http://schema.org/shex>
 	a [schema:ItemPage schema:DataDownload schema:HowTo schema:DiscussionForumPosting schema:MusicRelease schema:TechArticle schema:VideoGame schema:WebPageElement schema:Course schema:DigitalDocument schema:Code schema:HowToTip schema:Article schema:PublicationVolume schema:Map schema:VideoGameClip schema:Episode schema:SoftwareSourceCode schema:Season schema:Clip schema:MediaObject schema:WPSideBar schema:MusicAlbum schema:HowToSection schema:WPAdBlock schema:Comment schema:MusicRecording schema:RadioSeason schema:PresentationDigitalDocument schema:ContactPage schema:SpreadsheetDigitalDocument schema:BlogPosting schema:WebApplication schema:CheckoutPage schema:MenuSection schema:LiveBlogPosting schema:ProfilePage schema:EmailMessage schema:CreativeWorkSeason schema:RadioSeries schema:ClaimReview schema:Report schema:MusicVideoObject schema:TVSeason schema:SearchResultsPage schema:SiteNavigationElement schema:VisualArtwork schema:MobileApplication schema:Blog schema:Sculpture schema:ImageGallery schema:WPHeader schema:ImageObject schema:CreativeWorkSeries schema:VideoGallery schema:MusicComposition schema:TVClip schema:Movie schema:Question schema:WebSite schema:TVEpisode schema:Recipe schema:MusicPlaylist schema:TVSeries schema:Table schema:Message schema:SoftwareApplication schema:DataFeed schema:AboutPage schema:Barcode schema:APIReference schema:AudioObject schema:WebPage schema:Review schema:RadioEpisode schema:VideoObject schema:SocialMediaPosting schema:Menu schema:DataCatalog schema:BookSeries schema:Dataset schema:MediaGallery schema:ScholarlyArticle schema:CollectionPage schema:Game schema:TextDigitalDocument schema:MovieSeries schema:FAQPage schema:Answer schema:Periodical schema:HowToDirection schema:Conversation schema:NoteDigitalDocument schema:Book schema:Painting schema:VideoGameSeries schema:QAPage schema:NewsArticle schema:RadioClip schema:PublicationIssue schema:Photograph schema:HowToStep schema:WPFooter schema:MovieClip schema:CreativeWork];
 	schema:about @<#Thing> *;
 	schema:accessMode (@<#Text> AND /auditory|tactile|textual|visual|colorDependent|chartOnVisual|chemOnVisual|diagramOnVisual|mathOnVisual|musicOnVisual|textOnVisual/) *;
-	schema:accessModeSufficient { a [schema:ItemList] } *;
+	schema:accessModeSufficient @<#ItemList> *;
 	schema:accessibilityAPI @<#Text> *;
 	schema:accessibilityControl @<#Text> *;
 	schema:accessibilityFeature @<#Text> *;
@@ -49,117 +48,133 @@ BASE <http://schema.org/shex>
 	schema:aggregateRating @<#AggregateRating> *;
 	schema:alternativeHeadline @<#Text> *;
 	schema:associatedMedia @<#MediaObject> *;
-	schema:audience { a [schema:Audience] } *;
-	schema:audio ({ a [schema:AudioObject] } OR { a [schema:Clip] } OR { a [schema:MusicRecording] }) *;
-	schema:author (@<#Person> OR { a [schema:Organization] }) *;
+	schema:audience @<#Audience> *;
+	schema:audio (@<#AudioObject> OR @<#Clip> OR @<#MusicRecording>) *;
+	schema:author (@<#Person> OR @<#Organization>) *;
 	schema:award @<#Text> *;
 	schema:awards @<#Text> *;
 	schema:character @<#Person> *;
 	schema:citation (@<#CreativeWork> OR @<#Text>) *;
-	schema:comment { a [schema:Comment] } *;
+	schema:comment @<#Comment> *;
 	schema:commentCount @<#Integer> *;
-	schema:contentLocation { a [schema:Place] } *;
+	schema:contentLocation @<#Place> *;
 	schema:contentRating (@<#Text> OR @<#Rating>) *;
-	schema:contributor ({ a [schema:Organization] } OR @<#Person>) *;
-	schema:copyrightHolder (@<#Person> OR { a [schema:Organization] }) *;
+	schema:contributor (@<#Organization> OR @<#Person>) *;
+	schema:copyrightHolder (@<#Person> OR @<#Organization>) *;
 	schema:copyrightYear @<#Number> *;
-	schema:creator ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:creator (@<#Organization> OR @<#Person>) *;
 	schema:dateCreated (@<#Date> OR @<#DateTime>) *;
-	schema:dateModified (@<#Date> OR @<#DateTime>) *;
-	schema:datePublished (@<#Date> OR @<#DateTime>) * %js:{ !isNaN(Date.parse(RdfTerm.getLiteralValue(ctx.object))) %} ;
+	schema:dateModified (@<#DateTime> OR @<#Date>) *;
+	schema:datePublished (@<#Date> OR @<#DateTime>) *;
 	schema:discussionUrl @<#URL> *;
 	schema:editor @<#Person> *;
-	schema:educationalAlignment { a [schema:AlignmentObject] } *;
+	schema:educationalAlignment @<#AlignmentObject> *;
 	schema:educationalUse @<#Text> *;
 	schema:encoding @<#MediaObject> *;
 	schema:encodingFormat (@<#URL> OR @<#Text>) *;
 	schema:encodings @<#MediaObject> *;
 	schema:exampleOfWork @<#CreativeWork> *;
 	schema:expires @<#Date> *;
-	schema:funder ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:funder (@<#Organization> OR @<#Person>) *;
 	schema:genre (@<#Text> OR @<#URL>) *;
 	schema:hasPart @<#CreativeWork> *;
 	schema:headline @<#Text> *;
-	schema:inLanguage (@<#Text> OR { a [schema:Language] }) *;
-	schema:interactionStatistic { a [schema:InteractionCounter] } *;
+	schema:inLanguage (@<#Text> OR @<#Language>) *;
+	schema:interactionStatistic @<#InteractionCounter> *;
 	schema:interactivityType (@<#Text> AND /active|expositive|mixed/) *;
 	schema:isAccessibleForFree @<#Boolean> *;
-	schema:isBasedOn ({ a [schema:Product] } OR @<#CreativeWork> OR @<#URL>) *;
-	schema:isBasedOnUrl ({ a [schema:Product] } OR @<#URL> OR @<#CreativeWork>) *;
+	schema:isBasedOn (@<#Product> OR @<#CreativeWork> OR @<#URL>) *;
+	schema:isBasedOnUrl (@<#Product> OR @<#URL> OR @<#CreativeWork>) *;
 	schema:isFamilyFriendly @<#Boolean> *;
 	schema:isPartOf (@<#URL> OR @<#CreativeWork>) *;
 	schema:keywords @<#Text> *;
 	schema:learningResourceType @<#Text> *;
 	schema:license (@<#URL> OR @<#CreativeWork>) *;
-	schema:locationCreated { a [schema:Place] } *;
+	schema:locationCreated @<#Place> *;
 	schema:mainEntity @<#Thing> *;
-	schema:material ({ a [schema:Product] } OR @<#URL> OR @<#Text>) *;
+	schema:material (@<#Product> OR @<#URL> OR @<#Text>) *;
 	schema:mentions @<#Thing> *;
-	schema:offers ({ a [schema:Demand] } OR { a [schema:Offer] }) *;
+	schema:offers (@<#Demand> OR @<#Offer>) *;
 	schema:position (@<#Integer> OR @<#Text>) *;
-	schema:producer (@<#Person> OR { a [schema:Organization] }) *;
-	schema:provider (@<#Person> OR { a [schema:Organization] }) *;
-	schema:publication { a [schema:PublicationEvent] } *;
-	schema:publisher (@<#Person> OR { a [schema:Organization] }) *;
+	schema:producer (@<#Person> OR @<#Organization>) *;
+	schema:provider (@<#Person> OR @<#Organization>) *;
+	schema:publication @<#PublicationEvent> *;
+	schema:publisher (@<#Person> OR @<#Organization>) *;
 	schema:publishingPrinciples (@<#CreativeWork> OR @<#URL>) *;
-	schema:recordedAt { a [schema:Event] } *;
-	schema:releasedEvent { a [schema:PublicationEvent] } *;
-	schema:review { a [schema:Review] } *;
-	schema:reviews { a [schema:Review] } *;
+	schema:recordedAt @<#Event> *;
+	schema:releasedEvent @<#PublicationEvent> *;
+	schema:review @<#Review> *;
+	schema:reviews @<#Review> *;
 	schema:schemaVersion (@<#Text> OR @<#URL>) *;
-	schema:sourceOrganization { a [schema:Organization] } *;
-	schema:spatial { a [schema:Place] } *;
-	schema:spatialCoverage { a [schema:Place] } *;
-	schema:sponsor ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:sourceOrganization @<#Organization> *;
+	schema:spatial @<#Place> *;
+	schema:spatialCoverage @<#Place> *;
+	schema:sponsor (@<#Organization> OR @<#Person>) *;
 	schema:temporal (@<#Text> OR @<#DateTime>) *;
 	schema:temporalCoverage (@<#Text> OR @<#URL> OR @<#DateTime>) *;
 	schema:text @<#Text> *;
 	schema:thumbnailUrl @<#URL> *;
 	schema:timeRequired @<#Duration> *;
-	schema:translator ({ a [schema:Organization] } OR @<#Person>) *;
+	schema:translator (@<#Organization> OR @<#Person>) *;
 	schema:typicalAgeRange @<#Text> *;
 	schema:version (@<#Text> OR @<#Number>) *;
-	schema:video ({ a [schema:Clip] } OR { a [schema:VideoObject] }) *;
+	schema:video (@<#Clip> OR @<#VideoObject>) *;
 	schema:workExample @<#CreativeWork> *;
 }
 
 
 <#Dataset> @<#CreativeWork> AND EXTRA a {
 	a [schema:DataFeed schema:Dataset];
-	schema:catalog { a [schema:DataCatalog] } * ;
+	schema:catalog @<#DataCatalog> * ;
 	schema:datasetTimeInterval @<#DateTime> * ;
-	schema:distribution { a [schema:DataDownload] } * ;
-	schema:includedDataCatalog { a [schema:DataCatalog] } *;
-	schema:includedInDataCatalog { a [schema:DataCatalog] } *;
+	schema:distribution @<#DataDownload> * ;
+	schema:includedDataCatalog @<#DataCatalog> *;
+	schema:includedInDataCatalog @<#DataCatalog> *;
 	schema:issn @<#Text> *;
 }
 
 
-# TODO need to use semantic actions
-<#Date> xsd:date OR @<#Text>
+<#Date> @<#Text> OR xsd:date
 
 
 
-# TODO need to use semantic actions
-<#DateTime> xsd:dateTime OR @<#Text>
+<#DateTime> @<#Text> OR xsd:datetime
 
+
+
+<#Distance> (@<#Text> AND /^[ ]*([1-9][0-9]*|0)[ ]*[a-zA-Z]*[ ]*$/) OR (@<#Quantity> AND EXTRA a { a [schema:Distance]; })
 
 
 <#Duration> (@<#Text> AND /^(-?)P(?=[0-9]|T[0-9])(?:([0-9]+)Y)?(?:([0-9]+)M)?(?:([0-9]+)([DW]))?(?:T(?:([0-9]+)H)?(?:([0-9]+)M)?(?:([0-9]+(?:\.[0-9]+)?)S)?)?$/)
 
 
 
+<#Energy> (@<#Text> AND /^[ ]*([1-9][0-9]*|0)[ ]*[a-zA-Z]*[ ]*$/) OR (@<#Quantity> AND EXTRA a { a [schema:Energy]; })
+
+
+<#EntryPoint> @<#URL> OR (@<#Intangible> AND EXTRA a {
+	a [schema:EntryPoint];
+	schema:actionApplication @<#SoftwareApplication> * ;
+	schema:actionPlatform (@<#Text> OR @<#URL>) * ;
+	schema:application @<#SoftwareApplication> * ;
+	schema:contentType @<#Text> * ;
+	schema:encodingType @<#Text> * ;
+	schema:httpMethod @<#Text> * ;
+	schema:urlTemplate @<#Text> * ;
+})
+
+
 <#HowTo> @<#CreativeWork> AND EXTRA a {
 	a [schema:Recipe schema:HowTo];
-	schema:estimatedCost ({ a [schema:MonetaryAmount] } OR @<#Text>) *;
+	schema:estimatedCost (@<#MonetaryAmount> OR @<#Text>) *;
 	schema:performTime @<#Duration> *;
 	schema:prepTime @<#Duration> *;
-	schema:step ({ a [schema:HowToStep] } OR @<#Text> OR @<#CreativeWork> OR { a [schema:HowToSection] }) *;
-	schema:steps (@<#CreativeWork> OR { a [schema:ItemList] } OR @<#Text>) *;
-	schema:supply ({ a [schema:HowToSupply] } OR @<#Text>) *;
-	schema:tool ({ a [schema:HowToTool] } OR @<#Text>) *;
+	schema:step (@<#HowToStep> OR @<#Text> OR @<#CreativeWork> OR @<#HowToSection>) *;
+	schema:steps (@<#CreativeWork> OR @<#ItemList> OR @<#Text>) *;
+	schema:supply (@<#HowToSupply> OR @<#Text>) *;
+	schema:tool (@<#HowToTool> OR @<#Text>) *;
 	schema:totalTime @<#Duration> *;
-	schema:yield ({ a [schema:QuantitativeValue] } OR @<#Text>) *;
+	schema:yield (@<#QuantitativeValue> OR @<#Text>) *;
 }
 
 
@@ -168,12 +183,15 @@ BASE <http://schema.org/shex>
 }
 
 
-<#Integer> (@<#Text> AND /^([1-9][0-9]*|0)$/) OR xsd:integer
+<#Integer> (@<#Text> AND /[ ]*([1-9][0-9]*|0)[ ]*$/) OR xsd:integer
+
+
+<#Mass> (@<#Text> AND /^[ ]*([1-9][0-9]*|0)[ ]*[a-zA-Z]*[ ]*$/) OR (@<#Quantity> AND EXTRA a { a [schema:Mass]; })
 
 
 <#MediaObject> @<#CreativeWork> AND EXTRA a {
 	a [schema:Barcode schema:DataDownload schema:MusicVideoObject schema:AudioObject schema:ImageObject schema:VideoObject schema:MediaObject];
-	schema:associatedArticle { a [schema:NewsArticle] } *;
+	schema:associatedArticle @<#NewsArticle> *;
 	schema:bitrate @<#Text> *;
 	schema:contentSize @<#Text> *;
 	schema:contentUrl @<#URL> *;
@@ -182,14 +200,14 @@ BASE <http://schema.org/shex>
 	schema:encodesCreativeWork @<#CreativeWork> *;
 	schema:encodingFormat (@<#URL> OR @<#Text>) *;
 	schema:endTime (@<#DateTime> OR @<#Time>) *;
-	schema:height ({ a [schema:QuantitativeValue] } OR { a [schema:Distance] }) *;
+	schema:height (@<#QuantitativeValue> OR @<#Distance>) *;
 	schema:playerType @<#Text> *;
-	schema:productionCompany { a [schema:Organization] } *;
-	schema:regionsAllowed { a [schema:Place] } *;
-	schema:requiresSubscription ({ a [schema:MediaSubscription] } OR @<#Boolean>) *;
+	schema:productionCompany @<#Organization> *;
+	schema:regionsAllowed @<#Place> *;
+	schema:requiresSubscription (@<#MediaSubscription> OR @<#Boolean>) *;
 	schema:startTime (@<#Time> OR @<#DateTime>) *;
 	schema:uploadDate @<#Date> *;
-	schema:width ({ a [schema:QuantitativeValue] } OR { a [schema:Distance] }) *;
+	schema:width (@<#QuantitativeValue> OR @<#Distance>) *;
 }
 
 
@@ -200,61 +218,61 @@ BASE <http://schema.org/shex>
 <#Person> @<#Text> OR @<#URL> OR ( @<#Thing> AND EXTRA a {
 	a [schema:Person];
 	schema:additionalName @<#Text> * ;
-	schema:address ({ a [schema:PostalAddress] } OR @<#Text>) * ;
-	schema:affiliation { a [schema:Organization] } * ;
-	schema:alumniOf ({ a [schema:EducationalOrganization] } OR { a [schema:Organization] }) * ;
+	schema:address (@<#PostalAddress> OR @<#Text>) * ;
+	schema:affiliation @<#Organization> * ;
+	schema:alumniOf (@<#EducationalOrganization> OR @<#Organization>) * ;
 	schema:award @<#Text> * ;
 	schema:awards @<#Text> * ;
 	schema:birthDate @<#Date> * ;
-	schema:birthPlace { a [schema:Place] } * ;
-	schema:brand ({ a [schema:Brand] } OR { a [schema:Organization] }) * ;
+	schema:birthPlace @<#Place> * ;
+	schema:brand (@<#Brand> OR @<#Organization>) * ;
 	schema:children @<#Person> * ;
 	schema:colleague (@<#URL> OR @<#Person>) * ;
 	schema:colleagues @<#Person> * ;
-	schema:contactPoint { a [schema:ContactPoint] } * ;
-	schema:contactPoints { a [schema:ContactPoint] } * ;
+	schema:contactPoint @<#ContactPoint> * ;
+	schema:contactPoints @<#ContactPoint> * ;
 	schema:deathDate @<#Date> * ;
-	schema:deathPlace { a [schema:Place] } * ;
+	schema:deathPlace @<#Place> * ;
 	schema:duns @<#Text> * ;
 	schema:email @<#Text> * ;
 	schema:familyName @<#Text> * ;
 	schema:faxNumber @<#Text> * ;
 	schema:follows @<#Person> * ;
-	schema:funder ({ a [schema:Organization] } OR @<#Person>) * ;
+	schema:funder (@<#Organization> OR @<#Person>) * ;
 	schema:givenName @<#Text> * ;
 	schema:globalLocationNumber @<#Text> * ;
-	schema:hasOccupation { a [schema:Occupation] } * ;
-	schema:hasOfferCatalog { a [schema:OfferCatalog] } * ;
-	schema:hasPOS { a [schema:Place] } * ;
-	schema:height ({ a [schema:QuantitativeValue] } OR { a [schema:Distance] }) * ;
-	schema:homeLocation ({ a [schema:ContactPoint] } OR { a [schema:Place] }) * ;
+	schema:hasOccupation @<#Occupation> * ;
+	schema:hasOfferCatalog @<#OfferCatalog> * ;
+	schema:hasPOS @<#Place> * ;
+	schema:height (@<#QuantitativeValue> OR @<#Distance>) * ;
+	schema:homeLocation (@<#ContactPoint> OR @<#Place>) * ;
 	schema:honorificPrefix @<#Text> * ;
 	schema:honorificSuffix @<#Text> * ;
-	schema:interactionStatistic { a [schema:InteractionCounter] } * ;
+	schema:interactionStatistic @<#InteractionCounter> * ;
 	schema:isicV4 @<#Text> * ;
 	schema:knows @<#Person> * ;
-	schema:makesOffer { a [schema:Offer] } * ;
-	schema:memberOf ({ a [schema:Organization] } OR { a [schema:ProgramMembership] }) * ;
+	schema:makesOffer @<#Offer> * ;
+	schema:memberOf (@<#Organization> OR @<#ProgramMembership>) * ;
 	schema:naics @<#Text> * ;
-	schema:nationality { a [schema:Country] } * ;
-	schema:netWorth ({ a [schema:MonetaryAmount] } OR { a [schema:PriceSpecification] }) * ;
-	schema:owns ({ a [schema:OwnershipInfo] } OR { a [schema:Product] }) * ;
+	schema:nationality @<#Country> * ;
+	schema:netWorth (@<#MonetaryAmount> OR @<#PriceSpecification>) * ;
+	schema:owns (@<#OwnershipInfo> OR @<#Product>) * ;
 	schema:parent @<#Person> * ;
 	schema:parents @<#Person> * ;
-	schema:performerIn { a [schema:Event] } * ;
+	schema:performerIn @<#Event> * ;
 	schema:publishingPrinciples (@<#CreativeWork> OR @<#URL>) * ;
 	schema:relatedTo @<#Person> * ;
-	schema:seeks { a [schema:Demand] } * ;
+	schema:seeks @<#Demand> * ;
 	schema:sibling @<#Person> * ;
 	schema:siblings @<#Person> * ;
-	schema:sponsor ({ a [schema:Organization] } OR @<#Person>) * ;
+	schema:sponsor (@<#Organization> OR @<#Person>) * ;
 	schema:spouse @<#Person> * ;
 	schema:taxID @<#Text> * ;
 	schema:telephone @<#Text> * ;
 	schema:vatID @<#Text> * ;
-	schema:weight { a [schema:QuantitativeValue] } * ;
-	schema:workLocation ({ a [schema:ContactPoint] } OR { a [schema:Place] }) * ;
-	schema:worksFor { a [schema:Organization] } * ;
+	schema:weight @<#QuantitativeValue> * ;
+	schema:workLocation (@<#ContactPoint> OR @<#Place>) * ;
+	schema:worksFor @<#Organization> * ;
 })
 
 
@@ -266,13 +284,13 @@ BASE <http://schema.org/shex>
 	schema:unitCode (@<#URL> OR @<#Text>) *;
 	schema:unitText @<#Text> *;
 	schema:value (@<#Boolean> OR @<#StructuredValue> OR @<#Number> OR @<#Text>) *;
-	schema:valueReference (@<#PropertyValue> OR @<#StructuredValue> OR { a [schema:QualitativeValue] } OR { a [schema:QuantitativeValue] } OR { a [schema:Enumeration] }) *;
+	schema:valueReference (@<#PropertyValue> OR @<#StructuredValue> OR @<#QualitativeValue> OR @<#QuantitativeValue> OR @<#Enumeration>) *;
 }
 
 
 <#Rating> @<#Intangible> AND EXTRA a {
 	a [schema:EmployerAggregateRating schema:AggregateRating schema:EndorsementRating schema:Rating];
-	schema:author (@<#Person> OR { a [schema:Organization] }) * ;
+	schema:author (@<#Person> OR @<#Organization>) * ;
 	schema:bestRating (@<#Number> OR @<#Text>) * ;
 	schema:ratingValue (@<#Number> OR @<#Text>) * ;
 	schema:reviewAspect @<#Text> * ;
@@ -285,12 +303,12 @@ BASE <http://schema.org/shex>
 	schema:cookTime  @<#Duration> *;
 	schema:cookingMethod  @<#Text> *;
 	schema:ingredients  @<#Text> *;
-	schema:nutrition  { a [schema:NutritionInformation] } *;
+	schema:nutrition  @<#NutritionInformation> *;
 	schema:recipeCategory  @<#Text> *;
 	schema:recipeCuisine  @<#Text> *;
 	schema:recipeIngredient  @<#Text> *;
-	schema:recipeInstructions ( @<#CreativeWork> OR  { a [schema:ItemList] } OR  @<#Text>) *;
-	schema:recipeYield ({ a [schema:QuantitativeValue] } OR @<#Text>) *;
+	schema:recipeInstructions ( @<#CreativeWork> OR  @<#ItemList> OR  @<#Text>) *;
+	schema:recipeYield (@<#QuantitativeValue> OR @<#Text>) *;
 	schema:suitableForDiet (@<#Text> AND /http:\/\/schema.org\/(DiabeticDiet|GlutenFreeDiet|HalalDiet|HinduDiet|KosherDiet|LowCalorieDiet|LowFatDiet|LowLactoseDiet|LowSaltDiet|VeganDiet|VegetarianDiet)/) OR
 	    { a [schema:DiabeticDiet schema:GlutenFreeDiet schema:HalalDiet schema:HinduDiet schema:KosherDiet schema:LowCalorieDiet schema:LowFatDiet schema:LowLactoseDiet schema:LowSaltDiet schema:VeganDiet schema:VegetarianDiet] } *;
 }
@@ -311,12 +329,12 @@ BASE <http://schema.org/shex>
 	schema:description @<#Text> *;
 	schema:disambiguatingDescription @<#Text> *;
 	schema:identifier (@<#Text> OR @<#PropertyValue> OR @<#URL>) *;
-	schema:image (@<#URL> OR { a [schema:ImageObject] }) *;
+	schema:image (@<#URL> OR @<#ImageObject>) *;
 	schema:mainEntityOfPage (@<#CreativeWork> OR @<#URL>) *;
 	schema:name @<#Text> *;
 	schema:potentialAction @<#Action> *;
 	schema:sameAs @<#URL> *;
-	schema:subjectOf ({ a [schema:Event] } OR @<#CreativeWork>) *;
+	schema:subjectOf (@<#Event> OR @<#CreativeWork>) *;
 	schema:url @<#URL> *;
 }
 
@@ -327,6 +345,4364 @@ BASE <http://schema.org/shex>
 
 
 <#URL> ((IRI OR LITERAL) AND CLOSED {}  AND /^(https?|gopher|ftps?):/)
+
+
+<#AboutPage> @<#WebPage> AND EXTRA a { 
+	a [schema:AboutPage];
+}
+
+
+<#AcceptAction> @<#AllocateAction> AND EXTRA a { 
+	a [schema:AcceptAction];
+}
+
+
+<#Accommodation> @<#Place> AND EXTRA a { 
+	a [schema:Room schema:House schema:MeetingRoom schema:CampingPitch schema:HotelRoom schema:SingleFamilyResidence schema:Apartment schema:Suite schema:Accommodation];
+	schema:amenityFeature @<#LocationFeatureSpecification> * ;
+	schema:floorSize @<#QuantitativeValue> * ;
+	schema:numberOfRooms (@<#QuantitativeValue> OR @<#Number>) * ;
+	schema:permittedUsage @<#Text> * ;
+	schema:petsAllowed (@<#Text> OR @<#Boolean>) * ;
+}
+
+
+<#AccountingService> @<#FinancialService> AND EXTRA a { 
+	a [schema:AccountingService];
+}
+
+
+<#AchieveAction> @<#Action> AND EXTRA a { 
+	a [schema:WinAction schema:TieAction schema:LoseAction schema:AchieveAction];
+}
+
+
+<#ActionAccessSpecification> @<#Intangible> AND EXTRA a { 
+	a [schema:ActionAccessSpecification];
+	schema:availabilityEnds (@<#DateTime> OR @<#Time> OR @<#Date>) * ;
+	schema:availabilityStarts (@<#Date> OR @<#Time> OR @<#DateTime>) * ;
+	schema:category (@<#Thing> OR @<#URL> OR @<#PhysicalActivityCategory> OR @<#Text>) * ;
+	schema:eligibleRegion (@<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+	schema:expectsAcceptanceOf @<#Offer> * ;
+	schema:requiresSubscription (@<#MediaSubscription> OR @<#Boolean>) * ;
+}
+
+
+<#ActionStatusType> @<#Enumeration> AND EXTRA a { 
+	a [schema:ActionStatusType];
+}
+
+
+<#ActivateAction> @<#ControlAction> AND EXTRA a { 
+	a [schema:ActivateAction];
+}
+
+
+<#AddAction> @<#UpdateAction> AND EXTRA a { 
+	a [schema:AppendAction schema:PrependAction schema:InsertAction schema:AddAction];
+}
+
+
+<#AdministrativeArea> @<#Place> AND EXTRA a { 
+	a [schema:Country schema:City schema:State schema:AdministrativeArea];
+}
+
+
+<#AdultEntertainment> @<#EntertainmentBusiness> AND EXTRA a { 
+	a [schema:AdultEntertainment];
+}
+
+
+<#AggregateOffer> @<#Offer> AND EXTRA a { 
+	a [schema:AggregateOffer];
+	schema:highPrice (@<#Text> OR @<#Number>) * ;
+	schema:lowPrice (@<#Number> OR @<#Text>) * ;
+	schema:offerCount @<#Integer> * ;
+	schema:offers (@<#Demand> OR @<#Offer>) * ;
+}
+
+
+<#AgreeAction> @<#ReactAction> AND EXTRA a { 
+	a [schema:AgreeAction];
+}
+
+
+<#Airline> @<#Organization> AND EXTRA a { 
+	a [schema:Airline];
+	schema:boardingPolicy @<#BoardingPolicyType> * ;
+	schema:iataCode @<#Text> * ;
+}
+
+
+<#Airport> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Airport];
+	schema:iataCode @<#Text> * ;
+	schema:icaoCode @<#Text> * ;
+}
+
+
+<#AlignmentObject> @<#Intangible> AND EXTRA a { 
+	a [schema:AlignmentObject];
+	schema:alignmentType @<#Text> * ;
+	schema:educationalFramework @<#Text> * ;
+	schema:targetDescription @<#Text> * ;
+	schema:targetName @<#Text> * ;
+	schema:targetUrl @<#URL> * ;
+}
+
+
+<#AllocateAction> @<#OrganizeAction> AND EXTRA a { 
+	a [schema:AuthorizeAction schema:AssignAction schema:AcceptAction schema:RejectAction schema:AllocateAction];
+}
+
+
+<#AMRadioChannel> @<#RadioChannel> AND EXTRA a { 
+	a [schema:AMRadioChannel];
+}
+
+
+<#AmusementPark> @<#EntertainmentBusiness> AND EXTRA a { 
+	a [schema:AmusementPark];
+}
+
+
+<#AnimalShelter> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:AnimalShelter];
+}
+
+
+<#Answer> @<#Comment> AND EXTRA a { 
+	a [schema:Answer];
+}
+
+
+<#Apartment> @<#Accommodation> AND EXTRA a { 
+	a [schema:Apartment];
+	schema:numberOfRooms (@<#QuantitativeValue> OR @<#Number>) * ;
+	schema:occupancy @<#QuantitativeValue> * ;
+}
+
+
+<#ApartmentComplex> @<#Residence> AND EXTRA a { 
+	a [schema:ApartmentComplex];
+	schema:petsAllowed (@<#Text> OR @<#Boolean>) * ;
+}
+
+
+<#APIReference> @<#TechArticle> AND EXTRA a { 
+	a [schema:APIReference];
+	schema:assembly @<#Text> * ;
+	schema:assemblyVersion @<#Text> * ;
+	schema:executableLibraryName @<#Text> * ;
+	schema:programmingModel @<#Text> * ;
+	schema:targetPlatform @<#Text> * ;
+}
+
+
+<#AppendAction> @<#InsertAction> AND EXTRA a { 
+	a [schema:AppendAction];
+}
+
+
+<#ApplyAction> @<#OrganizeAction> AND EXTRA a { 
+	a [schema:ApplyAction];
+}
+
+
+<#Aquarium> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Aquarium];
+}
+
+
+<#ArriveAction> @<#MoveAction> AND EXTRA a { 
+	a [schema:ArriveAction];
+}
+
+
+<#ArtGallery> @<#EntertainmentBusiness> AND EXTRA a { 
+	a [schema:ArtGallery];
+}
+
+
+<#Article> @<#CreativeWork> AND EXTRA a { 
+	a [schema:LiveBlogPosting schema:APIReference schema:SocialMediaPosting schema:DiscussionForumPosting schema:Report schema:TechArticle schema:ScholarlyArticle schema:BlogPosting schema:NewsArticle schema:Article];
+	schema:articleBody @<#Text> * ;
+	schema:articleSection @<#Text> * ;
+	schema:pageEnd (@<#Integer> OR @<#Text>) * ;
+	schema:pageStart (@<#Text> OR @<#Integer>) * ;
+	schema:pagination @<#Text> * ;
+	schema:speakable (@<#URL> OR @<#SpeakableSpecification>) * ;
+	schema:wordCount @<#Integer> * ;
+}
+
+
+<#AskAction> @<#CommunicateAction> AND EXTRA a { 
+	a [schema:AskAction];
+	schema:question @<#Question> * ;
+}
+
+
+<#AssessAction> @<#Action> AND EXTRA a { 
+	a [schema:WantAction schema:VoteAction schema:AgreeAction schema:IgnoreAction schema:ReactAction schema:EndorseAction schema:DisagreeAction schema:ReviewAction schema:ChooseAction schema:DislikeAction schema:LikeAction schema:AssessAction];
+}
+
+
+<#AssignAction> @<#AllocateAction> AND EXTRA a { 
+	a [schema:AssignAction];
+}
+
+
+<#Attorney> @<#LegalService> AND EXTRA a { 
+	a [schema:Attorney];
+}
+
+
+<#Audience> @<#Intangible> AND EXTRA a { 
+	a [schema:PeopleAudience schema:EducationalAudience schema:ParentAudience schema:BusinessAudience schema:Audience];
+	schema:audienceType @<#Text> * ;
+	schema:geographicArea @<#AdministrativeArea> * ;
+}
+
+
+<#Audiobook>  EXTRA a { 
+	a [schema:Audiobook];
+	schema:duration @<#Duration> * ;
+}
+
+
+<#AudioObject> @<#MediaObject> AND EXTRA a { 
+	a [schema:AudioObject];
+	schema:caption (@<#Text> OR @<#MediaObject>) * ;
+	schema:transcript @<#Text> * ;
+}
+
+
+<#AuthorizeAction> @<#AllocateAction> AND EXTRA a { 
+	a [schema:AuthorizeAction];
+	schema:recipient (@<#Organization> OR @<#Audience> OR @<#ContactPoint> OR @<#Person>) * ;
+}
+
+
+<#AutoBodyShop> @<#AutomotiveBusiness> AND EXTRA a { 
+	a [schema:AutoBodyShop];
+}
+
+
+<#AutoDealer> @<#AutomotiveBusiness> AND EXTRA a { 
+	a [schema:AutoDealer];
+}
+
+
+<#AutomatedTeller> @<#FinancialService> AND EXTRA a { 
+	a [schema:AutomatedTeller];
+}
+
+
+<#AutomotiveBusiness> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:AutoPartsStore schema:AutoRepair schema:AutoBodyShop schema:AutoDealer schema:AutoWash schema:MotorcycleDealer schema:GasStation schema:AutoRental schema:MotorcycleRepair schema:AutomotiveBusiness];
+}
+
+
+<#AutoPartsStore> @<#Store> AND EXTRA a { 
+	a [schema:AutoPartsStore];
+}
+
+
+<#AutoRental> @<#AutomotiveBusiness> AND EXTRA a { 
+	a [schema:AutoRental];
+}
+
+
+<#AutoRepair> @<#AutomotiveBusiness> AND EXTRA a { 
+	a [schema:AutoRepair];
+}
+
+
+<#AutoWash> @<#AutomotiveBusiness> AND EXTRA a { 
+	a [schema:AutoWash];
+}
+
+
+<#Bakery> @<#FoodEstablishment> AND EXTRA a { 
+	a [schema:Bakery];
+}
+
+
+<#BankAccount> @<#FinancialProduct> AND EXTRA a { 
+	a [schema:DepositAccount schema:BankAccount];
+}
+
+
+<#BankOrCreditUnion> @<#FinancialService> AND EXTRA a { 
+	a [schema:BankOrCreditUnion];
+}
+
+
+<#Barcode> @<#ImageObject> AND EXTRA a { 
+	a [schema:Barcode];
+}
+
+
+<#BarOrPub> @<#FoodEstablishment> AND EXTRA a { 
+	a [schema:BarOrPub];
+}
+
+
+<#Beach> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Beach];
+}
+
+
+<#BeautySalon> @<#HealthAndBeautyBusiness> AND EXTRA a { 
+	a [schema:BeautySalon];
+}
+
+
+<#BedAndBreakfast> @<#LodgingBusiness> AND EXTRA a { 
+	a [schema:BedAndBreakfast];
+}
+
+
+<#BedDetails> @<#Intangible> AND EXTRA a { 
+	a [schema:BedDetails];
+	schema:numberOfBeds @<#Number> * ;
+	schema:typeOfBed (@<#Text> OR @<#BedType>) * ;
+}
+
+
+<#BedType> @<#QualitativeValue> AND EXTRA a { 
+	a [schema:BedType];
+}
+
+
+<#BefriendAction> @<#InteractAction> AND EXTRA a { 
+	a [schema:BefriendAction];
+}
+
+
+<#BikeStore> @<#Store> AND EXTRA a { 
+	a [schema:BikeStore];
+}
+
+
+<#Blog> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Blog];
+	schema:blogPost @<#BlogPosting> * ;
+	schema:blogPosts @<#BlogPosting> * ;
+	schema:issn @<#Text> * ;
+}
+
+
+<#BlogPosting> @<#SocialMediaPosting> AND EXTRA a { 
+	a [schema:LiveBlogPosting schema:BlogPosting];
+}
+
+
+<#BoardingPolicyType> @<#Enumeration> AND EXTRA a { 
+	a [schema:BoardingPolicyType];
+}
+
+
+<#BodyOfWater> @<#Landform> AND EXTRA a { 
+	a [schema:OceanBodyOfWater schema:Canal schema:RiverBodyOfWater schema:Reservoir schema:Waterfall schema:Pond schema:SeaBodyOfWater schema:LakeBodyOfWater schema:BodyOfWater];
+}
+
+
+<#Book> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Book];
+	schema:bookEdition @<#Text> * ;
+	schema:bookFormat @<#BookFormatType> * ;
+	schema:illustrator @<#Person> * ;
+	schema:isbn @<#Text> * ;
+	schema:numberOfPages @<#Integer> * ;
+}
+
+
+<#BookFormatType> @<#Enumeration> AND EXTRA a { 
+	a [schema:BookFormatType];
+}
+
+
+<#BookmarkAction> @<#OrganizeAction> AND EXTRA a { 
+	a [schema:BookmarkAction];
+}
+
+
+<#BookSeries> @<#CreativeWorkSeries> AND EXTRA a { 
+	a [schema:BookSeries];
+}
+
+
+<#BookStore> @<#Store> AND EXTRA a { 
+	a [schema:BookStore];
+}
+
+
+<#BorrowAction> @<#TransferAction> AND EXTRA a { 
+	a [schema:BorrowAction];
+	schema:lender (@<#Organization> OR @<#Person>) * ;
+}
+
+
+<#BowlingAlley> @<#SportsActivityLocation> AND EXTRA a { 
+	a [schema:BowlingAlley];
+}
+
+
+<#Brand> @<#Intangible> AND EXTRA a { 
+	a [schema:Brand];
+	schema:aggregateRating @<#AggregateRating> * ;
+	schema:logo (@<#ImageObject> OR @<#URL>) * ;
+	schema:review @<#Review> * ;
+	schema:slogan @<#Text> * ;
+}
+
+
+<#BreadcrumbList> @<#ItemList> AND EXTRA a { 
+	a [schema:BreadcrumbList];
+}
+
+
+<#Brewery> @<#FoodEstablishment> AND EXTRA a { 
+	a [schema:Brewery];
+}
+
+
+<#Bridge> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Bridge];
+}
+
+
+<#BroadcastChannel> @<#Intangible> AND EXTRA a { 
+	a [schema:AMRadioChannel schema:RadioChannel schema:TelevisionChannel schema:FMRadioChannel schema:BroadcastChannel];
+	schema:broadcastChannelId @<#Text> * ;
+	schema:broadcastFrequency (@<#Text> OR @<#BroadcastFrequencySpecification>) * ;
+	schema:broadcastServiceTier @<#Text> * ;
+	schema:genre (@<#Text> OR @<#URL>) * ;
+	schema:inBroadcastLineup @<#CableOrSatelliteService> * ;
+	schema:providesBroadcastService @<#BroadcastService> * ;
+}
+
+
+<#BroadcastEvent> @<#PublicationEvent> AND EXTRA a { 
+	a [schema:BroadcastEvent];
+	schema:broadcastOfEvent @<#Event> * ;
+	schema:isLiveBroadcast @<#Boolean> * ;
+	schema:videoFormat @<#Text> * ;
+}
+
+
+<#BroadcastFrequencySpecification> @<#Intangible> AND EXTRA a { 
+	a [schema:BroadcastFrequencySpecification];
+	schema:broadcastFrequencyValue (@<#QuantitativeValue> OR @<#Number>) * ;
+}
+
+
+<#BroadcastService> @<#Service> AND EXTRA a { 
+	a [schema:BroadcastService];
+	schema:area @<#Place> * ;
+	schema:broadcastAffiliateOf @<#Organization> * ;
+	schema:broadcastDisplayName @<#Text> * ;
+	schema:broadcastFrequency (@<#Text> OR @<#BroadcastFrequencySpecification>) * ;
+	schema:broadcastTimezone @<#Text> * ;
+	schema:broadcaster @<#Organization> * ;
+	schema:hasBroadcastChannel @<#BroadcastChannel> * ;
+	schema:inLanguage (@<#Text> OR @<#Language>) * ;
+	schema:parentService @<#BroadcastService> * ;
+	schema:videoFormat @<#Text> * ;
+}
+
+
+<#BuddhistTemple> @<#PlaceOfWorship> AND EXTRA a { 
+	a [schema:BuddhistTemple];
+}
+
+
+<#BusinessAudience> @<#Audience> AND EXTRA a { 
+	a [schema:BusinessAudience];
+	schema:numberOfEmployees @<#QuantitativeValue> * ;
+	schema:yearlyRevenue @<#QuantitativeValue> * ;
+	schema:yearsInOperation @<#QuantitativeValue> * ;
+}
+
+
+<#BusinessEntityType> @<#Enumeration> AND EXTRA a { 
+	a [schema:BusinessEntityType];
+}
+
+
+<#BusinessEvent> @<#Event> AND EXTRA a { 
+	a [schema:BusinessEvent];
+}
+
+
+<#BusinessFunction> @<#Enumeration> AND EXTRA a { 
+	a [schema:BusinessFunction];
+}
+
+
+<#BusReservation> @<#Reservation> AND EXTRA a { 
+	a [schema:BusReservation];
+}
+
+
+<#BusStation> @<#CivicStructure> AND EXTRA a { 
+	a [schema:BusStation];
+}
+
+
+<#BusStop> @<#CivicStructure> AND EXTRA a { 
+	a [schema:BusStop];
+}
+
+
+<#BusTrip> @<#Trip> AND EXTRA a { 
+	a [schema:BusTrip];
+	schema:arrivalBusStop (@<#BusStop> OR @<#BusStation>) * ;
+	schema:busName @<#Text> * ;
+	schema:busNumber @<#Text> * ;
+	schema:departureBusStop (@<#BusStation> OR @<#BusStop>) * ;
+}
+
+
+<#BuyAction> @<#TradeAction> AND EXTRA a { 
+	a [schema:BuyAction];
+	schema:seller (@<#Organization> OR @<#Person>) * ;
+	schema:vendor (@<#Organization> OR @<#Person>) * ;
+	schema:warrantyPromise @<#WarrantyPromise> * ;
+}
+
+
+<#CableOrSatelliteService> @<#Service> AND EXTRA a { 
+	a [schema:CableOrSatelliteService];
+}
+
+
+<#CafeOrCoffeeShop> @<#FoodEstablishment> AND EXTRA a { 
+	a [schema:CafeOrCoffeeShop];
+}
+
+
+<#Campground> @<#LodgingBusiness> AND EXTRA a { 
+	a [schema:Campground];
+}
+
+
+<#CampingPitch> @<#Accommodation> AND EXTRA a { 
+	a [schema:CampingPitch];
+}
+
+
+<#Canal> @<#BodyOfWater> AND EXTRA a { 
+	a [schema:Canal];
+}
+
+
+<#CancelAction> @<#PlanAction> AND EXTRA a { 
+	a [schema:CancelAction];
+}
+
+
+<#Car> @<#Vehicle> AND EXTRA a { 
+	a [schema:Car];
+}
+
+
+<#Casino> @<#EntertainmentBusiness> AND EXTRA a { 
+	a [schema:Casino];
+}
+
+
+<#CatholicChurch> @<#Church> AND EXTRA a { 
+	a [schema:CatholicChurch];
+}
+
+
+<#CDCPMDRecord>  EXTRA a { 
+	a [schema:CDCPMDRecord];
+	schema:datePosted (@<#DateTime> OR @<#Date>) * ;
+}
+
+
+<#Cemetery> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Cemetery];
+}
+
+
+<#Chapter>  EXTRA a { 
+	a [schema:Chapter];
+	schema:pageEnd (@<#Integer> OR @<#Text>) * ;
+	schema:pageStart (@<#Text> OR @<#Integer>) * ;
+	schema:pagination @<#Text> * ;
+}
+
+
+<#CheckAction> @<#FindAction> AND EXTRA a { 
+	a [schema:CheckAction];
+}
+
+
+<#CheckInAction> @<#CommunicateAction> AND EXTRA a { 
+	a [schema:CheckInAction];
+}
+
+
+<#CheckOutAction> @<#CommunicateAction> AND EXTRA a { 
+	a [schema:CheckOutAction];
+}
+
+
+<#CheckoutPage> @<#WebPage> AND EXTRA a { 
+	a [schema:CheckoutPage];
+}
+
+
+<#ChildCare> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:ChildCare];
+}
+
+
+<#ChildrensEvent> @<#Event> AND EXTRA a { 
+	a [schema:ChildrensEvent];
+}
+
+
+<#ChooseAction> @<#AssessAction> AND EXTRA a { 
+	a [schema:VoteAction schema:ChooseAction];
+	schema:actionOption (@<#Thing> OR @<#Text>) * ;
+	schema:option (@<#Thing> OR @<#Text>) * ;
+}
+
+
+<#Church> @<#PlaceOfWorship> AND EXTRA a { 
+	a [schema:CatholicChurch schema:Church];
+}
+
+
+<#City> @<#AdministrativeArea> AND EXTRA a { 
+	a [schema:City];
+}
+
+
+<#CityHall> @<#GovernmentBuilding> AND EXTRA a { 
+	a [schema:CityHall];
+}
+
+
+<#CivicStructure> @<#Place> AND EXTRA a { 
+	a [schema:DefenceEstablishment schema:Courthouse schema:Church schema:Playground schema:Aquarium schema:Synagogue schema:BusStop schema:StadiumOrArena schema:Hospital schema:FireStation schema:Zoo schema:TrainStation schema:Park schema:PoliceStation schema:School schema:Mosque schema:Cemetery schema:BusStation schema:Preschool schema:CatholicChurch schema:CollegeOrUniversity schema:EventVenue schema:EducationalOrganization schema:PerformingArtsTheater schema:Bridge schema:Airport schema:MiddleSchool schema:PlaceOfWorship schema:ElementarySchool schema:SubwayStation schema:Embassy schema:CityHall schema:Museum schema:Crematorium schema:MovieTheater schema:TaxiStand schema:MusicVenue schema:RVPark schema:Beach schema:Campground schema:BuddhistTemple schema:ParkingFacility schema:LegislativeBuilding schema:GovernmentBuilding schema:HinduTemple schema:HighSchool schema:CivicStructure];
+	schema:openingHours @<#Text> * ;
+}
+
+
+<#ClaimReview> @<#Review> AND EXTRA a { 
+	a [schema:ClaimReview];
+	schema:claimReviewed @<#Text> * ;
+}
+
+
+<#Clip> @<#CreativeWork> AND EXTRA a { 
+	a [schema:RadioClip schema:VideoGameClip schema:MovieClip schema:TVClip schema:Clip];
+	schema:actor @<#Person> * ;
+	schema:actors @<#Person> * ;
+	schema:clipNumber (@<#Text> OR @<#Integer>) * ;
+	schema:director @<#Person> * ;
+	schema:directors @<#Person> * ;
+	schema:musicBy (@<#Person> OR @<#MusicGroup>) * ;
+	schema:partOfEpisode @<#Episode> * ;
+	schema:partOfSeason @<#CreativeWorkSeason> * ;
+	schema:partOfSeries @<#CreativeWorkSeries> * ;
+}
+
+
+<#ClothingStore> @<#Store> AND EXTRA a { 
+	a [schema:ClothingStore];
+}
+
+
+<#Code> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Code];
+}
+
+
+<#CollectionPage> @<#WebPage> AND EXTRA a { 
+	a [schema:MediaGallery schema:ImageGallery schema:VideoGallery schema:CollectionPage];
+}
+
+
+<#CollegeOrUniversity> @<#EducationalOrganization> AND EXTRA a { 
+	a [schema:CollegeOrUniversity];
+}
+
+
+<#ComedyClub> @<#EntertainmentBusiness> AND EXTRA a { 
+	a [schema:ComedyClub];
+}
+
+
+<#ComedyEvent> @<#Event> AND EXTRA a { 
+	a [schema:ComedyEvent];
+}
+
+
+<#Comment> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Answer schema:Comment];
+	schema:downvoteCount @<#Integer> * ;
+	schema:parentItem @<#Question> * ;
+	schema:upvoteCount @<#Integer> * ;
+}
+
+
+<#CommentAction> @<#CommunicateAction> AND EXTRA a { 
+	a [schema:CommentAction];
+	schema:resultComment @<#Comment> * ;
+}
+
+
+<#CommunicateAction> @<#InteractAction> AND EXTRA a { 
+	a [schema:CheckInAction schema:InformAction schema:RsvpAction schema:ShareAction schema:ReplyAction schema:InviteAction schema:CheckOutAction schema:CommentAction schema:AskAction schema:ConfirmAction schema:CommunicateAction];
+	schema:about @<#Thing> * ;
+	schema:inLanguage (@<#Text> OR @<#Language>) * ;
+	schema:language @<#Language> * ;
+	schema:recipient (@<#Organization> OR @<#Audience> OR @<#ContactPoint> OR @<#Person>) * ;
+}
+
+
+<#CompoundPriceSpecification> @<#PriceSpecification> AND EXTRA a { 
+	a [schema:CompoundPriceSpecification];
+	schema:priceComponent @<#UnitPriceSpecification> * ;
+}
+
+
+<#ComputerLanguage> @<#Intangible> AND EXTRA a { 
+	a [schema:ComputerLanguage];
+}
+
+
+<#ComputerStore> @<#Store> AND EXTRA a { 
+	a [schema:ComputerStore];
+}
+
+
+<#ConfirmAction> @<#InformAction> AND EXTRA a { 
+	a [schema:ConfirmAction];
+}
+
+
+<#ConsumeAction> @<#Action> AND EXTRA a { 
+	a [schema:ViewAction schema:ReadAction schema:WatchAction schema:ListenAction schema:EatAction schema:WearAction schema:DrinkAction schema:InstallAction schema:UseAction schema:ConsumeAction];
+	schema:actionAccessibilityRequirement @<#ActionAccessSpecification> * ;
+	schema:expectsAcceptanceOf @<#Offer> * ;
+}
+
+
+<#ContactPage> @<#WebPage> AND EXTRA a { 
+	a [schema:ContactPage];
+}
+
+
+<#ContactPoint> @<#StructuredValue> AND EXTRA a { 
+	a [schema:PostalAddress schema:ContactPoint];
+	schema:areaServed (@<#AdministrativeArea> OR @<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+	schema:availableLanguage (@<#Text> OR @<#Language>) * ;
+	schema:contactOption @<#ContactPointOption> * ;
+	schema:contactType @<#Text> * ;
+	schema:email @<#Text> * ;
+	schema:faxNumber @<#Text> * ;
+	schema:hoursAvailable @<#OpeningHoursSpecification> * ;
+	schema:productSupported (@<#Product> OR @<#Text>) * ;
+	schema:serviceArea (@<#Place> OR @<#GeoShape> OR @<#AdministrativeArea>) * ;
+	schema:telephone @<#Text> * ;
+}
+
+
+<#ContactPointOption> @<#Enumeration> AND EXTRA a { 
+	a [schema:ContactPointOption];
+}
+
+
+<#Continent> @<#Landform> AND EXTRA a { 
+	a [schema:Continent];
+}
+
+
+<#ControlAction> @<#Action> AND EXTRA a { 
+	a [schema:ResumeAction schema:DeactivateAction schema:SuspendAction schema:ActivateAction schema:ControlAction];
+}
+
+
+<#ConvenienceStore> @<#Store> AND EXTRA a { 
+	a [schema:ConvenienceStore];
+}
+
+
+<#Conversation> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Conversation];
+}
+
+
+<#CookAction> @<#CreateAction> AND EXTRA a { 
+	a [schema:CookAction];
+	schema:foodEstablishment (@<#FoodEstablishment> OR @<#Place>) * ;
+	schema:foodEvent @<#FoodEvent> * ;
+	schema:recipe @<#Recipe> * ;
+}
+
+
+<#Corporation> @<#Organization> AND EXTRA a { 
+	a [schema:Corporation];
+	schema:tickerSymbol @<#Text> * ;
+}
+
+
+<#Country> @<#AdministrativeArea> AND EXTRA a { 
+	a [schema:Country];
+}
+
+
+<#Course> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Course];
+	schema:courseCode @<#Text> * ;
+	schema:coursePrerequisites (@<#Course> OR @<#AlignmentObject> OR @<#Text>) * ;
+	schema:educationalCredentialAwarded (@<#EducationalOccupationalCredential> OR @<#URL> OR @<#Text>) * ;
+	schema:hasCourseInstance @<#CourseInstance> * ;
+}
+
+
+<#CourseInstance> @<#Event> AND EXTRA a { 
+	a [schema:CourseInstance];
+	schema:courseMode (@<#Text> OR @<#URL>) * ;
+	schema:instructor @<#Person> * ;
+}
+
+
+<#Courthouse> @<#GovernmentBuilding> AND EXTRA a { 
+	a [schema:Courthouse];
+}
+
+
+<#CreateAction> @<#Action> AND EXTRA a { 
+	a [schema:PaintAction schema:CookAction schema:PhotographAction schema:FilmAction schema:DrawAction schema:WriteAction schema:CreateAction];
+}
+
+
+<#CreativeWorkSeason> @<#CreativeWork> AND EXTRA a { 
+	a [schema:TVSeason schema:RadioSeason schema:CreativeWorkSeason];
+	schema:actor @<#Person> * ;
+	schema:director @<#Person> * ;
+	schema:endDate (@<#Date> OR @<#DateTime>) * ;
+	schema:episode @<#Episode> * ;
+	schema:episodes @<#Episode> * ;
+	schema:numberOfEpisodes @<#Integer> * ;
+	schema:partOfSeries @<#CreativeWorkSeries> * ;
+	schema:productionCompany @<#Organization> * ;
+	schema:seasonNumber (@<#Integer> OR @<#Text>) * ;
+	schema:startDate (@<#Date> OR @<#DateTime>) * ;
+	schema:trailer @<#VideoObject> * ;
+}
+
+
+<#CreativeWorkSeries> @<#Series> AND EXTRA a { 
+	a [schema:Periodical schema:TVSeries schema:VideoGameSeries schema:RadioSeries schema:MovieSeries schema:BookSeries schema:CreativeWorkSeries];
+	schema:endDate (@<#Date> OR @<#DateTime>) * ;
+	schema:issn @<#Text> * ;
+	schema:startDate (@<#Date> OR @<#DateTime>) * ;
+}
+
+
+<#CreditCard> @<#LoanOrCredit> AND EXTRA a { 
+	a [schema:CreditCard];
+}
+
+
+<#Crematorium> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Crematorium];
+}
+
+
+<#CssSelectorType>  EXTRA a { 
+	a [schema:CssSelectorType];
+}
+
+
+<#CurrencyConversionService> @<#FinancialProduct> AND EXTRA a { 
+	a [schema:CurrencyConversionService];
+}
+
+
+<#DanceEvent> @<#Event> AND EXTRA a { 
+	a [schema:DanceEvent];
+}
+
+
+<#DanceGroup> @<#PerformingGroup> AND EXTRA a { 
+	a [schema:DanceGroup];
+}
+
+
+<#DataCatalog> @<#CreativeWork> AND EXTRA a { 
+	a [schema:DataCatalog];
+	schema:dataset @<#Dataset> * ;
+}
+
+
+<#DataDownload> @<#MediaObject> AND EXTRA a { 
+	a [schema:DataDownload];
+}
+
+
+<#DataFeed> @<#Dataset> AND EXTRA a { 
+	a [schema:DataFeed];
+	schema:dataFeedElement (@<#DataFeedItem> OR @<#Thing> OR @<#Text>) * ;
+}
+
+
+<#DataFeedItem> @<#Intangible> AND EXTRA a { 
+	a [schema:DataFeedItem];
+	schema:dateCreated (@<#Date> OR @<#DateTime>) * ;
+	schema:dateDeleted (@<#Date> OR @<#DateTime>) * ;
+	schema:dateModified (@<#DateTime> OR @<#Date>) * ;
+	schema:item @<#Thing> * ;
+}
+
+
+<#DataType> EXTRA a {
+	a [schema:DataType];
+}
+
+
+<#DatedMoneySpecification> @<#StructuredValue> AND EXTRA a { 
+	a [schema:DatedMoneySpecification];
+	schema:amount (@<#MonetaryAmount> OR @<#Number>) * ;
+	schema:currency @<#Text> * ;
+	schema:endDate (@<#Date> OR @<#DateTime>) * ;
+	schema:startDate (@<#Date> OR @<#DateTime>) * ;
+}
+
+
+<#DayOfWeek> @<#Enumeration> AND EXTRA a { 
+	a [schema:DayOfWeek];
+}
+
+
+<#DaySpa> @<#HealthAndBeautyBusiness> AND EXTRA a { 
+	a [schema:DaySpa];
+}
+
+
+<#DeactivateAction> @<#ControlAction> AND EXTRA a { 
+	a [schema:DeactivateAction];
+}
+
+
+<#DefenceEstablishment> @<#GovernmentBuilding> AND EXTRA a { 
+	a [schema:DefenceEstablishment];
+}
+
+
+<#DefinedRegion>  EXTRA a { 
+	a [schema:DefinedRegion];
+	schema:addressCountry (@<#Country> OR @<#Text>) * ;
+	schema:addressRegion @<#Text> * ;
+	schema:postalCode @<#Text> * ;
+}
+
+
+<#DefinedTerm>  EXTRA a { 
+	a [schema:DefinedTerm];
+}
+
+
+<#DeleteAction> @<#UpdateAction> AND EXTRA a { 
+	a [schema:DeleteAction];
+}
+
+
+<#DeliveryChargeSpecification> @<#PriceSpecification> AND EXTRA a { 
+	a [schema:DeliveryChargeSpecification];
+	schema:appliesToDeliveryMethod @<#DeliveryMethod> * ;
+	schema:areaServed (@<#AdministrativeArea> OR @<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+	schema:eligibleRegion (@<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+}
+
+
+<#DeliveryEvent> @<#Event> AND EXTRA a { 
+	a [schema:DeliveryEvent];
+	schema:accessCode @<#Text> * ;
+	schema:availableFrom @<#DateTime> * ;
+	schema:availableThrough @<#DateTime> * ;
+	schema:hasDeliveryMethod @<#DeliveryMethod> * ;
+}
+
+
+<#DeliveryMethod> @<#Enumeration> AND EXTRA a { 
+	a [schema:LockerDelivery schema:ParcelService schema:DeliveryMethod];
+}
+
+
+<#Demand> @<#Intangible> AND EXTRA a { 
+	a [schema:Demand];
+	schema:acceptedPaymentMethod (@<#LoanOrCredit> OR @<#PaymentMethod>) * ;
+	schema:advanceBookingRequirement @<#QuantitativeValue> * ;
+	schema:areaServed (@<#AdministrativeArea> OR @<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+	schema:availability @<#ItemAvailability> * ;
+	schema:availabilityEnds (@<#DateTime> OR @<#Time> OR @<#Date>) * ;
+	schema:availabilityStarts (@<#Date> OR @<#Time> OR @<#DateTime>) * ;
+	schema:availableAtOrFrom @<#Place> * ;
+	schema:availableDeliveryMethod @<#DeliveryMethod> * ;
+	schema:businessFunction @<#BusinessFunction> * ;
+	schema:deliveryLeadTime @<#QuantitativeValue> * ;
+	schema:eligibleCustomerType @<#BusinessEntityType> * ;
+	schema:eligibleDuration @<#QuantitativeValue> * ;
+	schema:eligibleQuantity @<#QuantitativeValue> * ;
+	schema:eligibleRegion (@<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+	schema:eligibleTransactionVolume @<#PriceSpecification> * ;
+	schema:gtin12 @<#Text> * ;
+	schema:gtin13 @<#Text> * ;
+	schema:gtin14 @<#Text> * ;
+	schema:gtin8 @<#Text> * ;
+	schema:includesObject @<#TypeAndQuantityNode> * ;
+	schema:inventoryLevel @<#QuantitativeValue> * ;
+	schema:itemCondition @<#OfferItemCondition> * ;
+	schema:itemOffered (@<#AggregateOffer> OR @<#Product> OR @<#CreativeWork> OR @<#Service> OR @<#MenuItem> OR @<#Trip> OR @<#Event>) * ;
+	schema:mpn @<#Text> * ;
+	schema:priceSpecification @<#PriceSpecification> * ;
+	schema:seller (@<#Organization> OR @<#Person>) * ;
+	schema:serialNumber @<#Text> * ;
+	schema:sku @<#Text> * ;
+	schema:validFrom (@<#Date> OR @<#DateTime>) * ;
+	schema:validThrough (@<#Date> OR @<#DateTime>) * ;
+	schema:warranty @<#WarrantyPromise> * ;
+}
+
+
+<#Dentist> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:Dentist];
+}
+
+
+<#DepartAction> @<#MoveAction> AND EXTRA a { 
+	a [schema:DepartAction];
+}
+
+
+<#DepartmentStore> @<#Store> AND EXTRA a { 
+	a [schema:DepartmentStore];
+}
+
+
+<#DepositAccount> @<#InvestmentOrDeposit> AND EXTRA a { 
+	a [schema:DepositAccount];
+}
+
+
+<#DietarySupplement>  EXTRA a { 
+	a [schema:DietarySupplement];
+	schema:manufacturer @<#Organization> * ;
+}
+
+
+<#DigitalDocument> @<#CreativeWork> AND EXTRA a { 
+	a [schema:SpreadsheetDigitalDocument schema:NoteDigitalDocument schema:TextDigitalDocument schema:PresentationDigitalDocument schema:DigitalDocument];
+	schema:hasDigitalDocumentPermission @<#DigitalDocumentPermission> * ;
+}
+
+
+<#DigitalDocumentPermission> @<#Intangible> AND EXTRA a { 
+	a [schema:DigitalDocumentPermission];
+	schema:grantee (@<#ContactPoint> OR @<#Audience> OR @<#Person> OR @<#Organization>) * ;
+	schema:permissionType @<#DigitalDocumentPermissionType> * ;
+}
+
+
+<#DigitalDocumentPermissionType> @<#Enumeration> AND EXTRA a { 
+	a [schema:DigitalDocumentPermissionType];
+}
+
+
+<#DisagreeAction> @<#ReactAction> AND EXTRA a { 
+	a [schema:DisagreeAction];
+}
+
+
+<#DiscoverAction> @<#FindAction> AND EXTRA a { 
+	a [schema:DiscoverAction];
+}
+
+
+<#DiscussionForumPosting> @<#SocialMediaPosting> AND EXTRA a { 
+	a [schema:DiscussionForumPosting];
+}
+
+
+<#DislikeAction> @<#ReactAction> AND EXTRA a { 
+	a [schema:DislikeAction];
+}
+
+
+<#Distillery> @<#FoodEstablishment> AND EXTRA a { 
+	a [schema:Distillery];
+}
+
+
+<#DonateAction> @<#TradeAction> AND EXTRA a { 
+	a [schema:DonateAction];
+	schema:recipient (@<#Organization> OR @<#Audience> OR @<#ContactPoint> OR @<#Person>) * ;
+}
+
+
+<#DownloadAction> @<#TransferAction> AND EXTRA a { 
+	a [schema:DownloadAction];
+}
+
+
+<#DrawAction> @<#CreateAction> AND EXTRA a { 
+	a [schema:DrawAction];
+}
+
+
+<#DrinkAction> @<#ConsumeAction> AND EXTRA a { 
+	a [schema:DrinkAction];
+}
+
+
+<#DriveWheelConfigurationValue> @<#QualitativeValue> AND EXTRA a { 
+	a [schema:DriveWheelConfigurationValue];
+}
+
+
+<#Drug>  EXTRA a { 
+	a [schema:Drug];
+	schema:manufacturer @<#Organization> * ;
+}
+
+
+<#DryCleaningOrLaundry> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:DryCleaningOrLaundry];
+}
+
+
+<#EatAction> @<#ConsumeAction> AND EXTRA a { 
+	a [schema:EatAction];
+}
+
+
+<#EducationalAudience> @<#Audience> AND EXTRA a { 
+	a [schema:EducationalAudience];
+	schema:educationalRole @<#Text> * ;
+}
+
+
+<#EducationalOccupationalCredential>  EXTRA a { 
+	a [schema:EducationalOccupationalCredential];
+	schema:validFor @<#Duration> * ;
+	schema:validIn @<#AdministrativeArea> * ;
+}
+
+
+<#EducationalOccupationalProgram>  EXTRA a { 
+	a [schema:EducationalOccupationalProgram];
+	schema:dayOfWeek @<#DayOfWeek> * ;
+	schema:educationalCredentialAwarded (@<#EducationalOccupationalCredential> OR @<#URL> OR @<#Text>) * ;
+	schema:endDate (@<#Date> OR @<#DateTime>) * ;
+	schema:offers (@<#Demand> OR @<#Offer>) * ;
+	schema:provider (@<#Person> OR @<#Organization>) * ;
+	schema:startDate (@<#Date> OR @<#DateTime>) * ;
+}
+
+
+<#EducationalOrganization> @<#Organization> AND EXTRA a { 
+	a [schema:School schema:MiddleSchool schema:ElementarySchool schema:Preschool schema:HighSchool schema:CollegeOrUniversity schema:EducationalOrganization];
+	schema:alumni @<#Person> * ;
+}
+
+
+<#EducationEvent> @<#Event> AND EXTRA a { 
+	a [schema:EducationEvent];
+}
+
+
+<#Electrician> @<#HomeAndConstructionBusiness> AND EXTRA a { 
+	a [schema:Electrician];
+}
+
+
+<#ElectronicsStore> @<#Store> AND EXTRA a { 
+	a [schema:ElectronicsStore];
+}
+
+
+<#ElementarySchool> @<#EducationalOrganization> AND EXTRA a { 
+	a [schema:ElementarySchool];
+}
+
+
+<#EmailMessage> @<#Message> AND EXTRA a { 
+	a [schema:EmailMessage];
+}
+
+
+<#Embassy> @<#GovernmentBuilding> AND EXTRA a { 
+	a [schema:Embassy];
+}
+
+
+<#EmergencyService> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:PoliceStation schema:Hospital schema:FireStation schema:EmergencyService];
+}
+
+
+<#EmployeeRole> @<#OrganizationRole> AND EXTRA a { 
+	a [schema:EmployeeRole];
+	schema:baseSalary (@<#PriceSpecification> OR @<#MonetaryAmount> OR @<#Number>) * ;
+	schema:salaryCurrency @<#Text> * ;
+}
+
+
+<#EmployerAggregateRating> @<#AggregateRating> AND EXTRA a { 
+	a [schema:EmployerAggregateRating];
+}
+
+
+<#EmploymentAgency> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:EmploymentAgency];
+}
+
+
+<#EndorseAction> @<#ReactAction> AND EXTRA a { 
+	a [schema:EndorseAction];
+	schema:endorsee (@<#Organization> OR @<#Person>) * ;
+}
+
+
+<#EndorsementRating> @<#Rating> AND EXTRA a { 
+	a [schema:EndorsementRating];
+}
+
+
+<#EngineSpecification> @<#StructuredValue> AND EXTRA a { 
+	a [schema:EngineSpecification];
+	schema:fuelType (@<#QualitativeValue> OR @<#Text> OR @<#URL>) * ;
+}
+
+
+<#EntertainmentBusiness> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:AdultEntertainment schema:NightClub schema:AmusementPark schema:ArtGallery schema:ComedyClub schema:MovieTheater schema:Casino schema:EntertainmentBusiness];
+}
+
+
+<#Enumeration> @<#Intangible> AND EXTRA a { 
+	a [schema:SteeringPositionValue schema:ItemAvailability schema:ActionStatusType schema:CreditCard schema:MapCategoryType schema:ContactPointOption schema:GenderType schema:DayOfWeek schema:BusinessFunction schema:BusinessEntityType schema:DriveWheelConfigurationValue schema:PaymentMethod schema:QualitativeValue schema:MusicReleaseFormatType schema:GamePlayMode schema:RsvpResponseType schema:WarrantyScope schema:Specialty schema:ReservationStatusType schema:MusicAlbumReleaseType schema:PaymentCard schema:LockerDelivery schema:ItemListOrderType schema:DigitalDocumentPermissionType schema:BoardingPolicyType schema:DeliveryMethod schema:OfferItemCondition schema:EventStatusType schema:BookFormatType schema:MusicAlbumProductionType schema:PaymentStatusType schema:OrderStatus schema:RestrictedDiet schema:ParcelService schema:BedType schema:GameServerStatus schema:Enumeration];
+}
+
+
+<#Episode> @<#CreativeWork> AND EXTRA a { 
+	a [schema:RadioEpisode schema:TVEpisode schema:Episode];
+	schema:actor @<#Person> * ;
+	schema:actors @<#Person> * ;
+	schema:director @<#Person> * ;
+	schema:directors @<#Person> * ;
+	schema:episodeNumber (@<#Integer> OR @<#Text>) * ;
+	schema:musicBy (@<#Person> OR @<#MusicGroup>) * ;
+	schema:partOfSeason @<#CreativeWorkSeason> * ;
+	schema:partOfSeries @<#CreativeWorkSeries> * ;
+	schema:productionCompany @<#Organization> * ;
+	schema:trailer @<#VideoObject> * ;
+}
+
+
+<#Event> @<#Thing> AND EXTRA a { 
+	a [schema:UserBlocks schema:SocialEvent schema:BroadcastEvent schema:OnDemandEvent schema:DanceEvent schema:UserComments schema:BusinessEvent schema:Festival schema:SaleEvent schema:CourseInstance schema:MusicEvent schema:DeliveryEvent schema:UserPageVisits schema:UserLikes schema:UserPlusOnes schema:LiteraryEvent schema:ExhibitionEvent schema:SportsEvent schema:UserPlays schema:TheaterEvent schema:PublicationEvent schema:FoodEvent schema:ComedyEvent schema:UserTweets schema:VisualArtsEvent schema:ChildrensEvent schema:UserCheckins schema:ScreeningEvent schema:EducationEvent schema:UserDownloads schema:UserInteraction schema:Event];
+	schema:about @<#Thing> * ;
+	schema:actor @<#Person> * ;
+	schema:aggregateRating @<#AggregateRating> * ;
+	schema:attendee (@<#Organization> OR @<#Person>) * ;
+	schema:attendees (@<#Organization> OR @<#Person>) * ;
+	schema:audience @<#Audience> * ;
+	schema:composer (@<#Organization> OR @<#Person>) * ;
+	schema:contributor (@<#Organization> OR @<#Person>) * ;
+	schema:director @<#Person> * ;
+	schema:doorTime (@<#Time> OR @<#DateTime>) * ;
+	schema:duration @<#Duration> * ;
+	schema:endDate (@<#Date> OR @<#DateTime>) * ;
+	schema:eventStatus @<#EventStatusType> * ;
+	schema:funder (@<#Organization> OR @<#Person>) * ;
+	schema:inLanguage (@<#Text> OR @<#Language>) * ;
+	schema:isAccessibleForFree @<#Boolean> * ;
+	schema:location (@<#VirtualLocation> OR @<#Place> OR @<#Text> OR @<#PostalAddress>) * ;
+	schema:maximumAttendeeCapacity @<#Integer> * ;
+	schema:offers (@<#Demand> OR @<#Offer>) * ;
+	schema:organizer (@<#Organization> OR @<#Person>) * ;
+	schema:performer (@<#Organization> OR @<#Person>) * ;
+	schema:performers (@<#Person> OR @<#Organization>) * ;
+	schema:previousStartDate @<#Date> * ;
+	schema:recordedIn @<#CreativeWork> * ;
+	schema:remainingAttendeeCapacity @<#Integer> * ;
+	schema:review @<#Review> * ;
+	schema:sponsor (@<#Organization> OR @<#Person>) * ;
+	schema:startDate (@<#Date> OR @<#DateTime>) * ;
+	schema:subEvent @<#Event> * ;
+	schema:subEvents @<#Event> * ;
+	schema:superEvent @<#Event> * ;
+	schema:translator (@<#Organization> OR @<#Person>) * ;
+	schema:typicalAgeRange @<#Text> * ;
+	schema:workFeatured @<#CreativeWork> * ;
+	schema:workPerformed @<#CreativeWork> * ;
+}
+
+
+<#EventReservation> @<#Reservation> AND EXTRA a { 
+	a [schema:EventReservation];
+}
+
+
+<#EventStatusType> @<#Enumeration> AND EXTRA a { 
+	a [schema:EventStatusType];
+}
+
+
+<#EventVenue> @<#CivicStructure> AND EXTRA a { 
+	a [schema:EventVenue];
+}
+
+
+<#ExchangeRateSpecification>  EXTRA a { 
+	a [schema:ExchangeRateSpecification];
+	schema:currency @<#Text> * ;
+}
+
+
+<#ExerciseAction> @<#PlayAction> AND EXTRA a { 
+	a [schema:ExerciseAction];
+	schema:course @<#Place> * ;
+	schema:distance @<#Distance> * ;
+	schema:exerciseCourse @<#Place> * ;
+	schema:fromLocation @<#Place> * ;
+	schema:opponent @<#Person> * ;
+	schema:sportsActivityLocation @<#SportsActivityLocation> * ;
+	schema:sportsEvent @<#SportsEvent> * ;
+	schema:sportsTeam @<#SportsTeam> * ;
+	schema:toLocation @<#Place> * ;
+}
+
+
+<#ExerciseGym> @<#SportsActivityLocation> AND EXTRA a { 
+	a [schema:ExerciseGym];
+}
+
+
+<#ExhibitionEvent> @<#Event> AND EXTRA a { 
+	a [schema:ExhibitionEvent];
+}
+
+
+<#FAQPage> @<#WebPage> AND EXTRA a { 
+	a [schema:FAQPage];
+}
+
+
+<#FastFoodRestaurant> @<#FoodEstablishment> AND EXTRA a { 
+	a [schema:FastFoodRestaurant];
+}
+
+
+<#Festival> @<#Event> AND EXTRA a { 
+	a [schema:Festival];
+}
+
+
+<#FilmAction> @<#CreateAction> AND EXTRA a { 
+	a [schema:FilmAction];
+}
+
+
+<#FinancialProduct> @<#Service> AND EXTRA a { 
+	a [schema:CurrencyConversionService schema:PaymentService schema:LoanOrCredit schema:DepositAccount schema:PaymentCard schema:BankAccount schema:InvestmentOrDeposit schema:CreditCard schema:FinancialProduct];
+	schema:annualPercentageRate (@<#Number> OR @<#QuantitativeValue>) * ;
+	schema:feesAndCommissionsSpecification (@<#Text> OR @<#URL>) * ;
+	schema:interestRate (@<#QuantitativeValue> OR @<#Number>) * ;
+}
+
+
+<#FinancialService> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:AutomatedTeller schema:BankOrCreditUnion schema:InsuranceAgency schema:AccountingService schema:FinancialService];
+	schema:feesAndCommissionsSpecification (@<#Text> OR @<#URL>) * ;
+}
+
+
+<#FindAction> @<#Action> AND EXTRA a { 
+	a [schema:TrackAction schema:DiscoverAction schema:CheckAction schema:FindAction];
+}
+
+
+<#FireStation> @<#CivicStructure> AND EXTRA a { 
+	a [schema:FireStation];
+}
+
+
+<#Flight> @<#Trip> AND EXTRA a { 
+	a [schema:Flight];
+	schema:aircraft (@<#Vehicle> OR @<#Text>) * ;
+	schema:arrivalAirport @<#Airport> * ;
+	schema:arrivalGate @<#Text> * ;
+	schema:arrivalTerminal @<#Text> * ;
+	schema:boardingPolicy @<#BoardingPolicyType> * ;
+	schema:carrier @<#Organization> * ;
+	schema:departureAirport @<#Airport> * ;
+	schema:departureGate @<#Text> * ;
+	schema:departureTerminal @<#Text> * ;
+	schema:estimatedFlightDuration (@<#Text> OR @<#Duration>) * ;
+	schema:flightDistance (@<#Text> OR @<#Distance>) * ;
+	schema:flightNumber @<#Text> * ;
+	schema:mealService @<#Text> * ;
+	schema:seller (@<#Organization> OR @<#Person>) * ;
+	schema:webCheckinTime @<#DateTime> * ;
+}
+
+
+<#FlightReservation> @<#Reservation> AND EXTRA a { 
+	a [schema:FlightReservation];
+	schema:boardingGroup @<#Text> * ;
+	schema:passengerPriorityStatus (@<#QualitativeValue> OR @<#Text>) * ;
+	schema:passengerSequenceNumber @<#Text> * ;
+	schema:securityScreening @<#Text> * ;
+}
+
+
+<#Float> @<#Number> AND EXTRA a { 
+	a [schema:Float];
+}
+
+
+<#FloorPlan>  EXTRA a { 
+	a [schema:FloorPlan];
+	schema:amenityFeature @<#LocationFeatureSpecification> * ;
+	schema:floorSize @<#QuantitativeValue> * ;
+	schema:numberOfRooms (@<#QuantitativeValue> OR @<#Number>) * ;
+	schema:petsAllowed (@<#Text> OR @<#Boolean>) * ;
+}
+
+
+<#Florist> @<#Store> AND EXTRA a { 
+	a [schema:Florist];
+}
+
+
+<#FMRadioChannel> @<#RadioChannel> AND EXTRA a { 
+	a [schema:FMRadioChannel];
+}
+
+
+<#FollowAction> @<#InteractAction> AND EXTRA a { 
+	a [schema:FollowAction];
+	schema:followee (@<#Organization> OR @<#Person>) * ;
+}
+
+
+<#FoodEstablishment> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:Distillery schema:Bakery schema:Winery schema:IceCreamShop schema:Brewery schema:FastFoodRestaurant schema:BarOrPub schema:CafeOrCoffeeShop schema:Restaurant schema:FoodEstablishment];
+	schema:acceptsReservations (@<#Text> OR @<#Boolean> OR @<#URL>) * ;
+	schema:hasMenu (@<#Text> OR @<#URL> OR @<#Menu>) * ;
+	schema:menu (@<#Menu> OR @<#Text> OR @<#URL>) * ;
+	schema:servesCuisine @<#Text> * ;
+	schema:starRating @<#Rating> * ;
+}
+
+
+<#FoodEstablishmentReservation> @<#Reservation> AND EXTRA a { 
+	a [schema:FoodEstablishmentReservation];
+	schema:endTime (@<#DateTime> OR @<#Time>) * ;
+	schema:partySize (@<#QuantitativeValue> OR @<#Integer>) * ;
+	schema:startTime (@<#Time> OR @<#DateTime>) * ;
+}
+
+
+<#FoodEvent> @<#Event> AND EXTRA a { 
+	a [schema:FoodEvent];
+}
+
+
+<#FoodService> @<#Service> AND EXTRA a { 
+	a [schema:FoodService];
+}
+
+
+<#FurnitureStore> @<#Store> AND EXTRA a { 
+	a [schema:FurnitureStore];
+}
+
+
+<#Game> @<#CreativeWork> AND EXTRA a { 
+	a [schema:VideoGame schema:Game];
+	schema:characterAttribute @<#Thing> * ;
+	schema:gameItem @<#Thing> * ;
+	schema:gameLocation (@<#PostalAddress> OR @<#Place> OR @<#URL>) * ;
+	schema:numberOfPlayers @<#QuantitativeValue> * ;
+	schema:quest @<#Thing> * ;
+}
+
+
+<#GamePlayMode> @<#Enumeration> AND EXTRA a { 
+	a [schema:GamePlayMode];
+}
+
+
+<#GameServer> @<#Intangible> AND EXTRA a { 
+	a [schema:GameServer];
+	schema:game @<#VideoGame> * ;
+	schema:playersOnline @<#Integer> * ;
+	schema:serverStatus @<#GameServerStatus> * ;
+}
+
+
+<#GameServerStatus> @<#Enumeration> AND EXTRA a { 
+	a [schema:GameServerStatus];
+}
+
+
+<#GardenStore> @<#Store> AND EXTRA a { 
+	a [schema:GardenStore];
+}
+
+
+<#GasStation> @<#AutomotiveBusiness> AND EXTRA a { 
+	a [schema:GasStation];
+}
+
+
+<#GatedResidenceCommunity> @<#Residence> AND EXTRA a { 
+	a [schema:GatedResidenceCommunity];
+}
+
+
+<#GenderType> @<#Enumeration> AND EXTRA a { 
+	a [schema:GenderType];
+}
+
+
+<#GeneralContractor> @<#HomeAndConstructionBusiness> AND EXTRA a { 
+	a [schema:GeneralContractor];
+}
+
+
+<#GeoCircle> @<#GeoShape> AND EXTRA a { 
+	a [schema:GeoCircle];
+	schema:geoMidpoint @<#GeoCoordinates> * ;
+	schema:geoRadius (@<#Text> OR @<#Number> OR @<#Distance>) * ;
+}
+
+
+<#GeoCoordinates> @<#StructuredValue> AND EXTRA a { 
+	a [schema:GeoCoordinates];
+	schema:address (@<#PostalAddress> OR @<#Text>) * ;
+	schema:addressCountry (@<#Country> OR @<#Text>) * ;
+	schema:elevation (@<#Number> OR @<#Text>) * ;
+	schema:latitude (@<#Text> OR @<#Number>) * ;
+	schema:longitude (@<#Text> OR @<#Number>) * ;
+	schema:postalCode @<#Text> * ;
+}
+
+
+<#GeoShape> @<#StructuredValue> AND EXTRA a { 
+	a [schema:GeoCircle schema:GeoShape];
+	schema:address (@<#PostalAddress> OR @<#Text>) * ;
+	schema:addressCountry (@<#Country> OR @<#Text>) * ;
+	schema:box @<#Text> * ;
+	schema:circle @<#Text> * ;
+	schema:elevation (@<#Number> OR @<#Text>) * ;
+	schema:line @<#Text> * ;
+	schema:polygon @<#Text> * ;
+	schema:postalCode @<#Text> * ;
+}
+
+
+<#GeospatialGeometry>  EXTRA a { 
+	a [schema:GeospatialGeometry];
+	schema:geoContains (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoCoveredBy (@<#Place> OR @<#GeospatialGeometry>) * ;
+	schema:geoCovers (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoCrosses (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoDisjoint (@<#Place> OR @<#GeospatialGeometry>) * ;
+	schema:geoEquals (@<#Place> OR @<#GeospatialGeometry>) * ;
+	schema:geoIntersects (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoOverlaps (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoTouches (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoWithin (@<#Place> OR @<#GeospatialGeometry>) * ;
+}
+
+
+<#GiveAction> @<#TransferAction> AND EXTRA a { 
+	a [schema:GiveAction];
+	schema:recipient (@<#Organization> OR @<#Audience> OR @<#ContactPoint> OR @<#Person>) * ;
+}
+
+
+<#GolfCourse> @<#SportsActivityLocation> AND EXTRA a { 
+	a [schema:GolfCourse];
+}
+
+
+<#GovernmentBenefitsType>  EXTRA a { 
+	a [schema:GovernmentBenefitsType];
+}
+
+
+<#GovernmentBuilding> @<#CivicStructure> AND EXTRA a { 
+	a [schema:DefenceEstablishment schema:Courthouse schema:LegislativeBuilding schema:Embassy schema:CityHall schema:GovernmentBuilding];
+}
+
+
+<#GovernmentOffice> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:PostOffice schema:GovernmentOffice];
+}
+
+
+<#GovernmentOrganization> @<#Organization> AND EXTRA a { 
+	a [schema:GovernmentOrganization];
+}
+
+
+<#GovernmentPermit> @<#Permit> AND EXTRA a { 
+	a [schema:GovernmentPermit];
+}
+
+
+<#GovernmentService> @<#Service> AND EXTRA a { 
+	a [schema:GovernmentService];
+	schema:serviceOperator @<#Organization> * ;
+}
+
+
+<#Grant>  EXTRA a { 
+	a [schema:Grant];
+	schema:sponsor (@<#Organization> OR @<#Person>) * ;
+}
+
+
+<#GroceryStore> @<#Store> AND EXTRA a { 
+	a [schema:GroceryStore];
+}
+
+
+<#Guide>  EXTRA a { 
+	a [schema:Guide];
+	schema:reviewAspect @<#Text> * ;
+}
+
+
+<#HairSalon> @<#HealthAndBeautyBusiness> AND EXTRA a { 
+	a [schema:HairSalon];
+}
+
+
+<#HardwareStore> @<#Store> AND EXTRA a { 
+	a [schema:HardwareStore];
+}
+
+
+<#HealthAndBeautyBusiness> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:NailSalon schema:TattooParlor schema:HairSalon schema:HealthClub schema:DaySpa schema:BeautySalon schema:HealthAndBeautyBusiness];
+}
+
+
+<#HealthClub> @<#HealthAndBeautyBusiness> AND EXTRA a { 
+	a [schema:HealthClub];
+}
+
+
+<#HealthInsurancePlan>  EXTRA a { 
+	a [schema:HealthInsurancePlan];
+	schema:contactPoint @<#ContactPoint> * ;
+}
+
+
+<#HighSchool> @<#EducationalOrganization> AND EXTRA a { 
+	a [schema:HighSchool];
+}
+
+
+<#HinduTemple> @<#PlaceOfWorship> AND EXTRA a { 
+	a [schema:HinduTemple];
+}
+
+
+<#HobbyShop> @<#Store> AND EXTRA a { 
+	a [schema:HobbyShop];
+}
+
+
+<#HomeAndConstructionBusiness> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:MovingCompany schema:HousePainter schema:GeneralContractor schema:RoofingContractor schema:HVACBusiness schema:Plumber schema:Electrician schema:Locksmith schema:HomeAndConstructionBusiness];
+}
+
+
+<#HomeGoodsStore> @<#Store> AND EXTRA a { 
+	a [schema:HomeGoodsStore];
+}
+
+
+<#Hospital> @<#MedicalOrganization> AND EXTRA a { 
+	a [schema:Hospital];
+}
+
+
+<#Hostel> @<#LodgingBusiness> AND EXTRA a { 
+	a [schema:Hostel];
+}
+
+
+<#Hotel> @<#LodgingBusiness> AND EXTRA a { 
+	a [schema:Hotel];
+}
+
+
+<#HotelRoom> @<#Room> AND EXTRA a { 
+	a [schema:HotelRoom];
+	schema:bed (@<#BedDetails> OR @<#Text> OR @<#BedType>) * ;
+	schema:occupancy @<#QuantitativeValue> * ;
+}
+
+
+<#House> @<#Accommodation> AND EXTRA a { 
+	a [schema:SingleFamilyResidence schema:House];
+	schema:numberOfRooms (@<#QuantitativeValue> OR @<#Number>) * ;
+}
+
+
+<#HousePainter> @<#HomeAndConstructionBusiness> AND EXTRA a { 
+	a [schema:HousePainter];
+}
+
+
+<#HowToDirection> @<#CreativeWork> AND EXTRA a { 
+	a [schema:HowToDirection];
+	schema:afterMedia (@<#MediaObject> OR @<#URL>) * ;
+	schema:beforeMedia (@<#URL> OR @<#MediaObject>) * ;
+	schema:duringMedia (@<#URL> OR @<#MediaObject>) * ;
+	schema:performTime @<#Duration> * ;
+	schema:prepTime @<#Duration> * ;
+	schema:supply (@<#HowToSupply> OR @<#Text>) * ;
+	schema:tool (@<#HowToTool> OR @<#Text>) * ;
+	schema:totalTime @<#Duration> * ;
+}
+
+
+<#HowToItem> @<#ListItem> AND EXTRA a { 
+	a [schema:HowToTool schema:HowToSupply schema:HowToItem];
+	schema:requiredQuantity (@<#QuantitativeValue> OR @<#Number> OR @<#Text>) * ;
+}
+
+
+<#HowToSection> @<#CreativeWork> AND EXTRA a { 
+	a [schema:HowToSection];
+	schema:steps (@<#CreativeWork> OR @<#ItemList> OR @<#Text>) * ;
+}
+
+
+<#HowToStep> @<#ListItem> AND EXTRA a { 
+	a [schema:HowToStep];
+}
+
+
+<#HowToSupply> @<#HowToItem> AND EXTRA a { 
+	a [schema:HowToSupply];
+	schema:estimatedCost (@<#MonetaryAmount> OR @<#Text>) * ;
+}
+
+
+<#HowToTip> @<#ListItem> AND EXTRA a { 
+	a [schema:HowToTip];
+}
+
+
+<#HowToTool> @<#HowToItem> AND EXTRA a { 
+	a [schema:HowToTool];
+}
+
+
+<#HVACBusiness> @<#HomeAndConstructionBusiness> AND EXTRA a { 
+	a [schema:HVACBusiness];
+}
+
+
+<#IceCreamShop> @<#FoodEstablishment> AND EXTRA a { 
+	a [schema:IceCreamShop];
+}
+
+
+<#IgnoreAction> @<#AssessAction> AND EXTRA a { 
+	a [schema:IgnoreAction];
+}
+
+
+<#ImageGallery> @<#MediaGallery> AND EXTRA a { 
+	a [schema:ImageGallery];
+}
+
+
+<#ImageObject> @<#MediaObject> AND EXTRA a { 
+	a [schema:Barcode schema:ImageObject];
+	schema:caption (@<#Text> OR @<#MediaObject>) * ;
+	schema:exifData (@<#Text> OR @<#PropertyValue>) * ;
+	schema:representativeOfPage @<#Boolean> * ;
+	schema:thumbnail @<#ImageObject> * ;
+}
+
+
+<#IndividualProduct> @<#Product> AND EXTRA a { 
+	a [schema:IndividualProduct];
+	schema:serialNumber @<#Text> * ;
+}
+
+
+<#InformAction> @<#CommunicateAction> AND EXTRA a { 
+	a [schema:RsvpAction schema:ConfirmAction schema:InformAction];
+	schema:event @<#Event> * ;
+}
+
+
+<#InsertAction> @<#AddAction> AND EXTRA a { 
+	a [schema:AppendAction schema:PrependAction schema:InsertAction];
+	schema:toLocation @<#Place> * ;
+}
+
+
+<#InstallAction> @<#ConsumeAction> AND EXTRA a { 
+	a [schema:InstallAction];
+}
+
+
+<#InsuranceAgency> @<#FinancialService> AND EXTRA a { 
+	a [schema:InsuranceAgency];
+}
+
+
+<#InteractAction> @<#Action> AND EXTRA a { 
+	a [schema:MarryAction schema:JoinAction schema:CommentAction schema:FollowAction schema:RegisterAction schema:ShareAction schema:UnRegisterAction schema:CommunicateAction schema:AskAction schema:BefriendAction schema:RsvpAction schema:ConfirmAction schema:SubscribeAction schema:CheckInAction schema:InformAction schema:ReplyAction schema:InviteAction schema:CheckOutAction schema:LeaveAction schema:InteractAction];
+}
+
+
+<#InteractionCounter> @<#StructuredValue> AND EXTRA a { 
+	a [schema:InteractionCounter];
+	schema:interactionService (@<#WebSite> OR @<#SoftwareApplication>) * ;
+	schema:interactionType @<#Action> * ;
+	schema:userInteractionCount @<#Integer> * ;
+}
+
+
+<#InternetCafe> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:InternetCafe];
+}
+
+
+<#InvestmentOrDeposit> @<#FinancialProduct> AND EXTRA a { 
+	a [schema:DepositAccount schema:InvestmentOrDeposit];
+	schema:amount (@<#MonetaryAmount> OR @<#Number>) * ;
+}
+
+
+<#InviteAction> @<#CommunicateAction> AND EXTRA a { 
+	a [schema:InviteAction];
+	schema:event @<#Event> * ;
+}
+
+
+<#Invoice> @<#Intangible> AND EXTRA a { 
+	a [schema:Invoice];
+	schema:accountId @<#Text> * ;
+	schema:billingPeriod @<#Duration> * ;
+	schema:broker (@<#Organization> OR @<#Person>) * ;
+	schema:category (@<#Thing> OR @<#URL> OR @<#PhysicalActivityCategory> OR @<#Text>) * ;
+	schema:confirmationNumber @<#Text> * ;
+	schema:customer (@<#Organization> OR @<#Person>) * ;
+	schema:minimumPaymentDue (@<#PriceSpecification> OR @<#MonetaryAmount>) * ;
+	schema:paymentDue @<#DateTime> * ;
+	schema:paymentDueDate (@<#Date> OR @<#DateTime>) * ;
+	schema:paymentMethod @<#PaymentMethod> * ;
+	schema:paymentMethodId @<#Text> * ;
+	schema:paymentStatus (@<#PaymentStatusType> OR @<#Text>) * ;
+	schema:provider (@<#Person> OR @<#Organization>) * ;
+	schema:referencesOrder @<#Order> * ;
+	schema:scheduledPaymentDate @<#Date> * ;
+	schema:totalPaymentDue (@<#PriceSpecification> OR @<#MonetaryAmount>) * ;
+}
+
+
+<#ItemAvailability> @<#Enumeration> AND EXTRA a { 
+	a [schema:ItemAvailability];
+}
+
+
+<#ItemList> @<#Intangible> AND EXTRA a { 
+	a [schema:HowToStep schema:BreadcrumbList schema:OfferCatalog schema:HowToSection schema:ItemList];
+	schema:itemListElement (@<#Text> OR @<#ListItem> OR @<#Thing>) * ;
+	schema:itemListOrder (@<#Text> OR @<#ItemListOrderType>) * ;
+	schema:numberOfItems @<#Integer> * ;
+}
+
+
+<#ItemListOrderType> @<#Enumeration> AND EXTRA a { 
+	a [schema:ItemListOrderType];
+}
+
+
+<#ItemPage> @<#WebPage> AND EXTRA a { 
+	a [schema:ItemPage];
+}
+
+
+<#JewelryStore> @<#Store> AND EXTRA a { 
+	a [schema:JewelryStore];
+}
+
+
+<#JobPosting> @<#Intangible> AND EXTRA a { 
+	a [schema:JobPosting];
+	schema:baseSalary (@<#PriceSpecification> OR @<#MonetaryAmount> OR @<#Number>) * ;
+	schema:benefits @<#Text> * ;
+	schema:datePosted (@<#DateTime> OR @<#Date>) * ;
+	schema:employmentType @<#Text> * ;
+	schema:estimatedSalary (@<#Number> OR @<#MonetaryAmountDistribution> OR @<#MonetaryAmount>) * ;
+	schema:experienceRequirements @<#Text> * ;
+	schema:hiringOrganization @<#Organization> * ;
+	schema:incentiveCompensation @<#Text> * ;
+	schema:incentives @<#Text> * ;
+	schema:industry (@<#Text> OR @<#DefinedTerm>) * ;
+	schema:jobBenefits @<#Text> * ;
+	schema:jobLocation @<#Place> * ;
+	schema:relevantOccupation @<#Occupation> * ;
+	schema:responsibilities @<#Text> * ;
+	schema:salaryCurrency @<#Text> * ;
+	schema:skills (@<#Text> OR @<#DefinedTerm>) * ;
+	schema:specialCommitments @<#Text> * ;
+	schema:title @<#Text> * ;
+	schema:validThrough (@<#Date> OR @<#DateTime>) * ;
+	schema:workHours @<#Text> * ;
+}
+
+
+<#JoinAction> @<#InteractAction> AND EXTRA a { 
+	a [schema:JoinAction];
+	schema:event @<#Event> * ;
+}
+
+
+<#LakeBodyOfWater> @<#BodyOfWater> AND EXTRA a { 
+	a [schema:LakeBodyOfWater];
+}
+
+
+<#Landform> @<#Place> AND EXTRA a { 
+	a [schema:OceanBodyOfWater schema:BodyOfWater schema:Mountain schema:Canal schema:RiverBodyOfWater schema:Reservoir schema:Waterfall schema:Pond schema:SeaBodyOfWater schema:Volcano schema:Continent schema:LakeBodyOfWater schema:Landform];
+}
+
+
+<#LandmarksOrHistoricalBuildings> @<#Place> AND EXTRA a { 
+	a [schema:LandmarksOrHistoricalBuildings];
+}
+
+
+<#Language> @<#Intangible> AND EXTRA a { 
+	a [schema:Language];
+}
+
+
+<#LeaveAction> @<#InteractAction> AND EXTRA a { 
+	a [schema:LeaveAction];
+	schema:event @<#Event> * ;
+}
+
+
+<#LegalService> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:Notary schema:Attorney schema:LegalService];
+}
+
+
+<#LegislativeBuilding> @<#GovernmentBuilding> AND EXTRA a { 
+	a [schema:LegislativeBuilding];
+}
+
+
+<#LendAction> @<#TransferAction> AND EXTRA a { 
+	a [schema:LendAction];
+	schema:borrower @<#Person> * ;
+}
+
+
+<#Library> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:Library];
+}
+
+
+<#LikeAction> @<#ReactAction> AND EXTRA a { 
+	a [schema:LikeAction];
+}
+
+
+<#LinkRole>  EXTRA a { 
+	a [schema:LinkRole];
+	schema:inLanguage (@<#Text> OR @<#Language>) * ;
+}
+
+
+<#LiquorStore> @<#Store> AND EXTRA a { 
+	a [schema:LiquorStore];
+}
+
+
+<#ListenAction> @<#ConsumeAction> AND EXTRA a { 
+	a [schema:ListenAction];
+}
+
+
+<#ListItem> @<#Intangible> AND EXTRA a { 
+	a [schema:HowToDirection schema:HowToSupply schema:HowToStep schema:HowToSection schema:HowToTool schema:HowToItem schema:HowToTip schema:ListItem];
+	schema:item @<#Thing> * ;
+	schema:nextItem @<#ListItem> * ;
+	schema:position (@<#Integer> OR @<#Text>) * ;
+	schema:previousItem @<#ListItem> * ;
+}
+
+
+<#LiteraryEvent> @<#Event> AND EXTRA a { 
+	a [schema:LiteraryEvent];
+}
+
+
+<#LiveBlogPosting> @<#BlogPosting> AND EXTRA a { 
+	a [schema:LiveBlogPosting];
+	schema:coverageEndTime @<#DateTime> * ;
+	schema:coverageStartTime @<#DateTime> * ;
+	schema:liveBlogUpdate @<#BlogPosting> * ;
+}
+
+
+<#LoanOrCredit> @<#FinancialProduct> AND EXTRA a { 
+	a [schema:CreditCard schema:LoanOrCredit];
+	schema:amount (@<#MonetaryAmount> OR @<#Number>) * ;
+	schema:currency @<#Text> * ;
+	schema:loanTerm @<#QuantitativeValue> * ;
+	schema:requiredCollateral (@<#Text> OR @<#Thing>) * ;
+}
+
+
+<#LocalBusiness> @<#Organization> AND EXTRA a { 
+	a [schema:AutoRepair schema:PawnShop schema:ExerciseGym schema:RealEstateAgent schema:Hostel schema:HomeAndConstructionBusiness schema:AdultEntertainment schema:MovingCompany schema:SportsClub schema:ClothingStore schema:SportingGoodsStore schema:BikeStore schema:Notary schema:AutoPartsStore schema:GardenStore schema:AutoBodyShop schema:BookStore schema:FastFoodRestaurant schema:HomeGoodsStore schema:TelevisionStation schema:Store schema:HairSalon schema:OfficeEquipmentStore schema:DaySpa schema:SportsActivityLocation schema:JewelryStore schema:ProfessionalService schema:DryCleaningOrLaundry schema:Bakery schema:MovieTheater schema:AutoRental schema:GroceryStore schema:OutletStore schema:MotorcycleDealer schema:InsuranceAgency schema:Restaurant schema:MensClothingStore schema:LegalService schema:LodgingBusiness schema:RecyclingCenter schema:LiquorStore schema:ArtGallery schema:StadiumOrArena schema:TireShop schema:SelfStorage schema:Hospital schema:PoliceStation schema:Casino schema:HousePainter schema:NightClub schema:TattooParlor schema:AmusementPark schema:Brewery schema:Attorney schema:HealthClub schema:HardwareStore schema:ConvenienceStore schema:ComputerStore schema:CafeOrCoffeeShop schema:Locksmith schema:Dentist schema:Distillery schema:RadioStation schema:DepartmentStore schema:IceCreamShop schema:GeneralContractor schema:AnimalShelter schema:ToyStore schema:Motel schema:MusicStore schema:ComedyClub schema:FinancialService schema:WholesaleStore schema:ShoppingCenter schema:Florist schema:MotorcycleRepair schema:MovieRentalStore schema:Winery schema:SkiResort schema:AutoDealer schema:AutomatedTeller schema:GolfCourse schema:EmergencyService schema:PublicSwimmingPool schema:FurnitureStore schema:GovernmentOffice schema:FoodEstablishment schema:EmploymentAgency schema:GasStation schema:HealthAndBeautyBusiness schema:AccountingService schema:FireStation schema:ChildCare schema:Resort schema:Hotel schema:MobilePhoneStore schema:AutoWash schema:Electrician schema:BarOrPub schema:TennisComplex schema:ElectronicsStore schema:AutomotiveBusiness schema:BankOrCreditUnion schema:RoofingContractor schema:HVACBusiness schema:BowlingAlley schema:BeautySalon schema:TravelAgency schema:BedAndBreakfast schema:Library schema:PostOffice schema:Campground schema:TouristInformationCenter schema:NailSalon schema:ShoeStore schema:Plumber schema:PetStore schema:EntertainmentBusiness schema:InternetCafe schema:HobbyShop schema:LocalBusiness];
+	schema:branchOf @<#Organization> * ;
+	schema:currenciesAccepted @<#Text> * ;
+	schema:openingHours @<#Text> * ;
+	schema:paymentAccepted @<#Text> * ;
+	schema:priceRange @<#Text> * ;
+}
+
+
+<#LocationFeatureSpecification> @<#PropertyValue> AND EXTRA a { 
+	a [schema:LocationFeatureSpecification];
+	schema:hoursAvailable @<#OpeningHoursSpecification> * ;
+	schema:validFrom (@<#Date> OR @<#DateTime>) * ;
+	schema:validThrough (@<#Date> OR @<#DateTime>) * ;
+}
+
+
+<#LockerDelivery> @<#DeliveryMethod> AND EXTRA a { 
+	a [schema:LockerDelivery];
+}
+
+
+<#Locksmith> @<#HomeAndConstructionBusiness> AND EXTRA a { 
+	a [schema:Locksmith];
+}
+
+
+<#LodgingBusiness> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:Hostel schema:Motel schema:Resort schema:BedAndBreakfast schema:Hotel schema:Campground schema:LodgingBusiness];
+	schema:amenityFeature @<#LocationFeatureSpecification> * ;
+	schema:audience @<#Audience> * ;
+	schema:availableLanguage (@<#Text> OR @<#Language>) * ;
+	schema:checkinTime (@<#DateTime> OR @<#Time>) * ;
+	schema:checkoutTime (@<#DateTime> OR @<#Time>) * ;
+	schema:numberOfRooms (@<#QuantitativeValue> OR @<#Number>) * ;
+	schema:petsAllowed (@<#Text> OR @<#Boolean>) * ;
+	schema:starRating @<#Rating> * ;
+}
+
+
+<#LodgingReservation> @<#Reservation> AND EXTRA a { 
+	a [schema:LodgingReservation];
+	schema:checkinTime (@<#DateTime> OR @<#Time>) * ;
+	schema:checkoutTime (@<#DateTime> OR @<#Time>) * ;
+	schema:lodgingUnitDescription @<#Text> * ;
+	schema:lodgingUnitType (@<#Text> OR @<#QualitativeValue>) * ;
+	schema:numAdults (@<#QuantitativeValue> OR @<#Integer>) * ;
+	schema:numChildren (@<#QuantitativeValue> OR @<#Integer>) * ;
+}
+
+
+<#LoseAction> @<#AchieveAction> AND EXTRA a { 
+	a [schema:LoseAction];
+	schema:winner @<#Person> * ;
+}
+
+
+<#Map> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Map];
+	schema:mapType @<#MapCategoryType> * ;
+}
+
+
+<#MapCategoryType> @<#Enumeration> AND EXTRA a { 
+	a [schema:MapCategoryType];
+}
+
+
+<#MarryAction> @<#InteractAction> AND EXTRA a { 
+	a [schema:MarryAction];
+}
+
+
+<#MediaGallery> @<#CollectionPage> AND EXTRA a { 
+	a [schema:ImageGallery schema:VideoGallery schema:MediaGallery];
+}
+
+
+<#MediaSubscription> @<#Intangible> AND EXTRA a { 
+	a [schema:MediaSubscription];
+	schema:authenticator @<#Organization> * ;
+	schema:expectsAcceptanceOf @<#Offer> * ;
+}
+
+
+<#MedicalBusiness>  EXTRA a { 
+	a [schema:Pharmacy schema:Dentist schema:Physician schema:MedicalBusiness];
+}
+
+
+<#MedicalOrganization> @<#Organization> AND EXTRA a { 
+	a [schema:Pharmacy schema:Dentist schema:Physician schema:Hospital schema:MedicalOrganization];
+}
+
+
+<#MedicalStudy>  EXTRA a { 
+	a [schema:MedicalStudy];
+	schema:sponsor (@<#Organization> OR @<#Person>) * ;
+}
+
+
+<#MeetingRoom> @<#Room> AND EXTRA a { 
+	a [schema:MeetingRoom];
+}
+
+
+<#MensClothingStore> @<#Store> AND EXTRA a { 
+	a [schema:MensClothingStore];
+}
+
+
+<#Menu> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Menu];
+	schema:hasMenuItem @<#MenuItem> * ;
+	schema:hasMenuSection @<#MenuSection> * ;
+}
+
+
+<#MenuItem> @<#Intangible> AND EXTRA a { 
+	a [schema:MenuItem];
+	schema:menuAddOn (@<#MenuItem> OR @<#MenuSection>) * ;
+	schema:nutrition @<#NutritionInformation> * ;
+	schema:offers (@<#Demand> OR @<#Offer>) * ;
+	schema:suitableForDiet @<#RestrictedDiet> * ;
+}
+
+
+<#MenuSection> @<#CreativeWork> AND EXTRA a { 
+	a [schema:MenuSection];
+	schema:hasMenuItem @<#MenuItem> * ;
+	schema:hasMenuSection @<#MenuSection> * ;
+}
+
+
+<#Message> @<#CreativeWork> AND EXTRA a { 
+	a [schema:EmailMessage schema:Message];
+	schema:bccRecipient (@<#ContactPoint> OR @<#Organization> OR @<#Person>) * ;
+	schema:ccRecipient (@<#ContactPoint> OR @<#Person> OR @<#Organization>) * ;
+	schema:dateRead (@<#Date> OR @<#DateTime>) * ;
+	schema:dateReceived @<#DateTime> * ;
+	schema:dateSent @<#DateTime> * ;
+	schema:messageAttachment @<#CreativeWork> * ;
+	schema:recipient (@<#Organization> OR @<#Audience> OR @<#ContactPoint> OR @<#Person>) * ;
+	schema:sender (@<#Organization> OR @<#Audience> OR @<#Person>) * ;
+	schema:toRecipient (@<#ContactPoint> OR @<#Organization> OR @<#Person> OR @<#Audience>) * ;
+}
+
+
+<#MiddleSchool> @<#EducationalOrganization> AND EXTRA a { 
+	a [schema:MiddleSchool];
+}
+
+
+<#MobileApplication> @<#SoftwareApplication> AND EXTRA a { 
+	a [schema:MobileApplication];
+	schema:carrierRequirements @<#Text> * ;
+}
+
+
+<#MobilePhoneStore> @<#Store> AND EXTRA a { 
+	a [schema:MobilePhoneStore];
+}
+
+
+<#MonetaryAmount> @<#StructuredValue> AND EXTRA a { 
+	a [schema:MonetaryAmount];
+	schema:currency @<#Text> * ;
+	schema:maxValue @<#Number> * ;
+	schema:minValue @<#Number> * ;
+	schema:validFrom (@<#Date> OR @<#DateTime>) * ;
+	schema:validThrough (@<#Date> OR @<#DateTime>) * ;
+	schema:value (@<#Boolean> OR @<#StructuredValue> OR @<#Number> OR @<#Text>) * ;
+}
+
+
+<#MonetaryAmountDistribution> @<#QuantitativeValueDistribution> AND EXTRA a { 
+	a [schema:MonetaryAmountDistribution];
+	schema:currency @<#Text> * ;
+}
+
+
+<#MonetaryGrant>  EXTRA a { 
+	a [schema:MonetaryGrant];
+	schema:amount (@<#MonetaryAmount> OR @<#Number>) * ;
+	schema:funder (@<#Organization> OR @<#Person>) * ;
+}
+
+
+<#MoneyTransfer>  EXTRA a { 
+	a [schema:MoneyTransfer];
+	schema:amount (@<#MonetaryAmount> OR @<#Number>) * ;
+}
+
+
+<#Mosque> @<#PlaceOfWorship> AND EXTRA a { 
+	a [schema:Mosque];
+}
+
+
+<#Motel> @<#LodgingBusiness> AND EXTRA a { 
+	a [schema:Motel];
+}
+
+
+<#MotorcycleDealer> @<#AutomotiveBusiness> AND EXTRA a { 
+	a [schema:MotorcycleDealer];
+}
+
+
+<#MotorcycleRepair> @<#AutomotiveBusiness> AND EXTRA a { 
+	a [schema:MotorcycleRepair];
+}
+
+
+<#Mountain> @<#Landform> AND EXTRA a { 
+	a [schema:Mountain];
+}
+
+
+<#MoveAction> @<#Action> AND EXTRA a { 
+	a [schema:DepartAction schema:ArriveAction schema:TravelAction schema:MoveAction];
+	schema:fromLocation @<#Place> * ;
+	schema:toLocation @<#Place> * ;
+}
+
+
+<#Movie> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Movie];
+	schema:actor @<#Person> * ;
+	schema:actors @<#Person> * ;
+	schema:countryOfOrigin @<#Country> * ;
+	schema:director @<#Person> * ;
+	schema:directors @<#Person> * ;
+	schema:duration @<#Duration> * ;
+	schema:musicBy (@<#Person> OR @<#MusicGroup>) * ;
+	schema:productionCompany @<#Organization> * ;
+	schema:trailer @<#VideoObject> * ;
+}
+
+
+<#MovieClip> @<#Clip> AND EXTRA a { 
+	a [schema:MovieClip];
+}
+
+
+<#MovieRentalStore> @<#Store> AND EXTRA a { 
+	a [schema:MovieRentalStore];
+}
+
+
+<#MovieSeries> @<#CreativeWorkSeries> AND EXTRA a { 
+	a [schema:MovieSeries];
+	schema:actor @<#Person> * ;
+	schema:actors @<#Person> * ;
+	schema:director @<#Person> * ;
+	schema:directors @<#Person> * ;
+	schema:musicBy (@<#Person> OR @<#MusicGroup>) * ;
+	schema:productionCompany @<#Organization> * ;
+	schema:trailer @<#VideoObject> * ;
+}
+
+
+<#MovieTheater> @<#EntertainmentBusiness> AND EXTRA a { 
+	a [schema:MovieTheater];
+	schema:screenCount @<#Number> * ;
+}
+
+
+<#MovingCompany> @<#HomeAndConstructionBusiness> AND EXTRA a { 
+	a [schema:MovingCompany];
+}
+
+
+<#Museum> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Museum];
+}
+
+
+<#MusicAlbum> @<#MusicPlaylist> AND EXTRA a { 
+	a [schema:MusicAlbum];
+	schema:albumProductionType @<#MusicAlbumProductionType> * ;
+	schema:albumRelease @<#MusicRelease> * ;
+	schema:albumReleaseType @<#MusicAlbumReleaseType> * ;
+	schema:byArtist (@<#MusicGroup> OR @<#Person>) * ;
+}
+
+
+<#MusicAlbumProductionType> @<#Enumeration> AND EXTRA a { 
+	a [schema:MusicAlbumProductionType];
+}
+
+
+<#MusicAlbumReleaseType> @<#Enumeration> AND EXTRA a { 
+	a [schema:MusicAlbumReleaseType];
+}
+
+
+<#MusicComposition> @<#CreativeWork> AND EXTRA a { 
+	a [schema:MusicComposition];
+	schema:composer (@<#Organization> OR @<#Person>) * ;
+	schema:firstPerformance @<#Event> * ;
+	schema:includedComposition @<#MusicComposition> * ;
+	schema:iswcCode @<#Text> * ;
+	schema:lyricist @<#Person> * ;
+	schema:lyrics @<#CreativeWork> * ;
+	schema:musicArrangement @<#MusicComposition> * ;
+	schema:musicCompositionForm @<#Text> * ;
+	schema:musicalKey @<#Text> * ;
+	schema:recordedAs @<#MusicRecording> * ;
+}
+
+
+<#MusicEvent> @<#Event> AND EXTRA a { 
+	a [schema:MusicEvent];
+}
+
+
+<#MusicGroup> @<#PerformingGroup> AND EXTRA a { 
+	a [schema:MusicGroup];
+	schema:album @<#MusicAlbum> * ;
+	schema:albums @<#MusicAlbum> * ;
+	schema:genre (@<#Text> OR @<#URL>) * ;
+	schema:musicGroupMember @<#Person> * ;
+	schema:track (@<#MusicRecording> OR @<#ItemList>) * ;
+	schema:tracks @<#MusicRecording> * ;
+}
+
+
+<#MusicPlaylist> @<#CreativeWork> AND EXTRA a { 
+	a [schema:MusicRelease schema:MusicAlbum schema:MusicPlaylist];
+	schema:numTracks @<#Integer> * ;
+	schema:track (@<#MusicRecording> OR @<#ItemList>) * ;
+	schema:tracks @<#MusicRecording> * ;
+}
+
+
+<#MusicRecording> @<#CreativeWork> AND EXTRA a { 
+	a [schema:MusicRecording];
+	schema:byArtist (@<#MusicGroup> OR @<#Person>) * ;
+	schema:duration @<#Duration> * ;
+	schema:inAlbum @<#MusicAlbum> * ;
+	schema:inPlaylist @<#MusicPlaylist> * ;
+	schema:isrcCode @<#Text> * ;
+	schema:recordingOf @<#MusicComposition> * ;
+}
+
+
+<#MusicRelease> @<#MusicPlaylist> AND EXTRA a { 
+	a [schema:MusicRelease];
+	schema:catalogNumber @<#Text> * ;
+	schema:creditedTo (@<#Organization> OR @<#Person>) * ;
+	schema:duration @<#Duration> * ;
+	schema:musicReleaseFormat @<#MusicReleaseFormatType> * ;
+	schema:recordLabel @<#Organization> * ;
+	schema:releaseOf @<#MusicAlbum> * ;
+}
+
+
+<#MusicReleaseFormatType> @<#Enumeration> AND EXTRA a { 
+	a [schema:MusicReleaseFormatType];
+}
+
+
+<#MusicStore> @<#Store> AND EXTRA a { 
+	a [schema:MusicStore];
+}
+
+
+<#MusicVenue> @<#CivicStructure> AND EXTRA a { 
+	a [schema:MusicVenue];
+}
+
+
+<#MusicVideoObject> @<#MediaObject> AND EXTRA a { 
+	a [schema:MusicVideoObject];
+}
+
+
+<#NailSalon> @<#HealthAndBeautyBusiness> AND EXTRA a { 
+	a [schema:NailSalon];
+}
+
+
+<#NewsArticle> @<#Article> AND EXTRA a { 
+	a [schema:NewsArticle];
+	schema:dateline @<#Text> * ;
+	schema:printColumn @<#Text> * ;
+	schema:printEdition @<#Text> * ;
+	schema:printPage @<#Text> * ;
+	schema:printSection @<#Text> * ;
+}
+
+
+<#NGO> @<#Organization> AND EXTRA a { 
+	a [schema:NGO];
+}
+
+
+<#NightClub> @<#EntertainmentBusiness> AND EXTRA a { 
+	a [schema:NightClub];
+}
+
+
+<#Notary> @<#LegalService> AND EXTRA a { 
+	a [schema:Notary];
+}
+
+
+<#NoteDigitalDocument> @<#DigitalDocument> AND EXTRA a { 
+	a [schema:NoteDigitalDocument];
+}
+
+
+<#NutritionInformation> @<#StructuredValue> AND EXTRA a { 
+	a [schema:NutritionInformation];
+	schema:calories @<#Energy> * ;
+	schema:carbohydrateContent @<#Mass> * ;
+	schema:cholesterolContent @<#Mass> * ;
+	schema:fatContent @<#Mass> * ;
+	schema:fiberContent @<#Mass> * ;
+	schema:proteinContent @<#Mass> * ;
+	schema:saturatedFatContent @<#Mass> * ;
+	schema:servingSize @<#Text> * ;
+	schema:sodiumContent @<#Mass> * ;
+	schema:sugarContent @<#Mass> * ;
+	schema:transFatContent @<#Mass> * ;
+	schema:unsaturatedFatContent @<#Mass> * ;
+}
+
+
+<#Occupation> @<#Intangible> AND EXTRA a { 
+	a [schema:Occupation];
+	schema:estimatedSalary (@<#Number> OR @<#MonetaryAmountDistribution> OR @<#MonetaryAmount>) * ;
+	schema:experienceRequirements @<#Text> * ;
+	schema:occupationLocation @<#AdministrativeArea> * ;
+	schema:responsibilities @<#Text> * ;
+	schema:skills (@<#Text> OR @<#DefinedTerm>) * ;
+}
+
+
+<#OceanBodyOfWater> @<#BodyOfWater> AND EXTRA a { 
+	a [schema:OceanBodyOfWater];
+}
+
+
+<#Offer> @<#Intangible> AND EXTRA a { 
+	a [schema:AggregateOffer schema:Offer];
+	schema:acceptedPaymentMethod (@<#LoanOrCredit> OR @<#PaymentMethod>) * ;
+	schema:addOn @<#Offer> * ;
+	schema:advanceBookingRequirement @<#QuantitativeValue> * ;
+	schema:aggregateRating @<#AggregateRating> * ;
+	schema:areaServed (@<#AdministrativeArea> OR @<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+	schema:availability @<#ItemAvailability> * ;
+	schema:availabilityEnds (@<#DateTime> OR @<#Time> OR @<#Date>) * ;
+	schema:availabilityStarts (@<#Date> OR @<#Time> OR @<#DateTime>) * ;
+	schema:availableAtOrFrom @<#Place> * ;
+	schema:availableDeliveryMethod @<#DeliveryMethod> * ;
+	schema:businessFunction @<#BusinessFunction> * ;
+	schema:category (@<#Thing> OR @<#URL> OR @<#PhysicalActivityCategory> OR @<#Text>) * ;
+	schema:deliveryLeadTime @<#QuantitativeValue> * ;
+	schema:eligibleCustomerType @<#BusinessEntityType> * ;
+	schema:eligibleDuration @<#QuantitativeValue> * ;
+	schema:eligibleQuantity @<#QuantitativeValue> * ;
+	schema:eligibleRegion (@<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+	schema:eligibleTransactionVolume @<#PriceSpecification> * ;
+	schema:gtin12 @<#Text> * ;
+	schema:gtin13 @<#Text> * ;
+	schema:gtin14 @<#Text> * ;
+	schema:gtin8 @<#Text> * ;
+	schema:includesObject @<#TypeAndQuantityNode> * ;
+	schema:inventoryLevel @<#QuantitativeValue> * ;
+	schema:itemCondition @<#OfferItemCondition> * ;
+	schema:itemOffered (@<#AggregateOffer> OR @<#Product> OR @<#CreativeWork> OR @<#Service> OR @<#MenuItem> OR @<#Trip> OR @<#Event>) * ;
+	schema:mpn @<#Text> * ;
+	schema:offeredBy (@<#Organization> OR @<#Person>) * ;
+	schema:price (@<#Text> OR @<#Number>) * ;
+	schema:priceCurrency @<#Text> * ;
+	schema:priceSpecification @<#PriceSpecification> * ;
+	schema:priceValidUntil @<#Date> * ;
+	schema:review @<#Review> * ;
+	schema:reviews @<#Review> * ;
+	schema:seller (@<#Organization> OR @<#Person>) * ;
+	schema:serialNumber @<#Text> * ;
+	schema:sku @<#Text> * ;
+	schema:validFrom (@<#Date> OR @<#DateTime>) * ;
+	schema:validThrough (@<#Date> OR @<#DateTime>) * ;
+	schema:warranty @<#WarrantyPromise> * ;
+}
+
+
+<#OfferCatalog> @<#ItemList> AND EXTRA a { 
+	a [schema:OfferCatalog];
+}
+
+
+<#OfferItemCondition> @<#Enumeration> AND EXTRA a { 
+	a [schema:OfferItemCondition];
+}
+
+
+<#OfficeEquipmentStore> @<#Store> AND EXTRA a { 
+	a [schema:OfficeEquipmentStore];
+}
+
+
+<#OnDemandEvent> @<#PublicationEvent> AND EXTRA a { 
+	a [schema:OnDemandEvent];
+}
+
+
+<#OpeningHoursSpecification> @<#StructuredValue> AND EXTRA a { 
+	a [schema:OpeningHoursSpecification];
+	schema:closes @<#Time> * ;
+	schema:dayOfWeek @<#DayOfWeek> * ;
+	schema:opens @<#Time> * ;
+	schema:validFrom (@<#Date> OR @<#DateTime>) * ;
+	schema:validThrough (@<#Date> OR @<#DateTime>) * ;
+}
+
+
+<#Order> @<#Intangible> AND EXTRA a { 
+	a [schema:Order];
+	schema:acceptedOffer @<#Offer> * ;
+	schema:billingAddress @<#PostalAddress> * ;
+	schema:broker (@<#Organization> OR @<#Person>) * ;
+	schema:confirmationNumber @<#Text> * ;
+	schema:customer (@<#Organization> OR @<#Person>) * ;
+	schema:discount (@<#Text> OR @<#Number>) * ;
+	schema:discountCode @<#Text> * ;
+	schema:discountCurrency @<#Text> * ;
+	schema:isGift @<#Boolean> * ;
+	schema:merchant (@<#Organization> OR @<#Person>) * ;
+	schema:orderDate (@<#DateTime> OR @<#Date>) * ;
+	schema:orderDelivery @<#ParcelDelivery> * ;
+	schema:orderNumber @<#Text> * ;
+	schema:orderStatus @<#OrderStatus> * ;
+	schema:orderedItem (@<#OrderItem> OR @<#Product> OR @<#Service>) * ;
+	schema:partOfInvoice @<#Invoice> * ;
+	schema:paymentDue @<#DateTime> * ;
+	schema:paymentDueDate (@<#Date> OR @<#DateTime>) * ;
+	schema:paymentMethod @<#PaymentMethod> * ;
+	schema:paymentMethodId @<#Text> * ;
+	schema:paymentUrl @<#URL> * ;
+	schema:seller (@<#Organization> OR @<#Person>) * ;
+}
+
+
+<#OrderAction> @<#TradeAction> AND EXTRA a { 
+	a [schema:OrderAction];
+	schema:deliveryMethod @<#DeliveryMethod> * ;
+}
+
+
+<#OrderItem> @<#Intangible> AND EXTRA a { 
+	a [schema:OrderItem];
+	schema:orderDelivery @<#ParcelDelivery> * ;
+	schema:orderItemNumber @<#Text> * ;
+	schema:orderItemStatus @<#OrderStatus> * ;
+	schema:orderQuantity @<#Number> * ;
+	schema:orderedItem (@<#OrderItem> OR @<#Product> OR @<#Service>) * ;
+}
+
+
+<#OrderStatus> @<#Enumeration> AND EXTRA a { 
+	a [schema:OrderStatus];
+}
+
+
+<#Organization> @<#Thing> AND EXTRA a { 
+	a [schema:AutoRepair schema:PawnShop schema:ExerciseGym schema:RealEstateAgent schema:Hostel schema:SportsOrganization schema:DanceGroup schema:EducationalOrganization schema:HomeAndConstructionBusiness schema:AdultEntertainment schema:MovingCompany schema:SportsClub schema:ClothingStore schema:SportingGoodsStore schema:BikeStore schema:Notary schema:AutoPartsStore schema:GardenStore schema:AutoBodyShop schema:BookStore schema:LocalBusiness schema:FastFoodRestaurant schema:HomeGoodsStore schema:SportsTeam schema:School schema:TelevisionStation schema:Store schema:HairSalon schema:OfficeEquipmentStore schema:DaySpa schema:SportsActivityLocation schema:JewelryStore schema:ProfessionalService schema:DryCleaningOrLaundry schema:Bakery schema:ElementarySchool schema:MovieTheater schema:AutoRental schema:GroceryStore schema:OutletStore schema:MotorcycleDealer schema:InsuranceAgency schema:Restaurant schema:MensClothingStore schema:LegalService schema:LodgingBusiness schema:RecyclingCenter schema:LiquorStore schema:ArtGallery schema:StadiumOrArena schema:TireShop schema:SelfStorage schema:Hospital schema:PoliceStation schema:Casino schema:HousePainter schema:NightClub schema:MusicGroup schema:Corporation schema:TattooParlor schema:AmusementPark schema:Brewery schema:Physician schema:Attorney schema:HealthClub schema:HardwareStore schema:ConvenienceStore schema:ComputerStore schema:Preschool schema:CafeOrCoffeeShop schema:Locksmith schema:Dentist schema:Distillery schema:RadioStation schema:DepartmentStore schema:IceCreamShop schema:GeneralContractor schema:AnimalShelter schema:ToyStore schema:Motel schema:MusicStore schema:ComedyClub schema:FinancialService schema:WholesaleStore schema:TheaterGroup schema:ShoppingCenter schema:Florist schema:MotorcycleRepair schema:MovieRentalStore schema:WorkersUnion schema:Winery schema:SkiResort schema:MedicalOrganization schema:AutoDealer schema:AutomatedTeller schema:GolfCourse schema:NGO schema:EmergencyService schema:PublicSwimmingPool schema:FurnitureStore schema:GovernmentOffice schema:FoodEstablishment schema:EmploymentAgency schema:Airline schema:PerformingGroup schema:GasStation schema:HealthAndBeautyBusiness schema:AccountingService schema:FireStation schema:ChildCare schema:Resort schema:Hotel schema:MobilePhoneStore schema:AutoWash schema:Electrician schema:BarOrPub schema:CollegeOrUniversity schema:TennisComplex schema:ElectronicsStore schema:AutomotiveBusiness schema:BankOrCreditUnion schema:MiddleSchool schema:RoofingContractor schema:HVACBusiness schema:BowlingAlley schema:BeautySalon schema:Pharmacy schema:TravelAgency schema:BedAndBreakfast schema:Library schema:PostOffice schema:Campground schema:TouristInformationCenter schema:NailSalon schema:GovernmentOrganization schema:ShoeStore schema:Plumber schema:PetStore schema:EntertainmentBusiness schema:HighSchool schema:InternetCafe schema:HobbyShop schema:Organization];
+	schema:address (@<#PostalAddress> OR @<#Text>) * ;
+	schema:aggregateRating @<#AggregateRating> * ;
+	schema:alumni @<#Person> * ;
+	schema:areaServed (@<#AdministrativeArea> OR @<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+	schema:award @<#Text> * ;
+	schema:awards @<#Text> * ;
+	schema:brand (@<#Brand> OR @<#Organization>) * ;
+	schema:contactPoint @<#ContactPoint> * ;
+	schema:contactPoints @<#ContactPoint> * ;
+	schema:department @<#Organization> * ;
+	schema:dissolutionDate @<#Date> * ;
+	schema:duns @<#Text> * ;
+	schema:email @<#Text> * ;
+	schema:employee @<#Person> * ;
+	schema:employees @<#Person> * ;
+	schema:event @<#Event> * ;
+	schema:events @<#Event> * ;
+	schema:faxNumber @<#Text> * ;
+	schema:founder @<#Person> * ;
+	schema:founders @<#Person> * ;
+	schema:foundingDate @<#Date> * ;
+	schema:foundingLocation @<#Place> * ;
+	schema:funder (@<#Organization> OR @<#Person>) * ;
+	schema:globalLocationNumber @<#Text> * ;
+	schema:hasOfferCatalog @<#OfferCatalog> * ;
+	schema:hasPOS @<#Place> * ;
+	schema:interactionStatistic @<#InteractionCounter> * ;
+	schema:isicV4 @<#Text> * ;
+	schema:legalName @<#Text> * ;
+	schema:leiCode @<#Text> * ;
+	schema:location (@<#VirtualLocation> OR @<#Place> OR @<#Text> OR @<#PostalAddress>) * ;
+	schema:logo (@<#ImageObject> OR @<#URL>) * ;
+	schema:makesOffer @<#Offer> * ;
+	schema:member (@<#Organization> OR @<#Person>) * ;
+	schema:memberOf (@<#Organization> OR @<#ProgramMembership>) * ;
+	schema:members (@<#Person> OR @<#Organization>) * ;
+	schema:naics @<#Text> * ;
+	schema:numberOfEmployees @<#QuantitativeValue> * ;
+	schema:owns (@<#OwnershipInfo> OR @<#Product>) * ;
+	schema:parentOrganization @<#Organization> * ;
+	schema:publishingPrinciples (@<#CreativeWork> OR @<#URL>) * ;
+	schema:review @<#Review> * ;
+	schema:reviews @<#Review> * ;
+	schema:seeks @<#Demand> * ;
+	schema:serviceArea (@<#Place> OR @<#GeoShape> OR @<#AdministrativeArea>) * ;
+	schema:slogan @<#Text> * ;
+	schema:sponsor (@<#Organization> OR @<#Person>) * ;
+	schema:subOrganization @<#Organization> * ;
+	schema:taxID @<#Text> * ;
+	schema:telephone @<#Text> * ;
+	schema:vatID @<#Text> * ;
+}
+
+
+<#OrganizationRole> @<#Role> AND EXTRA a { 
+	a [schema:EmployeeRole schema:OrganizationRole];
+	schema:numberedPosition @<#Number> * ;
+}
+
+
+<#OrganizeAction> @<#Action> AND EXTRA a { 
+	a [schema:AllocateAction schema:CancelAction schema:ApplyAction schema:RejectAction schema:ScheduleAction schema:ReserveAction schema:AuthorizeAction schema:PlanAction schema:BookmarkAction schema:AssignAction schema:AcceptAction schema:OrganizeAction];
+}
+
+
+<#OutletStore> @<#Store> AND EXTRA a { 
+	a [schema:OutletStore];
+}
+
+
+<#OwnershipInfo> @<#StructuredValue> AND EXTRA a { 
+	a [schema:OwnershipInfo];
+	schema:acquiredFrom (@<#Organization> OR @<#Person>) * ;
+	schema:ownedFrom @<#DateTime> * ;
+	schema:ownedThrough @<#DateTime> * ;
+	schema:typeOfGood (@<#Service> OR @<#Product>) * ;
+}
+
+
+<#PaintAction> @<#CreateAction> AND EXTRA a { 
+	a [schema:PaintAction];
+}
+
+
+<#Painting> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Painting];
+}
+
+
+<#ParcelDelivery> @<#Intangible> AND EXTRA a { 
+	a [schema:ParcelDelivery];
+	schema:carrier @<#Organization> * ;
+	schema:deliveryAddress @<#PostalAddress> * ;
+	schema:deliveryStatus @<#DeliveryEvent> * ;
+	schema:expectedArrivalFrom (@<#DateTime> OR @<#Date>) * ;
+	schema:expectedArrivalUntil (@<#DateTime> OR @<#Date>) * ;
+	schema:hasDeliveryMethod @<#DeliveryMethod> * ;
+	schema:itemShipped @<#Product> * ;
+	schema:originAddress @<#PostalAddress> * ;
+	schema:partOfOrder @<#Order> * ;
+	schema:provider (@<#Person> OR @<#Organization>) * ;
+	schema:trackingNumber @<#Text> * ;
+	schema:trackingUrl @<#URL> * ;
+}
+
+
+<#ParcelService> @<#DeliveryMethod> AND EXTRA a { 
+	a [schema:ParcelService];
+}
+
+
+<#ParentAudience> @<#PeopleAudience> AND EXTRA a { 
+	a [schema:ParentAudience];
+	schema:childMaxAge @<#Number> * ;
+	schema:childMinAge @<#Number> * ;
+}
+
+
+<#Park> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Park];
+}
+
+
+<#ParkingFacility> @<#CivicStructure> AND EXTRA a { 
+	a [schema:ParkingFacility];
+}
+
+
+<#PawnShop> @<#Store> AND EXTRA a { 
+	a [schema:PawnShop];
+}
+
+
+<#PayAction> @<#TradeAction> AND EXTRA a { 
+	a [schema:PayAction];
+	schema:recipient (@<#Organization> OR @<#Audience> OR @<#ContactPoint> OR @<#Person>) * ;
+}
+
+
+<#PaymentCard> @<#FinancialProduct> AND EXTRA a { 
+	a [schema:CreditCard schema:PaymentCard];
+}
+
+
+<#PaymentChargeSpecification> @<#PriceSpecification> AND EXTRA a { 
+	a [schema:PaymentChargeSpecification];
+	schema:appliesToDeliveryMethod @<#DeliveryMethod> * ;
+	schema:appliesToPaymentMethod @<#PaymentMethod> * ;
+}
+
+
+<#PaymentMethod> @<#Enumeration> AND EXTRA a { 
+	a [schema:PaymentCard schema:CreditCard schema:PaymentMethod];
+}
+
+
+<#PaymentService> @<#FinancialProduct> AND EXTRA a { 
+	a [schema:PaymentService];
+}
+
+
+<#PaymentStatusType> @<#Enumeration> AND EXTRA a { 
+	a [schema:PaymentStatusType];
+}
+
+
+<#PeopleAudience> @<#Audience> AND EXTRA a { 
+	a [schema:ParentAudience schema:PeopleAudience];
+	schema:requiredGender @<#Text> * ;
+	schema:requiredMaxAge @<#Integer> * ;
+	schema:requiredMinAge @<#Integer> * ;
+	schema:suggestedGender @<#Text> * ;
+	schema:suggestedMaxAge @<#Number> * ;
+	schema:suggestedMinAge @<#Number> * ;
+}
+
+
+<#PerformAction> @<#PlayAction> AND EXTRA a { 
+	a [schema:PerformAction];
+	schema:entertainmentBusiness @<#EntertainmentBusiness> * ;
+}
+
+
+<#PerformanceRole> @<#Role> AND EXTRA a { 
+	a [schema:PerformanceRole];
+	schema:characterName @<#Text> * ;
+}
+
+
+<#PerformingArtsTheater> @<#CivicStructure> AND EXTRA a { 
+	a [schema:PerformingArtsTheater];
+}
+
+
+<#PerformingGroup> @<#Organization> AND EXTRA a { 
+	a [schema:TheaterGroup schema:DanceGroup schema:MusicGroup schema:PerformingGroup];
+}
+
+
+<#Periodical> @<#CreativeWorkSeries> AND EXTRA a { 
+	a [schema:Periodical];
+}
+
+
+<#Permit> @<#Intangible> AND EXTRA a { 
+	a [schema:GovernmentPermit schema:Permit];
+	schema:issuedBy @<#Organization> * ;
+	schema:issuedThrough @<#Service> * ;
+	schema:permitAudience @<#Audience> * ;
+	schema:validFor @<#Duration> * ;
+	schema:validFrom (@<#Date> OR @<#DateTime>) * ;
+	schema:validIn @<#AdministrativeArea> * ;
+	schema:validUntil @<#Date> * ;
+}
+
+
+<#PetStore> @<#Store> AND EXTRA a { 
+	a [schema:PetStore];
+}
+
+
+<#Pharmacy> @<#MedicalOrganization> AND EXTRA a { 
+	a [schema:Pharmacy];
+}
+
+
+<#Photograph> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Photograph];
+}
+
+
+<#PhotographAction> @<#CreateAction> AND EXTRA a { 
+	a [schema:PhotographAction];
+}
+
+
+<#PhysicalActivity>  EXTRA a { 
+	a [schema:PhysicalActivity];
+	schema:category (@<#Thing> OR @<#URL> OR @<#PhysicalActivityCategory> OR @<#Text>) * ;
+}
+
+
+<#PhysicalActivityCategory>  EXTRA a { 
+	a [schema:PhysicalActivityCategory];
+}
+
+
+<#Physician> @<#MedicalOrganization> AND EXTRA a { 
+	a [schema:Physician];
+}
+
+
+<#Place> @<#Thing> AND EXTRA a { 
+	a [schema:AutoRepair schema:PawnShop schema:ExerciseGym schema:City schema:BusStop schema:SeaBodyOfWater schema:TrainStation schema:RealEstateAgent schema:Mosque schema:Hostel schema:EducationalOrganization schema:HomeAndConstructionBusiness schema:AdultEntertainment schema:MovingCompany schema:Room schema:SportsClub schema:Bridge schema:ClothingStore schema:CityHall schema:SportingGoodsStore schema:BikeStore schema:BuddhistTemple schema:Notary schema:TouristAttraction schema:HinduTemple schema:AutoPartsStore schema:GardenStore schema:AutoBodyShop schema:BookStore schema:LocalBusiness schema:FastFoodRestaurant schema:Waterfall schema:Zoo schema:Volcano schema:HomeGoodsStore schema:LakeBodyOfWater schema:School schema:TelevisionStation schema:Store schema:HairSalon schema:OfficeEquipmentStore schema:DaySpa schema:SportsActivityLocation schema:Pond schema:JewelryStore schema:PerformingArtsTheater schema:GatedResidenceCommunity schema:ProfessionalService schema:AdministrativeArea schema:DryCleaningOrLaundry schema:Bakery schema:Country schema:PlaceOfWorship schema:ElementarySchool schema:Embassy schema:MovieTheater schema:Beach schema:AutoRental schema:GroceryStore schema:OutletStore schema:BodyOfWater schema:HotelRoom schema:MotorcycleDealer schema:InsuranceAgency schema:Restaurant schema:DefenceEstablishment schema:Courthouse schema:House schema:Church schema:MensClothingStore schema:LegalService schema:LodgingBusiness schema:RecyclingCenter schema:Mountain schema:Aquarium schema:Landform schema:LiquorStore schema:Synagogue schema:ArtGallery schema:StadiumOrArena schema:TireShop schema:Hospital schema:SelfStorage schema:Park schema:PoliceStation schema:ApartmentComplex schema:Casino schema:HousePainter schema:NightClub schema:TattooParlor schema:AmusementPark schema:Brewery schema:Preschool schema:Attorney schema:HealthClub schema:HardwareStore schema:ConvenienceStore schema:ComputerStore schema:CafeOrCoffeeShop schema:Locksmith schema:Dentist schema:Distillery schema:RadioStation schema:DepartmentStore schema:IceCreamShop schema:GeneralContractor schema:AnimalShelter schema:ToyStore schema:Residence schema:Motel schema:MusicStore schema:Crematorium schema:Suite schema:ComedyClub schema:MusicVenue schema:FinancialService schema:WholesaleStore schema:ShoppingCenter schema:Florist schema:MotorcycleRepair schema:MovieRentalStore schema:Winery schema:OceanBodyOfWater schema:CivicStructure schema:SkiResort schema:AutoDealer schema:AutomatedTeller schema:Canal schema:GolfCourse schema:GovernmentBuilding schema:EmergencyService schema:PublicSwimmingPool schema:FurnitureStore schema:GovernmentOffice schema:FoodEstablishment schema:State schema:EmploymentAgency schema:Playground schema:CampingPitch schema:Apartment schema:RiverBodyOfWater schema:GasStation schema:FireStation schema:HealthAndBeautyBusiness schema:AccountingService schema:ChildCare schema:Resort schema:Hotel schema:Cemetery schema:MeetingRoom schema:BusStation schema:MobilePhoneStore schema:AutoWash schema:Reservoir schema:Electrician schema:CatholicChurch schema:CollegeOrUniversity schema:BarOrPub schema:EventVenue schema:TennisComplex schema:ElectronicsStore schema:AutomotiveBusiness schema:BankOrCreditUnion schema:Airport schema:MiddleSchool schema:RoofingContractor schema:HVACBusiness schema:SubwayStation schema:BowlingAlley schema:Museum schema:BeautySalon schema:LandmarksOrHistoricalBuildings schema:TaxiStand schema:RVPark schema:TravelAgency schema:BedAndBreakfast schema:Continent schema:Campground schema:Library schema:PostOffice schema:TouristInformationCenter schema:NailSalon schema:ParkingFacility schema:LegislativeBuilding schema:ShoeStore schema:Accommodation schema:SingleFamilyResidence schema:Plumber schema:PetStore schema:HighSchool schema:EntertainmentBusiness schema:InternetCafe schema:HobbyShop schema:Place];
+	schema:additionalProperty @<#PropertyValue> * ;
+	schema:address (@<#PostalAddress> OR @<#Text>) * ;
+	schema:aggregateRating @<#AggregateRating> * ;
+	schema:amenityFeature @<#LocationFeatureSpecification> * ;
+	schema:branchCode @<#Text> * ;
+	schema:containedIn @<#Place> * ;
+	schema:containedInPlace @<#Place> * ;
+	schema:containsPlace @<#Place> * ;
+	schema:event @<#Event> * ;
+	schema:events @<#Event> * ;
+	schema:faxNumber @<#Text> * ;
+	schema:geo (@<#GeoShape> OR @<#GeoCoordinates>) * ;
+	schema:geoContains (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoCoveredBy (@<#Place> OR @<#GeospatialGeometry>) * ;
+	schema:geoCovers (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoCrosses (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoDisjoint (@<#Place> OR @<#GeospatialGeometry>) * ;
+	schema:geoEquals (@<#Place> OR @<#GeospatialGeometry>) * ;
+	schema:geoIntersects (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoOverlaps (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoTouches (@<#GeospatialGeometry> OR @<#Place>) * ;
+	schema:geoWithin (@<#Place> OR @<#GeospatialGeometry>) * ;
+	schema:globalLocationNumber @<#Text> * ;
+	schema:hasMap (@<#URL> OR @<#Map>) * ;
+	schema:isAccessibleForFree @<#Boolean> * ;
+	schema:isicV4 @<#Text> * ;
+	schema:latitude (@<#Text> OR @<#Number>) * ;
+	schema:logo (@<#ImageObject> OR @<#URL>) * ;
+	schema:longitude (@<#Text> OR @<#Number>) * ;
+	schema:map @<#URL> * ;
+	schema:maps @<#URL> * ;
+	schema:maximumAttendeeCapacity @<#Integer> * ;
+	schema:openingHoursSpecification @<#OpeningHoursSpecification> * ;
+	schema:photo (@<#ImageObject> OR @<#Photograph>) * ;
+	schema:photos (@<#ImageObject> OR @<#Photograph>) * ;
+	schema:publicAccess @<#Boolean> * ;
+	schema:review @<#Review> * ;
+	schema:reviews @<#Review> * ;
+	schema:slogan @<#Text> * ;
+	schema:smokingAllowed @<#Boolean> * ;
+	schema:specialOpeningHoursSpecification @<#OpeningHoursSpecification> * ;
+	schema:telephone @<#Text> * ;
+}
+
+
+<#PlaceOfWorship> @<#CivicStructure> AND EXTRA a { 
+	a [schema:BuddhistTemple schema:Mosque schema:Church schema:Synagogue schema:HinduTemple schema:CatholicChurch schema:PlaceOfWorship];
+}
+
+
+<#PlanAction> @<#OrganizeAction> AND EXTRA a { 
+	a [schema:ScheduleAction schema:CancelAction schema:ReserveAction schema:PlanAction];
+	schema:scheduledTime @<#DateTime> * ;
+}
+
+
+<#PlayAction> @<#Action> AND EXTRA a { 
+	a [schema:ExerciseAction schema:PerformAction schema:PlayAction];
+	schema:audience @<#Audience> * ;
+	schema:event @<#Event> * ;
+}
+
+
+<#Playground> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Playground];
+}
+
+
+<#Plumber> @<#HomeAndConstructionBusiness> AND EXTRA a { 
+	a [schema:Plumber];
+}
+
+
+<#PoliceStation> @<#EmergencyService> AND EXTRA a { 
+	a [schema:PoliceStation];
+}
+
+
+<#Pond> @<#BodyOfWater> AND EXTRA a { 
+	a [schema:Pond];
+}
+
+
+<#PostalAddress> @<#ContactPoint> AND EXTRA a { 
+	a [schema:PostalAddress];
+	schema:addressCountry (@<#Country> OR @<#Text>) * ;
+	schema:addressLocality @<#Text> * ;
+	schema:addressRegion @<#Text> * ;
+	schema:postOfficeBoxNumber @<#Text> * ;
+	schema:postalCode @<#Text> * ;
+	schema:streetAddress @<#Text> * ;
+}
+
+
+<#PostOffice> @<#GovernmentOffice> AND EXTRA a { 
+	a [schema:PostOffice];
+}
+
+
+<#PreOrderAction> @<#TradeAction> AND EXTRA a { 
+	a [schema:PreOrderAction];
+}
+
+
+<#PrependAction> @<#InsertAction> AND EXTRA a { 
+	a [schema:PrependAction];
+}
+
+
+<#Preschool> @<#EducationalOrganization> AND EXTRA a { 
+	a [schema:Preschool];
+}
+
+
+<#PresentationDigitalDocument> @<#DigitalDocument> AND EXTRA a { 
+	a [schema:PresentationDigitalDocument];
+}
+
+
+<#PriceSpecification> @<#StructuredValue> AND EXTRA a { 
+	a [schema:PaymentChargeSpecification schema:DeliveryChargeSpecification schema:CompoundPriceSpecification schema:UnitPriceSpecification schema:PriceSpecification];
+	schema:eligibleQuantity @<#QuantitativeValue> * ;
+	schema:eligibleTransactionVolume @<#PriceSpecification> * ;
+	schema:maxPrice @<#Number> * ;
+	schema:minPrice @<#Number> * ;
+	schema:price (@<#Text> OR @<#Number>) * ;
+	schema:priceCurrency @<#Text> * ;
+	schema:validFrom (@<#Date> OR @<#DateTime>) * ;
+	schema:validThrough (@<#Date> OR @<#DateTime>) * ;
+	schema:valueAddedTaxIncluded @<#Boolean> * ;
+}
+
+
+<#Product> @<#Thing> AND EXTRA a { 
+	a [schema:IndividualProduct schema:ProductModel schema:Car schema:SomeProducts schema:Vehicle schema:Product];
+	schema:additionalProperty @<#PropertyValue> * ;
+	schema:aggregateRating @<#AggregateRating> * ;
+	schema:audience @<#Audience> * ;
+	schema:award @<#Text> * ;
+	schema:awards @<#Text> * ;
+	schema:brand (@<#Brand> OR @<#Organization>) * ;
+	schema:category (@<#Thing> OR @<#URL> OR @<#PhysicalActivityCategory> OR @<#Text>) * ;
+	schema:color @<#Text> * ;
+	schema:depth (@<#Distance> OR @<#QuantitativeValue>) * ;
+	schema:gtin12 @<#Text> * ;
+	schema:gtin13 @<#Text> * ;
+	schema:gtin14 @<#Text> * ;
+	schema:gtin8 @<#Text> * ;
+	schema:height (@<#QuantitativeValue> OR @<#Distance>) * ;
+	schema:isAccessoryOrSparePartFor @<#Product> * ;
+	schema:isConsumableFor @<#Product> * ;
+	schema:isRelatedTo (@<#Product> OR @<#Service>) * ;
+	schema:isSimilarTo (@<#Service> OR @<#Product>) * ;
+	schema:itemCondition @<#OfferItemCondition> * ;
+	schema:logo (@<#ImageObject> OR @<#URL>) * ;
+	schema:manufacturer @<#Organization> * ;
+	schema:material (@<#Product> OR @<#URL> OR @<#Text>) * ;
+	schema:model (@<#ProductModel> OR @<#Text>) * ;
+	schema:mpn @<#Text> * ;
+	schema:offers (@<#Demand> OR @<#Offer>) * ;
+	schema:productID @<#Text> * ;
+	schema:productionDate @<#Date> * ;
+	schema:purchaseDate @<#Date> * ;
+	schema:releaseDate @<#Date> * ;
+	schema:review @<#Review> * ;
+	schema:reviews @<#Review> * ;
+	schema:sku @<#Text> * ;
+	schema:slogan @<#Text> * ;
+	schema:weight @<#QuantitativeValue> * ;
+	schema:width (@<#QuantitativeValue> OR @<#Distance>) * ;
+}
+
+
+<#ProductModel> @<#Product> AND EXTRA a { 
+	a [schema:ProductModel];
+	schema:isVariantOf @<#ProductModel> * ;
+	schema:predecessorOf @<#ProductModel> * ;
+	schema:successorOf @<#ProductModel> * ;
+}
+
+
+<#ProfessionalService> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:ProfessionalService];
+}
+
+
+<#ProfilePage> @<#WebPage> AND EXTRA a { 
+	a [schema:ProfilePage];
+}
+
+
+<#ProgramMembership> @<#Intangible> AND EXTRA a { 
+	a [schema:ProgramMembership];
+	schema:hostingOrganization @<#Organization> * ;
+	schema:member (@<#Organization> OR @<#Person>) * ;
+	schema:members (@<#Person> OR @<#Organization>) * ;
+	schema:membershipNumber @<#Text> * ;
+	schema:programName @<#Text> * ;
+}
+
+
+<#PronounceableText>  EXTRA a { 
+	a [schema:PronounceableText];
+	schema:inLanguage (@<#Text> OR @<#Language>) * ;
+}
+
+
+<#PropertyValueSpecification> @<#Intangible> AND EXTRA a { 
+	a [schema:PropertyValueSpecification];
+	schema:defaultValue (@<#Thing> OR @<#Text>) * ;
+	schema:maxValue @<#Number> * ;
+	schema:minValue @<#Number> * ;
+	schema:multipleValues @<#Boolean> * ;
+	schema:readonlyValue @<#Boolean> * ;
+	schema:stepValue @<#Number> * ;
+	schema:valueMaxLength @<#Number> * ;
+	schema:valueMinLength @<#Number> * ;
+	schema:valueName @<#Text> * ;
+	schema:valuePattern @<#Text> * ;
+	schema:valueRequired @<#Boolean> * ;
+}
+
+
+<#PublicationEvent> @<#Event> AND EXTRA a { 
+	a [schema:BroadcastEvent schema:OnDemandEvent schema:PublicationEvent];
+	schema:free @<#Boolean> * ;
+	schema:isAccessibleForFree @<#Boolean> * ;
+	schema:publishedOn @<#BroadcastService> * ;
+}
+
+
+<#PublicationIssue> @<#CreativeWork> AND EXTRA a { 
+	a [schema:PublicationIssue];
+	schema:issueNumber (@<#Text> OR @<#Integer>) * ;
+	schema:pageEnd (@<#Integer> OR @<#Text>) * ;
+	schema:pageStart (@<#Text> OR @<#Integer>) * ;
+	schema:pagination @<#Text> * ;
+}
+
+
+<#PublicationVolume> @<#CreativeWork> AND EXTRA a { 
+	a [schema:PublicationVolume];
+	schema:pageEnd (@<#Integer> OR @<#Text>) * ;
+	schema:pageStart (@<#Text> OR @<#Integer>) * ;
+	schema:pagination @<#Text> * ;
+	schema:volumeNumber (@<#Integer> OR @<#Text>) * ;
+}
+
+
+<#PublicSwimmingPool> @<#SportsActivityLocation> AND EXTRA a { 
+	a [schema:PublicSwimmingPool];
+}
+
+
+<#QAPage> @<#WebPage> AND EXTRA a { 
+	a [schema:QAPage];
+}
+
+
+<#QualitativeValue> @<#Enumeration> AND EXTRA a { 
+	a [schema:BedType schema:DriveWheelConfigurationValue schema:SteeringPositionValue schema:QualitativeValue];
+	schema:additionalProperty @<#PropertyValue> * ;
+	schema:equal @<#QualitativeValue> * ;
+	schema:greater @<#QualitativeValue> * ;
+	schema:greaterOrEqual @<#QualitativeValue> * ;
+	schema:lesser @<#QualitativeValue> * ;
+	schema:lesserOrEqual @<#QualitativeValue> * ;
+	schema:nonEqual @<#QualitativeValue> * ;
+	schema:valueReference (@<#PropertyValue> OR @<#StructuredValue> OR @<#QualitativeValue> OR @<#QuantitativeValue> OR @<#Enumeration>) * ;
+}
+
+
+<#QuantitativeValue> @<#StructuredValue> AND EXTRA a { 
+	a [schema:QuantitativeValue];
+	schema:additionalProperty @<#PropertyValue> * ;
+	schema:maxValue @<#Number> * ;
+	schema:minValue @<#Number> * ;
+	schema:unitCode (@<#URL> OR @<#Text>) * ;
+	schema:unitText @<#Text> * ;
+	schema:value (@<#Boolean> OR @<#StructuredValue> OR @<#Number> OR @<#Text>) * ;
+	schema:valueReference (@<#PropertyValue> OR @<#StructuredValue> OR @<#QualitativeValue> OR @<#QuantitativeValue> OR @<#Enumeration>) * ;
+}
+
+
+<#QuantitativeValueDistribution> @<#StructuredValue> AND EXTRA a { 
+	a [schema:MonetaryAmountDistribution schema:QuantitativeValueDistribution];
+	schema:duration @<#Duration> * ;
+	schema:median @<#Number> * ;
+	schema:percentile10 @<#Number> * ;
+	schema:percentile25 @<#Number> * ;
+	schema:percentile75 @<#Number> * ;
+	schema:percentile90 @<#Number> * ;
+}
+
+
+<#Quantity> @<#Intangible> AND EXTRA a { 
+	a [schema:Energy schema:Distance schema:Mass schema:Duration schema:Quantity];
+}
+
+
+<#Question> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Question];
+	schema:acceptedAnswer (@<#ItemList> OR @<#Answer>) * ;
+	schema:answerCount @<#Integer> * ;
+	schema:downvoteCount @<#Integer> * ;
+	schema:suggestedAnswer (@<#Answer> OR @<#ItemList>) * ;
+	schema:upvoteCount @<#Integer> * ;
+}
+
+
+<#QuoteAction> @<#TradeAction> AND EXTRA a { 
+	a [schema:QuoteAction];
+}
+
+
+<#RadioChannel> @<#BroadcastChannel> AND EXTRA a { 
+	a [schema:AMRadioChannel schema:FMRadioChannel schema:RadioChannel];
+}
+
+
+<#RadioClip> @<#Clip> AND EXTRA a { 
+	a [schema:RadioClip];
+}
+
+
+<#RadioEpisode> @<#Episode> AND EXTRA a { 
+	a [schema:RadioEpisode];
+}
+
+
+<#RadioSeason> @<#CreativeWorkSeason> AND EXTRA a { 
+	a [schema:RadioSeason];
+}
+
+
+<#RadioSeries> @<#CreativeWorkSeries> AND EXTRA a { 
+	a [schema:RadioSeries];
+	schema:actor @<#Person> * ;
+	schema:actors @<#Person> * ;
+	schema:containsSeason @<#CreativeWorkSeason> * ;
+	schema:director @<#Person> * ;
+	schema:directors @<#Person> * ;
+	schema:episode @<#Episode> * ;
+	schema:episodes @<#Episode> * ;
+	schema:musicBy (@<#Person> OR @<#MusicGroup>) * ;
+	schema:numberOfEpisodes @<#Integer> * ;
+	schema:numberOfSeasons @<#Integer> * ;
+	schema:productionCompany @<#Organization> * ;
+	schema:season (@<#CreativeWorkSeason> OR @<#URL>) * ;
+	schema:seasons @<#CreativeWorkSeason> * ;
+	schema:trailer @<#VideoObject> * ;
+}
+
+
+<#RadioStation> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:RadioStation];
+}
+
+
+
+
+
+<#ReactAction> @<#AssessAction> AND EXTRA a { 
+	a [schema:WantAction schema:AgreeAction schema:EndorseAction schema:DisagreeAction schema:DislikeAction schema:LikeAction schema:ReactAction];
+}
+
+
+<#ReadAction> @<#ConsumeAction> AND EXTRA a { 
+	a [schema:ReadAction];
+}
+
+
+<#RealEstateAgent> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:RealEstateAgent];
+}
+
+
+<#RealEstateListing>  EXTRA a { 
+	a [schema:RealEstateListing];
+	schema:datePosted (@<#DateTime> OR @<#Date>) * ;
+}
+
+
+<#ReceiveAction> @<#TransferAction> AND EXTRA a { 
+	a [schema:ReceiveAction];
+	schema:deliveryMethod @<#DeliveryMethod> * ;
+	schema:sender (@<#Organization> OR @<#Audience> OR @<#Person>) * ;
+}
+
+
+<#Recommendation>  EXTRA a { 
+	a [schema:Recommendation];
+	schema:category (@<#Thing> OR @<#URL> OR @<#PhysicalActivityCategory> OR @<#Text>) * ;
+}
+
+
+<#RecyclingCenter> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:RecyclingCenter];
+}
+
+
+<#RegisterAction> @<#InteractAction> AND EXTRA a { 
+	a [schema:RegisterAction];
+}
+
+
+<#RejectAction> @<#AllocateAction> AND EXTRA a { 
+	a [schema:RejectAction];
+}
+
+
+<#RentAction> @<#TradeAction> AND EXTRA a { 
+	a [schema:RentAction];
+	schema:landlord (@<#Organization> OR @<#Person>) * ;
+	schema:realEstateAgent @<#RealEstateAgent> * ;
+}
+
+
+<#RentalCarReservation> @<#Reservation> AND EXTRA a { 
+	a [schema:RentalCarReservation];
+	schema:dropoffLocation @<#Place> * ;
+	schema:dropoffTime @<#DateTime> * ;
+	schema:pickupLocation @<#Place> * ;
+	schema:pickupTime @<#DateTime> * ;
+}
+
+
+<#ReplaceAction> @<#UpdateAction> AND EXTRA a { 
+	a [schema:ReplaceAction];
+	schema:replacee @<#Thing> * ;
+	schema:replacer @<#Thing> * ;
+}
+
+
+<#ReplyAction> @<#CommunicateAction> AND EXTRA a { 
+	a [schema:ReplyAction];
+	schema:resultComment @<#Comment> * ;
+}
+
+
+<#Report> @<#Article> AND EXTRA a { 
+	a [schema:Report];
+	schema:reportNumber @<#Text> * ;
+}
+
+
+<#Reservation> @<#Intangible> AND EXTRA a { 
+	a [schema:TrainReservation schema:FoodEstablishmentReservation schema:RentalCarReservation schema:TaxiReservation schema:FlightReservation schema:ReservationPackage schema:LodgingReservation schema:BusReservation schema:EventReservation schema:Reservation];
+	schema:bookingAgent (@<#Person> OR @<#Organization>) * ;
+	schema:bookingTime @<#DateTime> * ;
+	schema:broker (@<#Organization> OR @<#Person>) * ;
+	schema:modifiedTime @<#DateTime> * ;
+	schema:priceCurrency @<#Text> * ;
+	schema:programMembershipUsed @<#ProgramMembership> * ;
+	schema:provider (@<#Person> OR @<#Organization>) * ;
+	schema:reservationFor @<#Thing> * ;
+	schema:reservationId @<#Text> * ;
+	schema:reservationStatus @<#ReservationStatusType> * ;
+	schema:reservedTicket @<#Ticket> * ;
+	schema:totalPrice (@<#PriceSpecification> OR @<#Text> OR @<#Number>) * ;
+	schema:underName (@<#Organization> OR @<#Person>) * ;
+}
+
+
+<#ReservationPackage> @<#Reservation> AND EXTRA a { 
+	a [schema:ReservationPackage];
+	schema:subReservation @<#Reservation> * ;
+}
+
+
+<#ReservationStatusType> @<#Enumeration> AND EXTRA a { 
+	a [schema:ReservationStatusType];
+}
+
+
+<#ReserveAction> @<#PlanAction> AND EXTRA a { 
+	a [schema:ReserveAction];
+}
+
+
+<#Reservoir> @<#BodyOfWater> AND EXTRA a { 
+	a [schema:Reservoir];
+}
+
+
+<#Residence> @<#Place> AND EXTRA a { 
+	a [schema:ApartmentComplex schema:GatedResidenceCommunity schema:Residence];
+}
+
+
+<#Resort> @<#LodgingBusiness> AND EXTRA a { 
+	a [schema:Resort];
+}
+
+
+<#Restaurant> @<#FoodEstablishment> AND EXTRA a { 
+	a [schema:Restaurant];
+}
+
+
+<#RestrictedDiet> @<#Enumeration> AND EXTRA a { 
+	a [schema:RestrictedDiet];
+}
+
+
+<#ResumeAction> @<#ControlAction> AND EXTRA a { 
+	a [schema:ResumeAction];
+}
+
+
+<#ReturnAction> @<#TransferAction> AND EXTRA a { 
+	a [schema:ReturnAction];
+	schema:recipient (@<#Organization> OR @<#Audience> OR @<#ContactPoint> OR @<#Person>) * ;
+}
+
+
+<#Review> @<#CreativeWork> AND EXTRA a { 
+	a [schema:ClaimReview schema:Review];
+	schema:itemReviewed @<#Thing> * ;
+	schema:reviewAspect @<#Text> * ;
+	schema:reviewBody @<#Text> * ;
+	schema:reviewRating @<#Rating> * ;
+}
+
+
+<#ReviewAction> @<#AssessAction> AND EXTRA a { 
+	a [schema:ReviewAction];
+	schema:resultReview @<#Review> * ;
+}
+
+
+<#RiverBodyOfWater> @<#BodyOfWater> AND EXTRA a { 
+	a [schema:RiverBodyOfWater];
+}
+
+
+<#Role> @<#Intangible> AND EXTRA a { 
+	a [schema:PerformanceRole schema:OrganizationRole schema:EmployeeRole schema:Role];
+	schema:endDate (@<#Date> OR @<#DateTime>) * ;
+	schema:namedPosition (@<#Text> OR @<#URL>) * ;
+	schema:roleName (@<#URL> OR @<#Text>) * ;
+	schema:startDate (@<#Date> OR @<#DateTime>) * ;
+}
+
+
+<#RoofingContractor> @<#HomeAndConstructionBusiness> AND EXTRA a { 
+	a [schema:RoofingContractor];
+}
+
+
+<#Room> @<#Accommodation> AND EXTRA a { 
+	a [schema:HotelRoom schema:MeetingRoom schema:Room];
+}
+
+
+<#RsvpAction> @<#InformAction> AND EXTRA a { 
+	a [schema:RsvpAction];
+	schema:additionalNumberOfGuests @<#Number> * ;
+	schema:comment @<#Comment> * ;
+	schema:rsvpResponse @<#RsvpResponseType> * ;
+}
+
+
+<#RsvpResponseType> @<#Enumeration> AND EXTRA a { 
+	a [schema:RsvpResponseType];
+}
+
+
+<#RVPark> @<#CivicStructure> AND EXTRA a { 
+	a [schema:RVPark];
+}
+
+
+<#SaleEvent> @<#Event> AND EXTRA a { 
+	a [schema:SaleEvent];
+}
+
+
+<#Schedule>  EXTRA a { 
+	a [schema:Schedule];
+	schema:duration @<#Duration> * ;
+	schema:endDate (@<#Date> OR @<#DateTime>) * ;
+	schema:endTime (@<#DateTime> OR @<#Time>) * ;
+	schema:startDate (@<#Date> OR @<#DateTime>) * ;
+	schema:startTime (@<#Time> OR @<#DateTime>) * ;
+}
+
+
+<#ScheduleAction> @<#PlanAction> AND EXTRA a { 
+	a [schema:ScheduleAction];
+}
+
+
+<#ScholarlyArticle> @<#Article> AND EXTRA a { 
+	a [schema:ScholarlyArticle];
+}
+
+
+<#School> @<#EducationalOrganization> AND EXTRA a { 
+	a [schema:School];
+}
+
+
+<#ScreeningEvent> @<#Event> AND EXTRA a { 
+	a [schema:ScreeningEvent];
+	schema:videoFormat @<#Text> * ;
+	schema:workPresented @<#Movie> * ;
+}
+
+
+<#Sculpture> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Sculpture];
+}
+
+
+<#SeaBodyOfWater> @<#BodyOfWater> AND EXTRA a { 
+	a [schema:SeaBodyOfWater];
+}
+
+
+<#SearchAction> @<#Action> AND EXTRA a { 
+	a [schema:SearchAction];
+	schema:query @<#Text> * ;
+}
+
+
+<#SearchResultsPage> @<#WebPage> AND EXTRA a { 
+	a [schema:SearchResultsPage];
+}
+
+
+<#Season> @<#CreativeWork> AND EXTRA a { 
+	a [schema:Season];
+}
+
+
+<#Seat> @<#Intangible> AND EXTRA a { 
+	a [schema:Seat];
+	schema:seatNumber @<#Text> * ;
+	schema:seatRow @<#Text> * ;
+	schema:seatSection @<#Text> * ;
+	schema:seatingType (@<#Text> OR @<#QualitativeValue>) * ;
+}
+
+
+<#SelfStorage> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:SelfStorage];
+}
+
+
+<#SellAction> @<#TradeAction> AND EXTRA a { 
+	a [schema:SellAction];
+	schema:buyer @<#Person> * ;
+	schema:warrantyPromise @<#WarrantyPromise> * ;
+}
+
+
+<#SendAction> @<#TransferAction> AND EXTRA a { 
+	a [schema:SendAction];
+	schema:deliveryMethod @<#DeliveryMethod> * ;
+	schema:recipient (@<#Organization> OR @<#Audience> OR @<#ContactPoint> OR @<#Person>) * ;
+}
+
+
+<#Series> @<#Intangible> AND EXTRA a { 
+	a [schema:Periodical schema:CreativeWorkSeries schema:TVSeries schema:VideoGameSeries schema:RadioSeries schema:MovieSeries schema:BookSeries schema:Series];
+}
+
+
+<#Service> @<#Intangible> AND EXTRA a { 
+	a [schema:Taxi schema:CurrencyConversionService schema:FoodService schema:PaymentService schema:LoanOrCredit schema:DepositAccount schema:FinancialProduct schema:PaymentCard schema:BankAccount schema:CableOrSatelliteService schema:TaxiService schema:InvestmentOrDeposit schema:BroadcastService schema:GovernmentService schema:CreditCard schema:Service];
+	schema:aggregateRating @<#AggregateRating> * ;
+	schema:areaServed (@<#AdministrativeArea> OR @<#Text> OR @<#Place> OR @<#GeoShape>) * ;
+	schema:audience @<#Audience> * ;
+	schema:availableChannel @<#ServiceChannel> * ;
+	schema:award @<#Text> * ;
+	schema:brand (@<#Brand> OR @<#Organization>) * ;
+	schema:broker (@<#Organization> OR @<#Person>) * ;
+	schema:category (@<#Thing> OR @<#URL> OR @<#PhysicalActivityCategory> OR @<#Text>) * ;
+	schema:hasOfferCatalog @<#OfferCatalog> * ;
+	schema:hoursAvailable @<#OpeningHoursSpecification> * ;
+	schema:isRelatedTo (@<#Product> OR @<#Service>) * ;
+	schema:isSimilarTo (@<#Service> OR @<#Product>) * ;
+	schema:logo (@<#ImageObject> OR @<#URL>) * ;
+	schema:offers (@<#Demand> OR @<#Offer>) * ;
+	schema:produces @<#Thing> * ;
+	schema:provider (@<#Person> OR @<#Organization>) * ;
+	schema:providerMobility @<#Text> * ;
+	schema:review @<#Review> * ;
+	schema:serviceArea (@<#Place> OR @<#GeoShape> OR @<#AdministrativeArea>) * ;
+	schema:serviceAudience @<#Audience> * ;
+	schema:serviceOutput @<#Thing> * ;
+	schema:serviceType (@<#GovernmentBenefitsType> OR @<#Text>) * ;
+	schema:slogan @<#Text> * ;
+}
+
+
+<#ServiceChannel> @<#Intangible> AND EXTRA a { 
+	a [schema:ServiceChannel];
+	schema:availableLanguage (@<#Text> OR @<#Language>) * ;
+	schema:processingTime @<#Duration> * ;
+	schema:providesService @<#Service> * ;
+	schema:serviceLocation @<#Place> * ;
+	schema:servicePhone @<#ContactPoint> * ;
+	schema:servicePostalAddress @<#PostalAddress> * ;
+	schema:serviceSmsNumber @<#ContactPoint> * ;
+	schema:serviceUrl @<#URL> * ;
+}
+
+
+<#ShareAction> @<#CommunicateAction> AND EXTRA a { 
+	a [schema:ShareAction];
+}
+
+
+<#ShoeStore> @<#Store> AND EXTRA a { 
+	a [schema:ShoeStore];
+}
+
+
+<#ShoppingCenter> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:ShoppingCenter];
+}
+
+
+<#SingleFamilyResidence> @<#House> AND EXTRA a { 
+	a [schema:SingleFamilyResidence];
+	schema:numberOfRooms (@<#QuantitativeValue> OR @<#Number>) * ;
+	schema:occupancy @<#QuantitativeValue> * ;
+}
+
+
+<#SiteNavigationElement> @<#WebPageElement> AND EXTRA a { 
+	a [schema:SiteNavigationElement];
+}
+
+
+<#SkiResort> @<#SportsActivityLocation> AND EXTRA a { 
+	a [schema:SkiResort];
+}
+
+
+<#SocialEvent> @<#Event> AND EXTRA a { 
+	a [schema:SocialEvent];
+}
+
+
+<#SocialMediaPosting> @<#Article> AND EXTRA a { 
+	a [schema:LiveBlogPosting schema:DiscussionForumPosting schema:BlogPosting schema:SocialMediaPosting];
+	schema:sharedContent @<#CreativeWork> * ;
+}
+
+
+<#SoftwareApplication> @<#CreativeWork> AND EXTRA a { 
+	a [schema:WebApplication schema:VideoGame schema:MobileApplication schema:SoftwareApplication];
+	schema:applicationCategory (@<#URL> OR @<#Text>) * ;
+	schema:applicationSubCategory (@<#URL> OR @<#Text>) * ;
+	schema:applicationSuite @<#Text> * ;
+	schema:availableOnDevice @<#Text> * ;
+	schema:countriesNotSupported @<#Text> * ;
+	schema:countriesSupported @<#Text> * ;
+	schema:device @<#Text> * ;
+	schema:downloadUrl @<#URL> * ;
+	schema:featureList (@<#Text> OR @<#URL>) * ;
+	schema:fileSize @<#Text> * ;
+	schema:installUrl @<#URL> * ;
+	schema:memoryRequirements (@<#URL> OR @<#Text>) * ;
+	schema:operatingSystem @<#Text> * ;
+	schema:permissions @<#Text> * ;
+	schema:processorRequirements @<#Text> * ;
+	schema:releaseNotes (@<#Text> OR @<#URL>) * ;
+	schema:requirements (@<#Text> OR @<#URL>) * ;
+	schema:screenshot (@<#URL> OR @<#ImageObject>) * ;
+	schema:softwareAddOn @<#SoftwareApplication> * ;
+	schema:softwareHelp @<#CreativeWork> * ;
+	schema:softwareRequirements (@<#URL> OR @<#Text>) * ;
+	schema:softwareVersion @<#Text> * ;
+	schema:storageRequirements (@<#URL> OR @<#Text>) * ;
+	schema:supportingData @<#DataFeed> * ;
+}
+
+
+<#SoftwareSourceCode> @<#CreativeWork> AND EXTRA a { 
+	a [schema:SoftwareSourceCode];
+	schema:codeRepository @<#URL> * ;
+	schema:codeSampleType @<#Text> * ;
+	schema:programmingLanguage (@<#Text> OR @<#ComputerLanguage>) * ;
+	schema:runtime @<#Text> * ;
+	schema:runtimePlatform @<#Text> * ;
+	schema:sampleType @<#Text> * ;
+	schema:targetProduct @<#SoftwareApplication> * ;
+}
+
+
+<#SomeProducts> @<#Product> AND EXTRA a { 
+	a [schema:SomeProducts];
+	schema:inventoryLevel @<#QuantitativeValue> * ;
+}
+
+
+<#SpeakableSpecification> @<#Intangible> AND EXTRA a { 
+	a [schema:SpeakableSpecification];
+	schema:cssSelector @<#CssSelectorType> * ;
+	schema:xpath @<#XPathType> * ;
+}
+
+
+<#SpecialAnnouncement>  EXTRA a { 
+	a [schema:SpecialAnnouncement];
+	schema:category (@<#Thing> OR @<#URL> OR @<#PhysicalActivityCategory> OR @<#Text>) * ;
+	schema:datePosted (@<#DateTime> OR @<#Date>) * ;
+}
+
+
+<#Specialty> @<#Enumeration> AND EXTRA a { 
+	a [schema:Specialty];
+}
+
+
+<#SportingGoodsStore> @<#Store> AND EXTRA a { 
+	a [schema:SportingGoodsStore];
+}
+
+
+<#SportsActivityLocation> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:SportsClub schema:SkiResort schema:ExerciseGym schema:GolfCourse schema:HealthClub schema:BowlingAlley schema:StadiumOrArena schema:PublicSwimmingPool schema:TennisComplex schema:SportsActivityLocation];
+}
+
+
+<#SportsClub> @<#SportsActivityLocation> AND EXTRA a { 
+	a [schema:SportsClub];
+}
+
+
+<#SportsEvent> @<#Event> AND EXTRA a { 
+	a [schema:SportsEvent];
+	schema:awayTeam (@<#Person> OR @<#SportsTeam>) * ;
+	schema:competitor (@<#Person> OR @<#SportsTeam>) * ;
+	schema:homeTeam (@<#SportsTeam> OR @<#Person>) * ;
+}
+
+
+<#SportsOrganization> @<#Organization> AND EXTRA a { 
+	a [schema:SportsTeam schema:SportsOrganization];
+}
+
+
+<#SportsTeam> @<#SportsOrganization> AND EXTRA a { 
+	a [schema:SportsTeam];
+	schema:athlete @<#Person> * ;
+	schema:coach @<#Person> * ;
+}
+
+
+<#SpreadsheetDigitalDocument> @<#DigitalDocument> AND EXTRA a { 
+	a [schema:SpreadsheetDigitalDocument];
+}
+
+
+<#StadiumOrArena> @<#CivicStructure> AND EXTRA a { 
+	a [schema:StadiumOrArena];
+}
+
+
+<#State> @<#AdministrativeArea> AND EXTRA a { 
+	a [schema:State];
+}
+
+
+<#SteeringPositionValue> @<#QualitativeValue> AND EXTRA a { 
+	a [schema:SteeringPositionValue];
+}
+
+
+<#Store> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:PawnShop schema:MensClothingStore schema:LiquorStore schema:BookStore schema:TireShop schema:HomeGoodsStore schema:OfficeEquipmentStore schema:MobilePhoneStore schema:HardwareStore schema:ConvenienceStore schema:ComputerStore schema:JewelryStore schema:ElectronicsStore schema:DepartmentStore schema:ClothingStore schema:ToyStore schema:MusicStore schema:SportingGoodsStore schema:BikeStore schema:WholesaleStore schema:Florist schema:MovieRentalStore schema:GroceryStore schema:OutletStore schema:ShoeStore schema:PetStore schema:FurnitureStore schema:HobbyShop schema:AutoPartsStore schema:GardenStore schema:Store];
+}
+
+
+<#SubscribeAction> @<#InteractAction> AND EXTRA a { 
+	a [schema:SubscribeAction];
+}
+
+
+<#SubwayStation> @<#CivicStructure> AND EXTRA a { 
+	a [schema:SubwayStation];
+}
+
+
+<#Suite> @<#Accommodation> AND EXTRA a { 
+	a [schema:Suite];
+	schema:bed (@<#BedDetails> OR @<#Text> OR @<#BedType>) * ;
+	schema:numberOfRooms (@<#QuantitativeValue> OR @<#Number>) * ;
+	schema:occupancy @<#QuantitativeValue> * ;
+}
+
+
+<#SuspendAction> @<#ControlAction> AND EXTRA a { 
+	a [schema:SuspendAction];
+}
+
+
+<#Synagogue> @<#PlaceOfWorship> AND EXTRA a { 
+	a [schema:Synagogue];
+}
+
+
+<#Table> @<#WebPageElement> AND EXTRA a { 
+	a [schema:Table];
+}
+
+
+<#TakeAction> @<#TransferAction> AND EXTRA a { 
+	a [schema:TakeAction];
+}
+
+
+<#TattooParlor> @<#HealthAndBeautyBusiness> AND EXTRA a { 
+	a [schema:TattooParlor];
+}
+
+
+<#Taxi> @<#Service> AND EXTRA a { 
+	a [schema:Taxi];
+}
+
+
+<#TaxiReservation> @<#Reservation> AND EXTRA a { 
+	a [schema:TaxiReservation];
+	schema:partySize (@<#QuantitativeValue> OR @<#Integer>) * ;
+	schema:pickupLocation @<#Place> * ;
+	schema:pickupTime @<#DateTime> * ;
+}
+
+
+<#TaxiService> @<#Service> AND EXTRA a { 
+	a [schema:TaxiService];
+}
+
+
+<#TaxiStand> @<#CivicStructure> AND EXTRA a { 
+	a [schema:TaxiStand];
+}
+
+
+<#TechArticle> @<#Article> AND EXTRA a { 
+	a [schema:APIReference schema:TechArticle];
+	schema:dependencies @<#Text> * ;
+	schema:proficiencyLevel @<#Text> * ;
+}
+
+
+<#TelevisionChannel> @<#BroadcastChannel> AND EXTRA a { 
+	a [schema:TelevisionChannel];
+}
+
+
+<#TelevisionStation> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:TelevisionStation];
+}
+
+
+<#TennisComplex> @<#SportsActivityLocation> AND EXTRA a { 
+	a [schema:TennisComplex];
+}
+
+
+<#TextDigitalDocument> @<#DigitalDocument> AND EXTRA a { 
+	a [schema:TextDigitalDocument];
+}
+
+
+<#TheaterEvent> @<#Event> AND EXTRA a { 
+	a [schema:TheaterEvent];
+}
+
+
+<#TheaterGroup> @<#PerformingGroup> AND EXTRA a { 
+	a [schema:TheaterGroup];
+}
+
+
+<#Ticket> @<#Intangible> AND EXTRA a { 
+	a [schema:Ticket];
+	schema:dateIssued (@<#Date> OR @<#DateTime>) * ;
+	schema:issuedBy @<#Organization> * ;
+	schema:priceCurrency @<#Text> * ;
+	schema:ticketNumber @<#Text> * ;
+	schema:ticketToken (@<#URL> OR @<#Text>) * ;
+	schema:ticketedSeat @<#Seat> * ;
+	schema:totalPrice (@<#PriceSpecification> OR @<#Text> OR @<#Number>) * ;
+	schema:underName (@<#Organization> OR @<#Person>) * ;
+}
+
+
+<#TieAction> @<#AchieveAction> AND EXTRA a { 
+	a [schema:TieAction];
+}
+
+
+<#TipAction> @<#TradeAction> AND EXTRA a { 
+	a [schema:TipAction];
+	schema:recipient (@<#Organization> OR @<#Audience> OR @<#ContactPoint> OR @<#Person>) * ;
+}
+
+
+<#TireShop> @<#Store> AND EXTRA a { 
+	a [schema:TireShop];
+}
+
+
+<#TouristAttraction> @<#Place> AND EXTRA a { 
+	a [schema:TouristAttraction];
+	schema:availableLanguage (@<#Text> OR @<#Language>) * ;
+	schema:touristType (@<#Text> OR @<#Audience>) * ;
+}
+
+
+<#TouristDestination>  EXTRA a { 
+	a [schema:TouristDestination];
+	schema:touristType (@<#Text> OR @<#Audience>) * ;
+}
+
+
+<#TouristInformationCenter> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:TouristInformationCenter];
+}
+
+
+<#TouristTrip>  EXTRA a { 
+	a [schema:TouristTrip];
+	schema:touristType (@<#Text> OR @<#Audience>) * ;
+}
+
+
+<#ToyStore> @<#Store> AND EXTRA a { 
+	a [schema:ToyStore];
+}
+
+
+<#TrackAction> @<#FindAction> AND EXTRA a { 
+	a [schema:TrackAction];
+	schema:deliveryMethod @<#DeliveryMethod> * ;
+}
+
+
+<#TradeAction> @<#Action> AND EXTRA a { 
+	a [schema:RentAction schema:PayAction schema:QuoteAction schema:OrderAction schema:BuyAction schema:PreOrderAction schema:TipAction schema:SellAction schema:DonateAction schema:TradeAction];
+	schema:price (@<#Text> OR @<#Number>) * ;
+	schema:priceCurrency @<#Text> * ;
+	schema:priceSpecification @<#PriceSpecification> * ;
+}
+
+
+<#TrainReservation> @<#Reservation> AND EXTRA a { 
+	a [schema:TrainReservation];
+}
+
+
+<#TrainStation> @<#CivicStructure> AND EXTRA a { 
+	a [schema:TrainStation];
+}
+
+
+<#TrainTrip> @<#Trip> AND EXTRA a { 
+	a [schema:TrainTrip];
+	schema:arrivalPlatform @<#Text> * ;
+	schema:arrivalStation @<#TrainStation> * ;
+	schema:departurePlatform @<#Text> * ;
+	schema:departureStation @<#TrainStation> * ;
+	schema:trainName @<#Text> * ;
+	schema:trainNumber @<#Text> * ;
+}
+
+
+<#TransferAction> @<#Action> AND EXTRA a { 
+	a [schema:ReceiveAction schema:GiveAction schema:BorrowAction schema:LendAction schema:DownloadAction schema:ReturnAction schema:TakeAction schema:SendAction schema:TransferAction];
+	schema:fromLocation @<#Place> * ;
+	schema:toLocation @<#Place> * ;
+}
+
+
+<#TravelAction> @<#MoveAction> AND EXTRA a { 
+	a [schema:TravelAction];
+	schema:distance @<#Distance> * ;
+}
+
+
+<#TravelAgency> @<#LocalBusiness> AND EXTRA a { 
+	a [schema:TravelAgency];
+}
+
+
+<#Trip> @<#Intangible> AND EXTRA a { 
+	a [schema:BusTrip schema:TrainTrip schema:Flight schema:Trip];
+	schema:arrivalTime (@<#Time> OR @<#DateTime>) * ;
+	schema:departureTime (@<#Time> OR @<#DateTime>) * ;
+	schema:offers (@<#Demand> OR @<#Offer>) * ;
+	schema:provider (@<#Person> OR @<#Organization>) * ;
+}
+
+
+<#TVClip> @<#Clip> AND EXTRA a { 
+	a [schema:TVClip];
+	schema:partOfTVSeries @<#TVSeries> * ;
+}
+
+
+<#TVEpisode> @<#Episode> AND EXTRA a { 
+	a [schema:TVEpisode];
+	schema:countryOfOrigin @<#Country> * ;
+	schema:partOfTVSeries @<#TVSeries> * ;
+}
+
+
+<#TVSeason> @<#CreativeWork> AND EXTRA a { 
+	a [schema:TVSeason];
+	schema:countryOfOrigin @<#Country> * ;
+	schema:partOfTVSeries @<#TVSeries> * ;
+}
+
+
+<#TVSeries> @<#CreativeWorkSeries> AND EXTRA a { 
+	a [schema:TVSeries];
+	schema:actor @<#Person> * ;
+	schema:actors @<#Person> * ;
+	schema:containsSeason @<#CreativeWorkSeason> * ;
+	schema:countryOfOrigin @<#Country> * ;
+	schema:director @<#Person> * ;
+	schema:directors @<#Person> * ;
+	schema:episode @<#Episode> * ;
+	schema:episodes @<#Episode> * ;
+	schema:musicBy (@<#Person> OR @<#MusicGroup>) * ;
+	schema:numberOfEpisodes @<#Integer> * ;
+	schema:numberOfSeasons @<#Integer> * ;
+	schema:productionCompany @<#Organization> * ;
+	schema:season (@<#CreativeWorkSeason> OR @<#URL>) * ;
+	schema:seasons @<#CreativeWorkSeason> * ;
+	schema:trailer @<#VideoObject> * ;
+}
+
+
+<#TypeAndQuantityNode> @<#StructuredValue> AND EXTRA a { 
+	a [schema:TypeAndQuantityNode];
+	schema:amountOfThisGood @<#Number> * ;
+	schema:businessFunction @<#BusinessFunction> * ;
+	schema:typeOfGood (@<#Service> OR @<#Product>) * ;
+	schema:unitCode (@<#URL> OR @<#Text>) * ;
+	schema:unitText @<#Text> * ;
+}
+
+
+<#UnitPriceSpecification> @<#PriceSpecification> AND EXTRA a { 
+	a [schema:UnitPriceSpecification];
+	schema:billingIncrement @<#Number> * ;
+	schema:priceType @<#Text> * ;
+	schema:referenceQuantity @<#QuantitativeValue> * ;
+	schema:unitCode (@<#URL> OR @<#Text>) * ;
+	schema:unitText @<#Text> * ;
+}
+
+
+<#UnRegisterAction> @<#InteractAction> AND EXTRA a { 
+	a [schema:UnRegisterAction];
+}
+
+
+<#UpdateAction> @<#Action> AND EXTRA a { 
+	a [schema:AppendAction schema:PrependAction schema:AddAction schema:InsertAction schema:ReplaceAction schema:DeleteAction schema:UpdateAction];
+	schema:collection @<#Thing> * ;
+	schema:targetCollection @<#Thing> * ;
+}
+
+
+<#UseAction> @<#ConsumeAction> AND EXTRA a { 
+	a [schema:WearAction schema:UseAction];
+}
+
+
+<#UserBlocks> @<#UserInteraction> AND EXTRA a { 
+	a [schema:UserBlocks];
+}
+
+
+<#UserCheckins> @<#UserInteraction> AND EXTRA a { 
+	a [schema:UserCheckins];
+}
+
+
+<#UserComments> @<#UserInteraction> AND EXTRA a { 
+	a [schema:UserComments];
+	schema:commentText @<#Text> * ;
+	schema:commentTime (@<#DateTime> OR @<#Date>) * ;
+	schema:creator (@<#Organization> OR @<#Person>) * ;
+	schema:discusses @<#CreativeWork> * ;
+	schema:replyToUrl @<#URL> * ;
+}
+
+
+<#UserDownloads> @<#UserInteraction> AND EXTRA a { 
+	a [schema:UserDownloads];
+}
+
+
+<#UserInteraction> @<#Event> AND EXTRA a { 
+	a [schema:UserBlocks schema:UserCheckins schema:UserPageVisits schema:UserLikes schema:UserPlays schema:UserPlusOnes schema:UserComments schema:UserTweets schema:UserDownloads schema:UserInteraction];
+}
+
+
+<#UserLikes> @<#UserInteraction> AND EXTRA a { 
+	a [schema:UserLikes];
+}
+
+
+<#UserPageVisits> @<#UserInteraction> AND EXTRA a { 
+	a [schema:UserPageVisits];
+}
+
+
+<#UserPlays> @<#UserInteraction> AND EXTRA a { 
+	a [schema:UserPlays];
+}
+
+
+<#UserPlusOnes> @<#UserInteraction> AND EXTRA a { 
+	a [schema:UserPlusOnes];
+}
+
+
+<#UserTweets> @<#UserInteraction> AND EXTRA a { 
+	a [schema:UserTweets];
+}
+
+
+<#Vehicle> @<#Product> AND EXTRA a { 
+	a [schema:Car schema:Vehicle];
+	schema:cargoVolume @<#QuantitativeValue> * ;
+	schema:dateVehicleFirstRegistered @<#Date> * ;
+	schema:driveWheelConfiguration (@<#Text> OR @<#DriveWheelConfigurationValue>) * ;
+	schema:fuelConsumption @<#QuantitativeValue> * ;
+	schema:fuelEfficiency @<#QuantitativeValue> * ;
+	schema:fuelType (@<#QualitativeValue> OR @<#Text> OR @<#URL>) * ;
+	schema:knownVehicleDamages @<#Text> * ;
+	schema:mileageFromOdometer @<#QuantitativeValue> * ;
+	schema:numberOfAirbags (@<#Text> OR @<#Number>) * ;
+	schema:numberOfAxles (@<#QuantitativeValue> OR @<#Number>) * ;
+	schema:numberOfDoors (@<#QuantitativeValue> OR @<#Number>) * ;
+	schema:numberOfForwardGears (@<#QuantitativeValue> OR @<#Number>) * ;
+	schema:numberOfPreviousOwners (@<#Number> OR @<#QuantitativeValue>) * ;
+	schema:productionDate @<#Date> * ;
+	schema:purchaseDate @<#Date> * ;
+	schema:steeringPosition @<#SteeringPositionValue> * ;
+	schema:vehicleConfiguration @<#Text> * ;
+	schema:vehicleEngine @<#EngineSpecification> * ;
+	schema:vehicleIdentificationNumber @<#Text> * ;
+	schema:vehicleInteriorColor @<#Text> * ;
+	schema:vehicleInteriorType @<#Text> * ;
+	schema:vehicleModelDate @<#Date> * ;
+	schema:vehicleSeatingCapacity (@<#Number> OR @<#QuantitativeValue>) * ;
+	schema:vehicleTransmission (@<#URL> OR @<#Text> OR @<#QualitativeValue>) * ;
+}
+
+
+<#VideoGallery> @<#MediaGallery> AND EXTRA a { 
+	a [schema:VideoGallery];
+}
+
+
+<#VideoGame> @<#SoftwareApplication> AND EXTRA a { 
+	a [schema:VideoGame];
+	schema:actor @<#Person> * ;
+	schema:actors @<#Person> * ;
+	schema:cheatCode @<#CreativeWork> * ;
+	schema:director @<#Person> * ;
+	schema:directors @<#Person> * ;
+	schema:gamePlatform (@<#Text> OR @<#Thing> OR @<#URL>) * ;
+	schema:gameServer @<#GameServer> * ;
+	schema:gameTip @<#CreativeWork> * ;
+	schema:musicBy (@<#Person> OR @<#MusicGroup>) * ;
+	schema:playMode @<#GamePlayMode> * ;
+	schema:trailer @<#VideoObject> * ;
+}
+
+
+<#VideoGameClip> @<#Clip> AND EXTRA a { 
+	a [schema:VideoGameClip];
+}
+
+
+<#VideoGameSeries> @<#CreativeWorkSeries> AND EXTRA a { 
+	a [schema:VideoGameSeries];
+	schema:actor @<#Person> * ;
+	schema:actors @<#Person> * ;
+	schema:characterAttribute @<#Thing> * ;
+	schema:cheatCode @<#CreativeWork> * ;
+	schema:containsSeason @<#CreativeWorkSeason> * ;
+	schema:director @<#Person> * ;
+	schema:directors @<#Person> * ;
+	schema:episode @<#Episode> * ;
+	schema:episodes @<#Episode> * ;
+	schema:gameItem @<#Thing> * ;
+	schema:gameLocation (@<#PostalAddress> OR @<#Place> OR @<#URL>) * ;
+	schema:gamePlatform (@<#Text> OR @<#Thing> OR @<#URL>) * ;
+	schema:musicBy (@<#Person> OR @<#MusicGroup>) * ;
+	schema:numberOfEpisodes @<#Integer> * ;
+	schema:numberOfPlayers @<#QuantitativeValue> * ;
+	schema:numberOfSeasons @<#Integer> * ;
+	schema:playMode @<#GamePlayMode> * ;
+	schema:productionCompany @<#Organization> * ;
+	schema:quest @<#Thing> * ;
+	schema:season (@<#CreativeWorkSeason> OR @<#URL>) * ;
+	schema:seasons @<#CreativeWorkSeason> * ;
+	schema:trailer @<#VideoObject> * ;
+}
+
+
+<#VideoObject> @<#MediaObject> AND EXTRA a { 
+	a [schema:VideoObject];
+	schema:actor @<#Person> * ;
+	schema:actors @<#Person> * ;
+	schema:caption (@<#Text> OR @<#MediaObject>) * ;
+	schema:director @<#Person> * ;
+	schema:directors @<#Person> * ;
+	schema:musicBy (@<#Person> OR @<#MusicGroup>) * ;
+	schema:thumbnail @<#ImageObject> * ;
+	schema:transcript @<#Text> * ;
+	schema:videoFrameSize @<#Text> * ;
+	schema:videoQuality @<#Text> * ;
+}
+
+
+<#ViewAction> @<#ConsumeAction> AND EXTRA a { 
+	a [schema:ViewAction];
+}
+
+
+<#VirtualLocation>  EXTRA a { 
+	a [schema:VirtualLocation];
+}
+
+
+<#VisualArtsEvent> @<#Event> AND EXTRA a { 
+	a [schema:VisualArtsEvent];
+}
+
+
+<#VisualArtwork> @<#CreativeWork> AND EXTRA a { 
+	a [schema:VisualArtwork];
+	schema:artEdition (@<#Text> OR @<#Integer>) * ;
+	schema:artMedium (@<#Text> OR @<#URL>) * ;
+	schema:artform (@<#URL> OR @<#Text>) * ;
+	schema:artworkSurface (@<#Text> OR @<#URL>) * ;
+	schema:depth (@<#Distance> OR @<#QuantitativeValue>) * ;
+	schema:height (@<#QuantitativeValue> OR @<#Distance>) * ;
+	schema:surface (@<#Text> OR @<#URL>) * ;
+	schema:width (@<#QuantitativeValue> OR @<#Distance>) * ;
+}
+
+
+<#Volcano> @<#Landform> AND EXTRA a { 
+	a [schema:Volcano];
+}
+
+
+<#VoteAction> @<#ChooseAction> AND EXTRA a { 
+	a [schema:VoteAction];
+	schema:candidate @<#Person> * ;
+}
+
+
+<#WantAction> @<#ReactAction> AND EXTRA a { 
+	a [schema:WantAction];
+}
+
+
+<#WarrantyPromise> @<#StructuredValue> AND EXTRA a { 
+	a [schema:WarrantyPromise];
+	schema:durationOfWarranty @<#QuantitativeValue> * ;
+	schema:warrantyScope @<#WarrantyScope> * ;
+}
+
+
+<#WarrantyScope> @<#Enumeration> AND EXTRA a { 
+	a [schema:WarrantyScope];
+}
+
+
+<#WatchAction> @<#ConsumeAction> AND EXTRA a { 
+	a [schema:WatchAction];
+}
+
+
+<#Waterfall> @<#BodyOfWater> AND EXTRA a { 
+	a [schema:Waterfall];
+}
+
+
+<#WearAction> @<#UseAction> AND EXTRA a { 
+	a [schema:WearAction];
+}
+
+
+<#WebApplication> @<#SoftwareApplication> AND EXTRA a { 
+	a [schema:WebApplication];
+	schema:browserRequirements @<#Text> * ;
+}
+
+
+<#WebPage> @<#CreativeWork> AND EXTRA a { 
+	a [schema:CheckoutPage schema:AboutPage schema:ContactPage schema:ItemPage schema:CollectionPage schema:FAQPage schema:ProfilePage schema:MediaGallery schema:QAPage schema:ImageGallery schema:VideoGallery schema:SearchResultsPage schema:WebPage];
+	schema:breadcrumb (@<#URL> OR @<#Text> OR @<#BreadcrumbList>) * ;
+	schema:lastReviewed @<#Date> * ;
+	schema:mainContentOfPage @<#WebPageElement> * ;
+	schema:primaryImageOfPage @<#URL> OR @<#ImageObject> * ;
+	schema:relatedLink @<#URL> * ;
+	schema:reviewedBy (@<#Organization> OR @<#Person>) * ;
+	schema:significantLink @<#URL> * ;
+	schema:significantLinks @<#URL> * ;
+	schema:speakable (@<#URL> OR @<#SpeakableSpecification>) * ;
+	schema:specialty @<#Specialty> * ;
+}
+
+
+<#WebPageElement> @<#CreativeWork> AND EXTRA a { 
+	a [schema:WPFooter schema:WPSideBar schema:Table schema:WPAdBlock schema:WPHeader schema:SiteNavigationElement schema:WebPageElement];
+	schema:cssSelector @<#CssSelectorType> * ;
+	schema:xpath @<#XPathType> * ;
+}
+
+
+<#WebSite> @<#CreativeWork> AND EXTRA a { 
+	a [schema:WebSite];
+	schema:issn @<#Text> * ;
+}
+
+
+<#WholesaleStore> @<#Store> AND EXTRA a { 
+	a [schema:WholesaleStore];
+}
+
+
+<#WinAction> @<#AchieveAction> AND EXTRA a { 
+	a [schema:WinAction];
+	schema:loser @<#Person> * ;
+}
+
+
+<#Winery> @<#FoodEstablishment> AND EXTRA a { 
+	a [schema:Winery];
+}
+
+
+<#WorkersUnion> @<#Organization> AND EXTRA a { 
+	a [schema:WorkersUnion];
+}
+
+
+<#WPAdBlock> @<#WebPageElement> AND EXTRA a { 
+	a [schema:WPAdBlock];
+}
+
+
+<#WPFooter> @<#WebPageElement> AND EXTRA a { 
+	a [schema:WPFooter];
+}
+
+
+<#WPHeader> @<#WebPageElement> AND EXTRA a { 
+	a [schema:WPHeader];
+}
+
+
+<#WPSideBar> @<#WebPageElement> AND EXTRA a { 
+	a [schema:WPSideBar];
+}
+
+
+<#WriteAction> @<#CreateAction> AND EXTRA a { 
+	a [schema:WriteAction];
+	schema:inLanguage (@<#Text> OR @<#Language>) * ;
+	schema:language @<#Language> * ;
+}
+
+
+<#XPathType>  EXTRA a { 
+	a [schema:XPathType];
+}
+
+
+<#Zoo> @<#CivicStructure> AND EXTRA a { 
+	a [schema:Zoo];
+}
 
 
 
@@ -347,7 +4723,7 @@ BASE <http://schema.org/shex>
     // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
     // techdoc:description "Alternative names that have been used to refer to this dataset, such as aliases or abbreviations.";
     
-    schema:creator @<#Person> OR { a [schema:Organization] } +
+    schema:creator @<#Person> OR @<#Organization> +
     // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
     // techdoc:description "The creator or author of this dataset.";
 
@@ -383,7 +4759,7 @@ BASE <http://schema.org/shex>
     // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
     // techdoc:description "URL of a reference Web page that unambiguously indicates the dataset's identity, usually in a different repository.";
 
-    schema:spatialCoverage @<#Text> OR { a [schema:Place] }
+    schema:spatialCoverage @<#Text> OR @<#Place>
     // techdoc:url "https://developers.google.com/search/docs/data-types/dataset"
     // techdoc:description "You can provide a single point that describes the spatial aspect of the dataset. ";
 
