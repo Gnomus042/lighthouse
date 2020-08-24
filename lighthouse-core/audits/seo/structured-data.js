@@ -18,10 +18,8 @@ const UIStrings = {
   propertyHeader: 'Property',
   severityHeader: 'Severity',
   causeHeader: 'Cause',
-  tagHeader: 'Tag',
-
-  shexHeader: 'shex',
-  shaclHeader: 'shacl',
+  shapeHeader: 'Shape',
+  documentationHeader: 'Documentation',
 };
 
 const str_ = i18n.createMessageInstanceIdFn(__filename, UIStrings);
@@ -45,23 +43,30 @@ class StructuredData extends Audit {
    * @return {Promise<LH.Audit.Product>}
    */
   static async audit(artifacts) {
-    const receipesData = artifacts.ScriptElements.filter(x => x.type === 'application/ld+json' && x.content !== null)[0].content;
-    const report = await validator(receipesData);
+    const data = artifacts.ScriptElements
+      .filter(x => x.type === 'application/ld+json' && x.content !== null)
+      .map(x => x.content);
+    const report = await validator(data);
 
     const errorsCount = report.filter(x => x.severity === 'error').length;
     const warningsCount = report.filter(x => x.severity === 'warning').length;
     let score = (100 - errorsCount * 10 - warningsCount * 5) / 100.0;
     score = score > 0.02 ? score : 0.02; // making the default value
 
+    report.forEach(x => {
+      if (x.property) x.property = x.property.replace('http://schema.org/', '');
+    });
+
     /** @type {LH.Audit.Details.Table['headings']} */
     const headings = [
-      {key: 'service', itemType: 'text', text: str_(UIStrings.tagHeader)},
       {key: 'property', itemType: 'text', text: str_(UIStrings.propertyHeader)},
       {key: 'severity', itemType: 'text', text: str_(UIStrings.severityHeader)},
       {key: 'message', itemType: 'text', text: str_(UIStrings.causeHeader)},
+      {key: 'shape', itemType: 'text', text: str_(UIStrings.shapeHeader)},
     ];
 
     const details = Audit.makeTableDetails(headings, report);
+
     return {
       score: score,
       details,

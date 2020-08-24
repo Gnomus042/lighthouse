@@ -11,7 +11,7 @@
     "node": ">=10.13"
   },
   "scripts": {
-    "test-test": "node ./lighthouse-cli/index.js https://tasty.co/recipe/ratatouille --only-categories=seo",
+    "test-test": "node ./lighthouse-cli/index.js https://www.onceuponachef.com/recipes/perfect-apple-pie.html --only-categories=seo",
     "build-all": "npm-run-posix-or-windows build-all:task",
     "build-all:task": "yarn build-cdt-lib && yarn build-devtools && (yarn build-extension & yarn build-lr & yarn build-viewer & yarn build-smokehouse-bundle & wait) && yarn build-pack",
     "build-all:task:windows": "yarn build-cdt-lib && yarn build-extension && yarn build-devtools && yarn build-lr && yarn build-viewer && yarn build-smokehouse-bundle",

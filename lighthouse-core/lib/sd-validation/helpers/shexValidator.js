@@ -5,6 +5,10 @@ const shex = require('shex');
 const jsonld = require('jsonld');
 const n3 = require('n3');
 
+const fs = require('fs');
+const path = require('path');
+const shexShapes = fs.readFileSync(path.join(__dirname, '..', 'assets', 'full.shex'));
+
 const schemaType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
 
 /** @typedef {{property: string|null, message: string, node: string|null, shape: string|null, annotations: *}} ShExStructuredDataReport */
@@ -16,6 +20,7 @@ class ValidationReport {
    */
   constructor(jsonReport, schema) {
     this.reportTypes = {
+      ShapeOrResults: 'ShapeOrResults',
       ShapeAndResults: 'ShapeAndResults',
       ShapeAndFailure: 'ShapeAndFailure',
       Failure: 'Failure',
@@ -45,7 +50,8 @@ class ValidationReport {
    */
   simplify(jsonReport, parentNode, parentShape) {
     // STEP 1: if report doesn't contain errors or MissingProperty type, return
-    if (jsonReport.type === this.reportTypes.ShapeAndResults ||
+    if (jsonReport.type === this.reportTypes.ShapeOrResults ||
+      jsonReport.type === this.reportTypes.ShapeAndResults ||
       jsonReport.property === schemaType ||
       jsonReport.constraint && jsonReport.constraint.predicate === schemaType) {
       return;
@@ -74,22 +80,24 @@ class ValidationReport {
     if (jsonReport.type === this.reportTypes.TypeMismatch) {
       if (jsonReport.triple.subject) failure.node = jsonReport.triple.subject;
       failure.property = jsonReport.constraint.predicate;
-      failure.message =
-        `Value provided for property ${jsonReport.constraint.predicate} has a wrong type`;
+      const shortProperty = failure.property.replace('http://schema.org/', '');
+      failure.message = `Value provided for property ${shortProperty} has a wrong type`;
       jsonReport.errors.forEach(err => this.simplify(err, null, null));
     } else if (jsonReport.type === this.reportTypes.MissingProperty) {
       if (!parentNode) return;
       failure.property = jsonReport.property;
-      failure.message = `Property ${jsonReport.property} not found`;
+      const shortProperty = failure.property.replace('http://schema.org/', '');
+      failure.message = `Property ${shortProperty} not found`;
     } else if (jsonReport.type === this.reportTypes.ExcessTripleViolation) {
       if (!parentNode) return;
       failure.property = jsonReport.constraint.predicate;
-      failure.message = `Property ${jsonReport.constraint.predicate} has a cardinality issue`;
+      const shortProperty = failure.property.replace('http://schema.org/', '');
+      failure.message = `Property ${shortProperty} has a cardinality issue`;
     } else if (jsonReport.type === this.reportTypes.BooleanSemActFailure) {
       if (!jsonReport.ctx.predicate) return;
       failure.property = jsonReport.ctx.predicate;
-      failure.message =
-        `Property ${jsonReport.ctx.predicate} failed semantic action with code js:'${jsonReport.code}'`;
+      const shortProperty = failure.property.replace('http://schema.org/', '');
+      failure.message = `Property ${shortProperty} failed semAct with code js:'${jsonReport.code}'`;
     } else if (jsonReport.type === this.reportTypes.NodeConstraintViolation ||
       jsonReport.type === this.reportTypes.ShapeOrFailure ||
       jsonReport.type === this.reportTypes.ClosedShapeViolation) {
@@ -194,19 +202,14 @@ async function parseJSONLD(text) {
  */
 async function validateShEx(dataStr, shexURL, dataId, shape, service) {
   const store = await parseJSONLD(dataStr);
-  return new Promise((res, rej) => {
-    shex.Loader.load([shexURL], [], [], [])
-      .then(loaded => {
-        const db = shex.Util.makeN3DB(store);
-        const validator = shex.Validator.construct(loaded.schema);
-        const errors = new ValidationReport(validator.validate(db, [{
-          node: dataId,
-          shape: `http://schema.org/shex#${service}${shape}`,
-        }]), loaded.schema);
-        res(errors.toStructuredDataReport());
-      })
-      .catch(err => console.log(err));
-  });
+  const schema = shex.Parser.construct(shexURL, {}, {}).parse(shexShapes.toString());
+  const db = shex.Util.makeN3DB(store);
+  const validator = shex.Validator.construct(schema);
+  const errors = new ValidationReport(validator.validate(db, [{
+    node: dataId,
+    shape: `http://schema.org/shex#${service}${shape}`,
+  }]), schema);
+  return errors.toStructuredDataReport();
 }
 
 module.exports = {validate: validateShEx};
