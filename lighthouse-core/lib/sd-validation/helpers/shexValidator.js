@@ -1,13 +1,14 @@
 'use strict';
 
 // TODO register shex and n3 modules
-const shex = require('shex');
+const shex = require('../libs/shex.js');
 const jsonld = require('jsonld');
 const n3 = require('n3');
 
 const fs = require('fs');
 const path = require('path');
-const shexShapes = fs.readFileSync(path.join(__dirname, '..', 'assets', 'full.shex'));
+const shexShapes = fs.readFileSync(path.join(__dirname, '..', 'assets', 'full.shexj'));
+
 
 const schemaType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
 
@@ -20,8 +21,8 @@ class ValidationReport {
    */
   constructor(jsonReport, schema) {
     this.reportTypes = {
-      ShapeOrResults: 'ShapeOrResults',
       ShapeAndResults: 'ShapeAndResults',
+      ShapeOrResults: 'ShapeOrResults',
       ShapeAndFailure: 'ShapeAndFailure',
       Failure: 'Failure',
       SemActFailure: 'SemActFailure',
@@ -34,7 +35,7 @@ class ValidationReport {
       ClosedShapeViolation: 'ClosedShapeViolation',
     };
     /** @type {Array<ShExStructuredDataReport>} */
-    this.failures = new Array();
+    this.failures = [];
     /** @type {Map<string, *>} */
     this.shapes = new Map();
     this.parseSchema(schema);
@@ -50,10 +51,10 @@ class ValidationReport {
    */
   simplify(jsonReport, parentNode, parentShape) {
     // STEP 1: if report doesn't contain errors or MissingProperty type, return
-    if (jsonReport.type === this.reportTypes.ShapeOrResults ||
-      jsonReport.type === this.reportTypes.ShapeAndResults ||
+    if (jsonReport.type === this.reportTypes.ShapeAndResults ||
       jsonReport.property === schemaType ||
-      jsonReport.constraint && jsonReport.constraint.predicate === schemaType) {
+      jsonReport.constraint && jsonReport.constraint.predicate === schemaType ||
+      jsonReport.type === this.reportTypes.ShapeOrResults) {
       return;
     }
 
@@ -80,24 +81,22 @@ class ValidationReport {
     if (jsonReport.type === this.reportTypes.TypeMismatch) {
       if (jsonReport.triple.subject) failure.node = jsonReport.triple.subject;
       failure.property = jsonReport.constraint.predicate;
-      const shortProperty = failure.property.replace('http://schema.org/', '');
-      failure.message = `Value provided for property ${shortProperty} has a wrong type`;
+      failure.message =
+        `Value provided for property ${jsonReport.constraint.predicate} has a wrong type`;
       jsonReport.errors.forEach(err => this.simplify(err, null, null));
     } else if (jsonReport.type === this.reportTypes.MissingProperty) {
       if (!parentNode) return;
       failure.property = jsonReport.property;
-      const shortProperty = failure.property.replace('http://schema.org/', '');
-      failure.message = `Property ${shortProperty} not found`;
+      failure.message = `Property ${jsonReport.property} not found`;
     } else if (jsonReport.type === this.reportTypes.ExcessTripleViolation) {
       if (!parentNode) return;
       failure.property = jsonReport.constraint.predicate;
-      const shortProperty = failure.property.replace('http://schema.org/', '');
-      failure.message = `Property ${shortProperty} has a cardinality issue`;
+      failure.message = `Property ${jsonReport.constraint.predicate} has a cardinality issue`;
     } else if (jsonReport.type === this.reportTypes.BooleanSemActFailure) {
       if (!jsonReport.ctx.predicate) return;
       failure.property = jsonReport.ctx.predicate;
-      const shortProperty = failure.property.replace('http://schema.org/', '');
-      failure.message = `Property ${shortProperty} failed semAct with code js:'${jsonReport.code}'`;
+      failure.message =
+        `Property ${jsonReport.ctx.predicate} failed semantic action with code js:'${jsonReport.code}'`;
     } else if (jsonReport.type === this.reportTypes.NodeConstraintViolation ||
       jsonReport.type === this.reportTypes.ShapeOrFailure ||
       jsonReport.type === this.reportTypes.ClosedShapeViolation) {
@@ -184,12 +183,9 @@ async function parseJSONLD(text) {
     format: 'text/turtle',
     baseIRI: JSON.parse(text)['@id'],
   });
-  const data = new n3.Store();
-  const quads = turtleParser.parse(nquads);
-  quads.forEach(quad => {
-    data.addTriple(quad);
-  });
-  return data;
+  const store = new n3.Store();
+  turtleParser.parse(nquads).forEach(quad => store.addQuad(quad));
+  return store;
 }
 
 /**
@@ -202,7 +198,8 @@ async function parseJSONLD(text) {
  */
 async function validateShEx(dataStr, shexURL, dataId, shape, service) {
   const store = await parseJSONLD(dataStr);
-  const schema = shex.Parser.construct(shexURL, {}, {}).parse(shexShapes.toString());
+  const shapes = shexShapes.toString();
+  const schema = JSON.parse(shapes);
   const db = shex.Util.makeN3DB(store);
   const validator = shex.Validator.construct(schema);
   const errors = new ValidationReport(validator.validate(db, [{
