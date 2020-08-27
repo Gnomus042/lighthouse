@@ -5,22 +5,23 @@
  */
 'use strict';
 
-const jsonld = require('jsonld');
-const ParserJsonld = require('@rdfjs/parser-jsonld');
-const toReadableStream = require('to-readable-stream');
-const rdf = require('rdf-ext');
 const shexValidator = require('./helpers/shexValidator.js');
-const shaclValidator = require('./helpers/shaclValidator.js');
 const context = require('./assets/context.json');
-const { da } = require('../i18n/locales.js');
 
-// TODO will need to remove these fields
-const defaultId = 'http://example.org/recipe';
 const supportedServices = [''];
-const linkToShexShapes = 'https://gnomus042.com/shex/shapes';
 
-/** @typedef {{property: string|null, severity: string, message: string, url: string|null, description: string|null, services: Array<string>|null}} StructuredDataReport */
-
+/**
+ * Generates default id for shapes without id
+ * @param {number} length
+ */
+function generateDefaultId(length) {
+  let defaultId = 'http://example.org/';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < length; i++) {
+    defaultId += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return defaultId;
+}
 /**
  * Adds context to data and sets dummy id for simplicity
  * @param {string} inputText JSON-LD object in string format
@@ -29,29 +30,22 @@ const linkToShexShapes = 'https://gnomus042.com/shex/shapes';
 function prepareInput(inputText) {
   const data = JSON.parse(inputText);
   if (!data['@id']) {
-    data['@id'] = defaultId;
+    data['@id'] = generateDefaultId(10);
   }
   data['@context'] = context;
   return JSON.stringify(data);
 }
 
 /**
- * Finds intersection between shex and shacl errors. Probably should be replaced.
- * @param {Array<StructuredDataReport>} shexReport
- * @param {Array<StructuredDataReport>} shaclReport
+ * Maps each properties to services, for which this property causes failures.
+ * @param {Array<StructuredDataReport>} report
+ * @returns {Map<string, Array<string>>}
  */
-function findIntersection(shexReport, shaclReport) {
-  /** @param {StructuredDataReport} a @param {StructuredDataReport} b */
-  const comparator = (a, b) => a.property === b.property && a.severity === b.severity;
-  return shexReport.filter(a => shaclReport.some(b => comparator(a, b)));
-}
-
-
 function servicesToProperty(report) {
   const mapper = new Map();
   report.forEach(x => {
     if (mapper.has(x.property)) {
-      mapper.get(x.property).push(...x.services);
+      mapper.get(x.property).push(...(x.services || []));
     } else {
       mapper.set(x.property, x.services);
     }
@@ -59,9 +53,15 @@ function servicesToProperty(report) {
   return mapper;
 }
 
+/**
+ * Filter unique objects by key
+ * @param {Array<*>} items
+ * @param {string} key
+ */
 function uniqueBy(items, key) {
-  let seen = {};
-  return items.filter(function (item) {
+  /** @type {*} */
+  const seen = {};
+  return items.filter(/** @param {*} item */function(item) {
     const val = item[key];
     return seen.hasOwnProperty(val) ? false : (seen[val] = true);
   });
@@ -73,11 +73,9 @@ function uniqueBy(items, key) {
  */
 async function validateSinglePiece(inputText) {
   const data = JSON.parse(inputText);
-  const dataType = Array.isArray(data['@type'])?data['@type'][0]:data['@type'];
+  const dataType = Array.isArray(data['@type']) ? data['@type'][0] : data['@type'];
   const report = (await Promise.all(supportedServices.map(async service => {
-    const shexErrors = await shexValidator.validate(inputText, linkToShexShapes, data['@id'], dataType, service);
-    // const shaclErrors = await shaclValidator.validate(inputText);
-    // const serviceReport = findIntersection(shexErrors, shaclErrors);
+    const shexErrors = await shexValidator.validate(inputText, data['@id'], dataType, service);
     shexErrors.forEach(x => {
       x.services = [service];
       x.shape = dataType;
@@ -86,12 +84,12 @@ async function validateSinglePiece(inputText) {
   }))).flat();
   const propertyMap = servicesToProperty(report);
   const finalReport = uniqueBy(report, 'property');
-  finalReport.forEach(x => x.services = propertyMap.get(x.property).join());
+  finalReport.forEach(/** @param {StructuredDataReport} x */ x => x.services = propertyMap.get(x.property).join());
   return finalReport;
 }
 
 /**
- * @param {Array<string>} inputText JSON-LD object in expanded form
+ * @param {Array<string>} inputs JSON-LD object in expanded form
  * @return {Promise<Array<StructuredDataReport>>}
  */
 module.exports = async function validateSchemaOrg(inputs) {
@@ -106,3 +104,14 @@ module.exports = async function validateSchemaOrg(inputs) {
   }));
   return reports.flat();
 };
+
+/** @typedef {{
+  property: string|undefined;
+  severity: string;
+  message: string;
+  url: string|undefined;
+  description: string|undefined;
+  services: Array<string>|string|undefined;
+  shape: string;
+}} StructuredDataReport */
+

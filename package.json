@@ -11,7 +11,6 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "test-test": "node ./lighthouse-cli/index.js https://www.onceuponachef.com/recipes/perfect-apple-pie.html --only-categories=seo",
     "build-all": "npm-run-posix-or-windows build-all:task",
     "build-all:task": "yarn build-cdt-lib && yarn build-devtools && (yarn build-extension & yarn build-lr & yarn build-viewer & yarn build-treemap & yarn build-smokehouse-bundle & wait) && yarn build-pack",
     "build-all:task:windows": "yarn build-cdt-lib && yarn build-extension && yarn build-devtools && yarn build-lr && yarn build-viewer && yarn build-treemap && yarn build-smokehouse-bundle",
@@ -188,8 +187,6 @@
     "parse-cache-control": "1.0.1",
     "ps-list": "^7.2.0",
     "raven": "^2.2.1",
-    "rdf-ext": "^1.3.0",
-    "rdf-validate-shacl": "^0.2.3",
     "rimraf": "^2.6.1",
     "robots-parser": "^2.0.1",
     "semver": "^5.3.0",
