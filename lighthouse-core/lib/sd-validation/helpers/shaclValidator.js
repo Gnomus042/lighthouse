@@ -53,7 +53,8 @@ function getAnnotation(shapes, predicate, object) {
 /**
  * Simplify severity
  * @param {*} severity
- * @return {string}
+ * @return {
+ *ring}
  */
 function simplifySeverity(severity) {
   if (severity === 'http://www.w3.org/ns/shacl#Violation') return 'error';

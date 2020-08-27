@@ -4,13 +4,13 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-declare module 'jsonld' {
-  type CallbackFn = (err: null|Error, result?: any) => void
+declare module 'n3' {
+    export class Parser {
+        constructor(options: any);
+        parse(nquads: any): Array<any>;
+    }
 
-  interface JsonldOptions {
-    documentLoader: (url: string, callback: CallbackFn) => void
-  }
-
-  export function expand(object: any, options: JsonldOptions): Promise<any>;
-  export function toRDF(object: any, options: any): Promise<any>;
-}
+    export class Store {
+        addQuad(quad: any):null;
+    }
+ }
