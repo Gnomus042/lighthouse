@@ -1,216 +1,217 @@
 'use strict';
 
-const i18n = require('../../../lib/i18n/i18n.js');
-const MessageStrings = {
-  TypeMismatch: `Value provided for property {property} has a wrong type`,
-  MissingProperty: `Property {property} not found`,
-  ExcessTripleViolation: `Property {property} has a cardinality issue`,
-  BooleanSemActFailure: `Property {property} failed semantic action with code js:'{code}'`,
-};
-
-const str_ = i18n.createMessageInstanceIdFn(__filename, MessageStrings);
-
-// TODO register shex and n3 modules
 const shex = require('../libs/shex.js');
-const jsonld = require('jsonld');
-const n3 = require('n3');
+const utils = require('./utils.js');
+const errors = require('./errors.js');
+const parser = require('./parser.js');
 
-const fs = require('fs');
-const path = require('path');
-const shexShapes = fs.readFileSync(path.join(__dirname, '..', 'assets', 'full.shexj'));
-
-const TYPE_PROPERTY = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+const namespace = require('rdflib').Namespace;
+const rdf = namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 
 class ValidationReport {
   /**
-   * @param {ShExNestedReport} jsonReport shex.js nested report
-   * @param {*} schema shex shapes
+   * @param {LH.StructuredData.ShExReport} jsonReport - report from shex.js, which needs to be simplified
+   * @param {LH.StructuredData.ShExSchema} schema - parsed shapes in ShExJ format
+   * @param {*} annotations
    */
-  constructor(jsonReport, schema) {
-    /** @type {Array<ShExStructuredDataReport>} */
+  constructor(jsonReport, schema, annotations) {
+    /** @type {Array<LH.StructuredData.Failure>} */
     this.failures = [];
-    /** @type {Map<string, *>} */
+    /** @type {Map<string,LH.StructuredData.ShExTargetShape>} */
     this.shapes = new Map();
     schema.shapes.forEach(shape => {
-      this.shapes.set(shape.id, this.shapeFromSchema(shape));
+      const targetShape = this.getShapeCore(shape);
+      if (targetShape) this.shapes.set(shape.id, targetShape);
     });
     this.simplify(jsonReport, undefined, undefined);
-    this.annotationProperties = {
-      URL: 'http://schema.org/url',
-      DESCRIPTION: 'http://schema.org/description',
-      IDENTIFIER: 'http://schema.org/identifier',
-    };
+    this.annotations = annotations;
   }
 
   /**
-   * Recoursive function that simplifies complex nested shex.js report
-   * @param {*} jsonReport shex.js validation report
-   * @param {string|undefined} parentNode data node where the error has occurred
-   * @param {string|undefined} parentShape shex shape which has a failing constraint
+   * Simplifies shex.js nested report into a linear structure
+   * @param {LH.StructuredData.ShExReport} jsonReport
+   * @param {string|undefined} parentNode
+   * @param {string|undefined} parentShape
    */
   simplify(jsonReport, parentNode, parentShape) {
-    // STEP 1: if report doesn't contain errors or MissingProperty type, return
-    if (jsonReport.type === 'ShapeAndResults' ||
-      jsonReport.property === TYPE_PROPERTY ||
-      jsonReport.constraint && jsonReport.constraint.predicate === TYPE_PROPERTY ||
-      jsonReport.type === 'ShapeOrResults') {
-      return;
-    }
-
-    // STEP 2: if array or intermediate nested structure, simplify nested values
     if (Array.isArray(jsonReport)) {
       jsonReport.forEach(err => this.simplify(err, parentNode, parentShape));
       return;
     }
-    if (jsonReport.type === 'ShapeAndFailure' ||
-      jsonReport.type === 'Failure' ||
-      jsonReport.type === 'SemActFailure') {
-      const node = typeof jsonReport.node === 'object' ? null : jsonReport.node;
-      jsonReport.errors
-        .forEach(/** @param {*} err */ err => this.simplify(err, node, jsonReport.shape));
+    // STEP 1: if report doesn't contain errors, MissingProperty @type or failures
+    // that doesn't need to be added, return
+    if (!jsonReport.type ||
+      jsonReport.type === 'ShapeAndResults' ||
+      jsonReport.type === 'ShapeOrResults' ||
+      jsonReport.property === rdf('type').value ||
+      jsonReport.constraint && jsonReport.constraint.predicate === rdf('type').value ||
+      jsonReport.type === 'NodeConstraintViolation' ||
+      jsonReport.type === 'ShapeOrFailure' ||
+      jsonReport.type === 'ShapeTest') {
       return;
     }
-    // STEP 3: collect errors
+
+    // STEP 2: if array or intermediate nested structure, simplify nested values
+    if (jsonReport.type === 'ShapeAndFailure' ||
+      jsonReport.type === 'Failure' ||
+      jsonReport.type === 'SemActFailure' ||
+      jsonReport.type === 'FailureList' ||
+      jsonReport.type === 'ExtendedResults' ||
+      jsonReport.type === 'ExtensionFailure' ||
+      (!jsonReport.type) && jsonReport.errors) {
+      const node = jsonReport.node;
+      this.simplify(jsonReport.errors, node || parentNode, jsonReport.shape || parentShape);
+      return;
+    }
+    // STEP 3: handle closed shape errors
+    if (jsonReport.type === 'ClosedShapeViolation' && jsonReport.unexpectedTriples) {
+      jsonReport.unexpectedTriples.forEach(trpl => {
+        const failure = {
+          type: jsonReport.type,
+          property: trpl.predicate,
+          message: `Unexpected property ${trpl.predicate}`,
+          node: parentNode,
+          shape: parentShape,
+          severity: 'error',
+        };
+        this.failures.push(failure);
+      });
+      return;
+    }
+    // STEP 4: fill out the failure
     const failure = {
       type: jsonReport.type,
       property: jsonReport.property || (jsonReport.constraint && jsonReport.constraint.predicate),
       message: '',
       node: (jsonReport.triple && jsonReport.triple.subject) || parentNode,
       shape: parentShape,
+      severity: 'error',
     };
-    if (jsonReport.type === 'TypeMismatch') {
-      failure.message = str_(MessageStrings.TypeMismatch, {property: failure.property});
-      jsonReport.errors
-        .forEach(/** @param {*} err */ err => this.simplify(err, undefined, undefined));
-    } else if (jsonReport.type === 'MissingProperty') {
-      if (!parentNode) return;
-      failure.message = str_(MessageStrings.MissingProperty, {property: failure.property});
-    } else if (jsonReport.type === 'ExcessTripleViolation') {
-      if (!parentNode) return;
-      failure.message = str_(MessageStrings.ExcessTripleViolation, {property: failure.type});
-    } else if (jsonReport.type === 'BooleanSemActFailure') {
-      if (!jsonReport.ctx.predicate) return;
-      failure.message = str_(MessageStrings.BooleanSemActFailure,
-        {property: failure.property, code: jsonReport.code});
-    } else if (jsonReport.type === 'NodeConstraintViolation' ||
-      jsonReport.type === 'ShapeOrFailure' ||
-      jsonReport.type === 'ClosedShapeViolation') {
-      // TODO find out what should be here.
-      return;
-    } else {
-      failure.type = jsonReport.type;
-      failure.message = `Unknown type ${jsonReport.type}`;
+    switch (jsonReport.type) {
+      case 'TypeMismatch':
+        failure.message = `Value provided for property ${failure.property} has a wrong type`;
+        this.simplify(jsonReport.errors, undefined, undefined);
+        break;
+      case 'MissingProperty':
+        failure.message = `Property ${failure.property} not found`;
+        break;
+      case 'ExcessTripleViolation':
+        failure.message = `Property ${failure.property} has a cardinality issue`;
+        break;
+      case 'BooleanSemActFailure':
+        if (!jsonReport.ctx || !jsonReport.ctx.predicate) return;
+        failure.message = `Property ${failure.property} failed semantic action ` +
+          `with code js:'${jsonReport.code}'`;
+        break;
+      default:
+        throw new errors.ShexValidationError(`Unknown failure type ${jsonReport.type}`);
     }
     this.failures.push(failure);
   }
 
   /**
-   * Recursively parse shape object from shex shapes nested structure
-   * @param {*} struct current structure to parse
-   * @returns {any|undefined}
+   * Recursively parses ShExJ Shape structure to get the core Shape with properties
+   * @param {LH.StructuredData.ShExShape} node
+   * @returns {LH.StructuredData.ShExTargetShape | undefined}
    */
-  shapeFromSchema(struct) {
-    if (struct.type === 'Shape') {
-      return struct;
+  getShapeCore(node) {
+    if (node.type === 'Shape') {
+      return node;
     }
-    if (struct.shapeExprs) {
-      return struct.shapeExprs
-        .map(/** @param {*} nestedStruct */ nestedStruct => this.shapeFromSchema(nestedStruct))
-        .filter(/** @param {*} nestedStruct */ nestedStruct => nestedStruct !== undefined);
+    if (node.shapeExprs) {
+      return node.shapeExprs
+        .map(nestedStruct => this.getShapeCore(nestedStruct))
+        .filter(nestedStruct => nestedStruct !== undefined)[0];
     }
   }
 
   /**
-   * Get annotations map
+   * Gets annotations for specific property in shape from the ShExJ shape
    * @param {string} shape
    * @param {string} property
    * @returns {Map<string, string>}
    */
   getAnnotations(shape, property) {
     const mapper = new Map();
-    if (!this.shapes.get(shape)) return mapper;
-    let prop = this.shapes.get(shape)[0];
-    if (!prop) return mapper;
-    prop = prop.expression.expressions
-      .filter(/** @param {{predicate: string}} x */ x => x.predicate === property)[0];
-    if (!prop || !prop.annotations) return mapper;
-    prop.annotations.forEach(/** @param {{predicate: string, object:{value: string}}} x*/ x => {
+    const shapeObj = this.shapes.get(shape);
+    if (!shapeObj) return mapper;
+    const propStructure = shapeObj.expression.expressions
+      .filter(x => x.predicate === property)[0];
+    if (!propStructure || !propStructure.annotations) return mapper;
+    propStructure.annotations.forEach(x => {
       mapper.set(x.predicate, x.object.value);
     });
     return mapper;
   }
 
   /**
-   * Reformat ShEx report to structured data report
-   * @returns {Array<StructuredDataReport>}
+   * Transforms a temporary report failures to structured data report failures
+   * @returns {Array<LH.StructuredData.Failure>}
    */
   toStructuredDataReport() {
-    /** @type {Array<StructuredDataReport>}  */
-    const simplified = [];
-    this.failures.forEach(err => {
-      let annotations = new Map();
-      if (err.shape && err.property) {
-        annotations = this.getAnnotations(err.shape, err.property);
-      }
-      simplified.push({
+    return this.failures.map(err => {
+      /** @type LH.StructuredData.Failure */
+      const failure = {
         property: err.property,
         message: err.message,
-        url: annotations.get(this.annotationProperties.URL),
-        description: annotations.get(this.annotationProperties.DESCRIPTION),
-        severity: annotations.get(this.annotationProperties.IDENTIFIER) || 'error',
-        services: [],
-        shape: '',
-      });
+        shape: err.shape,
+        severity: 'error',
+        node: err.node,
+      };
+      if (err.shape && err.property && this.annotations) {
+        const shapeAnnotations = this.getAnnotations(err.shape, err.property);
+        for (const [key, value] of Object.entries(this.annotations)) {
+          const annotation = shapeAnnotations.get(value) || failure[key];
+          if (annotation) failure[key] = annotation;
+        }
+      }
+      return failure;
     });
-    return simplified;
   }
 }
 
-/**
- * Parse and prepare jsonld data to validation
- * @param {string} text
- */
-async function parseJSONLD(text) {
-  const nquads = await jsonld.toRDF(JSON.parse(text), {format: 'application/n-quads'});
-  const turtleParser = new n3.Parser({
-    format: 'text/turtle',
-    baseIRI: JSON.parse(text)['@id'],
-  });
-  const store = new n3.Store();
-  turtleParser.parse(nquads).forEach(quad => store.addQuad(quad));
-  return store;
+class ShexValidator {
+  /**
+   * @param {object|string} shapes - ShExJ shapes
+   * @param {{[prop: string]: any}} options
+   */
+  constructor(shapes, options = {}) {
+    if (typeof shapes === 'string') {
+      this.shapes = shex.Parser.construct('', {}, {}).parse(shapes);
+    } else {
+      this.shapes = shapes;
+    }
+    this.annotations = options.annotations;
+  }
+
+  /**
+   * Validates data against ShEx shapes
+   * @param {string|Store} data
+   * @param {string} shape -  identifier of the target shape
+   * @param {{ [prop: string]: any }} options
+   * @returns {Promise<{baseUrl: string, quads: Store, failures: Array<LH.StructuredData.Failure>>}
+   */
+  async validate(data, shape, options = {}) {
+    const baseUrl = options.baseUrl || utils.randomUrl();
+    let quads;
+    if (typeof data === 'string') {
+      quads = await parser.stringToQuads(data, baseUrl);
+    } else {
+      quads = data;
+    }
+
+    const db = shex.Util.makeN3DB(quads);
+    const validator = shex.Validator.construct(this.shapes);
+    const errors = new ValidationReport(validator.validate(db, [{
+      node: baseUrl,
+      shape: shape,
+    }]), this.shapes, this.annotations);
+    return {
+      baseUrl: baseUrl,
+      quads: quads,
+      failures: errors.toStructuredDataReport(),
+    };
+  }
 }
 
-/**
- * Main function for ShEx validation
- * @param {string} dataStr
- * @param {string} dataId
- * @param {string} shape
- * @param {string} service
- * @returns {Promise<Array<StructuredDataReport>>}
- */
-async function validateShEx(dataStr, dataId, shape, service) {
-  const store = await parseJSONLD(dataStr);
-  const shapes = shexShapes.toString();
-  const schema = JSON.parse(shapes);
-  const db = shex.Util.makeN3DB(store);
-  const validator = shex.Validator.construct(schema);
-  const errors = new ValidationReport(validator.validate(db, [{
-    node: dataId,
-    shape: `http://schema.org/shex#${service}${shape}`,
-  }]), schema);
-  return errors.toStructuredDataReport();
-}
-
-module.exports = {validate: validateShEx};
-
-/** @typedef {import('../schema-validator.js').StructuredDataReport} StructuredDataReport */
-
-/** @typedef {*} ShExNestedReport */
-
-/** @typedef {{
-  property: string|undefined;
-  message: string;
-  node: string|undefined;
-  shape: string|undefined;
-}} ShExStructuredDataReport */
+module.exports = {Validator: ShexValidator}

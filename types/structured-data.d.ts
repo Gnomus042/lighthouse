@@ -8,27 +8,77 @@ declare global {
   module LH {
     module StructuredData {
 
-      export type ValidatorType = "json" | "json-ld" | "json-ld-expand" | "schema-org";
-    
-      export interface ValidationError {
-        message: string;
-        /** Property path in the expanded JSON-LD object */
-        path?: string;
-        validator: ValidatorType;
-        lineNumber?: number | null;
-        /** Schema.org type URIs of the invalid entity (undefined if type is invalid) */
-        validTypes?: Array<string>;
+      export interface Failure {
+        property?: string;
+        message?: string;
+        shape?: string;
+        node?: string;
+        severity: string;
+        service?: string;
+        /** additional properties could be added for annotations */
+        [propName: string]: any;
+      }
+
+      export interface Hierarchy {
+        service: string,
+        nested?: Array<Hierarchy>;
+      }
+
+      export interface ShExReportItem {
+        type: string;
+        property?: string;
+        node?: string;
+        shape?: string;
+        unexpectedTriples?: Array<{ predicate?: string }>;
+        triple?: { subject?: string };
+        ctx?: { predicate?: string };
+        code?: string;
+        constraint?: { predicate?: string };
+        errors: Array<ShExReportItem>
+      }
+
+      export type ShExReport = ShExReportItem | Array<ShExReportItem>;
+
+      export interface TripleConstraint {
+        type: 'TripleConstraint';
+        predicate: string;
+        annotations?: Array<{
+          predicate: string;
+          object: { value: string };
+        }>;
+      }
+
+      export interface ShExTargetShape {
+        type: 'Shape';
+        id: string;
+        expression: {
+          type: string;
+          expressions: Array<TripleConstraint>;
+        };
+      }
+
+      export interface ShExIntermediateShape {
+        type: 'ShapeAnd' | 'ShapeOr';
+        shapeExprs: Array<ShExShape>;
+        id: string;
+      }
+
+      export type ShExShape = ShExTargetShape | ShExIntermediateShape;
+
+      export interface ShExSchema {
+        type: string;
+        shapes: Array<ShExShape>;
       }
 
       export interface ExpandedSchemaRepresentationItem {
         [schemaRef: string]: Array<
-            string |
-            {
-              '@id'?: string;
-              '@type'?: string;
-              '@value'?: string;
-            }
-          >;
+          string |
+          {
+            '@id'?: string;
+            '@type'?: string;
+            '@value'?: string;
+          }
+        >;
       }
 
       export type ExpandedSchemaRepresentation =
@@ -39,4 +89,4 @@ declare global {
 }
 
 // empty export to keep file a module
-export {};
+export { };
