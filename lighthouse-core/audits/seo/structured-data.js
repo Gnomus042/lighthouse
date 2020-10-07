@@ -8,7 +8,7 @@
 
 const Audit = require('../audit.js');
 const i18n = require('../../lib/i18n/i18n.js');
-const validator = require('../../lib/sd-validation/schema-validator.js');
+const validator = require('../../lib/sd-validation/shex-schema-validator.js');
 
 const UIStrings = {
   title: 'Structured data is valid',
@@ -34,7 +34,7 @@ class StructuredData extends Audit {
       title: str_(UIStrings.title),
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
-      requiredArtifacts: ['ScriptElements'],
+      requiredArtifacts: ['ScriptElements', 'MainDocumentContent', 'URL'],
     };
   }
 
@@ -46,16 +46,13 @@ class StructuredData extends Audit {
     const data = artifacts.ScriptElements
       .filter(x => x.type === 'application/ld+json' && x.content !== null)
       .map(x => x.content);
-    const report = await validator(data);
+    data.push(artifacts.MainDocumentContent);
+    const report = await validator(data, artifacts.URL.finalUrl);
 
     const errorsCount = report.filter(x => x.severity === 'error').length;
     const warningsCount = report.filter(x => x.severity === 'warning').length;
     let score = (100 - errorsCount * 10 - warningsCount * 5) / 100.0;
     score = score > 0.02 ? score : 0.02; // making the default value
-
-    report.forEach(x => {
-      if (x.property) x.property = x.property.replace('http://schema.org/', '');
-    });
 
     /** @type {LH.Audit.Details.Table['headings']} */
     const headings = [
