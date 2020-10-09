@@ -8,18 +8,15 @@
 
 const Audit = require('../audit.js');
 const i18n = require('../../lib/i18n/i18n.js');
-const validator = require('../../lib/sd-validation/shex-schema-validator.js');
+const validator = require('../../lib/sd-validation/shacl-schema-validator.js');
+const utils = require('../../lib/sd-validation/helpers/utils.js');
 
 const UIStrings = {
   title: 'Structured data is valid',
   failureTitle: 'Structured data is not valid',
   description: 'description here',
 
-  propertyHeader: 'Property',
-  severityHeader: 'Severity',
-  causeHeader: 'Cause',
-  shapeHeader: 'Shape',
-  documentationHeader: 'Documentation',
+  emptyHeader: '',
 };
 
 const str_ = i18n.createMessageInstanceIdFn(__filename, UIStrings);
@@ -39,30 +36,70 @@ class StructuredData extends Audit {
   }
 
   /**
+   * Reformat validation failures array to Lighthouse table form
+   * @param {Array<LH.StructuredData.Failure>} report
+   * @returns {*}
+   */
+  static reportToTable(report) {
+    report.forEach(element => {
+      if (element.message) element.message = utils.removeUrls(element.message);
+      if (element.property) element.property = utils.removeUrls(element.property);
+      element.node = utils.removeUrls(element.node);
+      const url = element.url ? `[Learn more](${element.url})` : '';
+      element.message = `${element.message}. ${element.description || ''} ${url}`;
+    });
+    /**
+     * @param {{[propName: string]: Array<LH.StructuredData.Failure>}} res
+     * @param {LH.StructuredData.Failure} reportItem
+     */
+    const groupBy = (res, reportItem) => {
+      res[reportItem.node] = [...res[reportItem.node] || [], reportItem];
+      return res;
+    };
+    const groupedByNode = report.reduce(groupBy, {});
+    const items = [];
+    for (const [key, value] of Object.entries(groupedByNode)) {
+      const item = {
+        property: key,
+        subItems: {
+          items: value,
+        },
+      };
+      items.push(item);
+    }
+    return items;
+  }
+
+  /**
    * @param {LH.Artifacts} artifacts
    * @return {Promise<LH.Audit.Product>}
    */
   static async audit(artifacts) {
-    const data = artifacts.ScriptElements
-      .filter(x => x.type === 'application/ld+json' && x.content !== null)
-      .map(x => x.content);
+    const data = [];
+    for (const scriptElement of artifacts.ScriptElements) {
+      if (scriptElement.type === 'application/ld+json' && scriptElement.content) {
+        data.push(scriptElement.content);
+      }
+    }
+
     data.push(artifacts.MainDocumentContent);
     const report = await validator(data, artifacts.URL.finalUrl);
 
     const errorsCount = report.filter(x => x.severity === 'error').length;
     const warningsCount = report.filter(x => x.severity === 'warning').length;
     let score = (100 - errorsCount * 10 - warningsCount * 5) / 100.0;
-    score = score > 0.02 ? score : 0.02; // making the default value
+    score = score > 0.02 ? score : 0.02; // default value for even very bad markup would be 2%
 
     /** @type {LH.Audit.Details.Table['headings']} */
     const headings = [
-      {key: 'property', itemType: 'text', text: str_(UIStrings.propertyHeader)},
-      {key: 'severity', itemType: 'text', text: str_(UIStrings.severityHeader)},
-      {key: 'message', itemType: 'text', text: str_(UIStrings.causeHeader)},
-      {key: 'shape', itemType: 'text', text: str_(UIStrings.shapeHeader)},
+      {key: 'property', itemType: 'text', subItemsHeading: {key: 'property'}, text: ''},
+      {key: 'message', itemType: 'text', subItemsHeading: {key: 'message'}, text: ''},
+      {key: 'service', itemType: 'text', subItemsHeading: {key: 'service'}, text: ''},
+      {key: 'severity', itemType: 'text', subItemsHeading: {key: 'severity'}, text: ''},
     ];
 
-    const details = Audit.makeTableDetails(headings, report);
+    const items = StructuredData.reportToTable(report);
+    const details = Audit.makeTableDetails(headings, items);
 
     return {
       score: score,

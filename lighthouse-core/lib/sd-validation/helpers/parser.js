@@ -8,39 +8,44 @@
 const Store = require('n3').Store;
 const Parser = require('n3').Parser;
 const jsonld = require('jsonld');
-const streamify = require('streamify-string');
+const Readable = require('stream').Readable;
 const RdfaParser = require('rdfa-streaming-parser').RdfaParser;
-const microdata = require('../libs/microdata-node.js');
+const MicrodataParser = require('microdata-rdf-streaming-parser').MicrodataRdfParser;
 
 const errors = require('./errors.js');
 
 /**
  * Parses json-ld to quads into the n3.Store
- * @param {string} text input data
- * @return {Promise<Store>}
+ * @param {string} text - input data
+ * @param {string} baseUrl - main shape URL
+ * @return {Promise<LH.StructuredData.Store>}
  */
-async function parseJsonLd(text) {
+async function parseJsonLd(text, baseUrl) {
   const data = JSON.parse(text);
+  data['@id'] = baseUrl;
   const nquads = await jsonld.toRDF(data, {format: 'application/n-quads'});
-  return parseTurtle(nquads);
+  return parseTurtle(nquads, baseUrl);
 }
 
 
 /**
  * Parse RDFa to quads into the n3.Store
- * @param {string} text input data
- * @return {Promise<Store>}
+ * @param {string} text - input data
+ * @param {string} baseUrl - main shape URL
+ * @return {Promise<LH.StructuredData.Store>}
  */
 async function parseRdfa(text, baseUrl) {
-  const textStream = streamify(text);
+  const textStream = new Readable();
+  textStream.push(text);
+  textStream.push(null);
   return new Promise((res, rej) => {
     const store = new Store();
     const rdfaParser = new RdfaParser({baseIRI: baseUrl, contentType: 'text/html'});
     textStream.pipe(rdfaParser)
-            .on('data', quad => {
+            .on('data', /** @param {LH.StructuredData.Quad} quad */ quad => {
               store.addQuad(quad);
             })
-            .on('error', err => rej(err))
+            .on('error', /** @param {*} err */ err => rej(err))
             .on('end', () => res(store));
   });
 }
@@ -48,22 +53,35 @@ async function parseRdfa(text, baseUrl) {
 
 /**
  * Parses microdata to quads into the n3.Store
- * @param {string} text
- * @return {Promise<Store>}
+ * @param {string} text - input data
+ * @param {string} baseUrl - main shape URL
+ * @return {Promise<LH.StructuredData.Store>}
  */
-async function parseMicrodata(text) {
-  const nquads = microdata.toRdf(text);
-  if (nquads.length === 0) throw new errors.InvalidDataError('Format is not Microdata');
-  return parseTurtle(nquads);
+async function parseMicrodata(text, baseUrl) {
+  const textStream = new Readable();
+  textStream.push(text);
+  textStream.push(null);
+  return new Promise((res, rej) => {
+    const store = new Store();
+    const rdfaParser = new MicrodataParser({baseIRI: baseUrl});
+    textStream.pipe(rdfaParser)
+      .on('data', /** @param {LH.StructuredData.Quad} quad */ quad => {
+        store.addQuad(quad);
+      })
+      .on('error', /** @param {*} err */ err => rej(err))
+      .on('end', () => res(store));
+  });
 }
 
 
 /**
- *
+ * @param {string} text - input data
+ * @param {string} baseUrl - main shape URL
  */
-function parseTurtle(text) {
+function parseTurtle(text, baseUrl) {
   const turtleParser = new Parser({
     format: 'text/turtle',
+    baseIRI: baseUrl,
   });
   const store = new Store();
   turtleParser.parse(text).forEach(quad => {
@@ -74,8 +92,8 @@ function parseTurtle(text) {
 
 /**
  * Helper for trying to parse input text into a certain format
- * @param parser parser function
- * @returns {Promise<undefined|Store>}
+ * @param {*} parser parser function
+ * @returns {Promise<undefined|LH.StructuredData.Store>}
  */
 async function tryParse(parser) {
   let quads;
@@ -87,17 +105,21 @@ async function tryParse(parser) {
 
 /**
  * Transforms input to quads
- * @param text - input data
- * @returns {Promise<Store>}
+ * @param {string} text - input data
+ * @param {string} url - main shape URL
+ * @returns {Promise<LH.StructuredData.Store>}
  */
 async function stringToQuads(text, url) {
   const jsonParser = async () => await parseJsonLd(text, url);
   const microdataParser = async () => await parseMicrodata(text, url);
   const rdfaParser = async () => await parseRdfa(text, url);
-  const res = await tryParse(jsonParser) || await tryParse(microdataParser) || await tryParse(rdfaParser);
-  if (!res || res.getQuads().length === 0) {
-    throw new errors.InvalidDataError('Error while parsing the data.' +
-            'This could be caused by incorrect data or incorrect data format. Possible formats: json-ld, microdata, rdfa');
+  const res = await tryParse(jsonParser) ||
+    await tryParse(microdataParser) ||
+    await tryParse(rdfaParser);
+  if (res === undefined || res.getQuads().length === 0) {
+    throw new errors.InvalidDataError('Error while parsing the data. ' +
+            'This could be caused by incorrect data or incorrect data format. ' +
+            'Possible formats: json-ld, microdata, rdfa');
   }
   return res;
 }

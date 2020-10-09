@@ -1,16 +1,16 @@
 'use strict';
 
 const SHACLValidator = require('rdf-validate-shacl');
-const namedNode = require('n3').DataFactory.namedNode;
 
-const utils = require('./util');
+const utils = require('./utils.js');
+const parser = require('./parser.js');
 
 /**
  * Adds shacl base prefix to value
  * @param {string} value
  * @return {string}
  */
-function SHACL(value) {
+function shacl(value) {
   return 'http://www.w3.org/ns/shacl#' + value;
 }
 
@@ -18,15 +18,15 @@ class ShaclValidator {
   /**
    * @param {string} shaclSchema - shacl shapes in string format
    * @param {{
-   *     annotations: object | undefined,
-   *     subclasses: string | undefined
-   * } | {}} options
+   *     annotations?: object | undefined,
+   *     subclasses?: string | undefined
+   * }} options
    */
   constructor(shaclSchema, options = {}) {
     if (options.subclasses) {
-      this.subclasses = utils.parseTurtle(options.subclasses);
+      this.subclasses = parser.parseTurtle(options.subclasses, utils.dummyUrl());
     }
-    this.shapes = utils.parseTurtle(shaclSchema);
+    this.shapes = parser.parseTurtle(shaclSchema, utils.dummyUrl());
     this.annotations = options.annotations || {};
     this.validator = new SHACLValidator(this.shapes.getQuads());
   }
@@ -38,9 +38,9 @@ class ShaclValidator {
    */
   getSeverity(val) {
     switch (val) {
-      case SHACL('Info'):
+      case shacl('Info'):
         return 'info';
-      case SHACL('Warning'):
+      case shacl('Warning'):
         return 'warning';
       default:
         return 'error';
@@ -49,51 +49,57 @@ class ShaclValidator {
 
   /**
    * Gets schema: annotations for some predicate
-   * @param {namedNode} property - property, which should have an annotation
-   * @param {namedNode} annotation - annotation predicate
+   * @param {string} property - property, which should have an annotation
+   * @param {string} annotation - annotation predicate
    * @returns {string|undefined}
    */
   getAnnotation(property, annotation) {
-    let quads = this.shapes.getQuads(property, annotation, undefined);
+    const quads = this.shapes.getQuads(property, annotation, undefined);
     if (quads.length > 0) return quads[0].object.value;
   }
 
   /**
    * Transform standard shacl failure to structured data failure
-   * @param {object} shaclFailure
-   * @returns {StructuredDataFailure}
+   * @param {*} shaclFailure
+   * @returns {LH.StructuredData.Failure}
    */
   toStructuredDataFailure(shaclFailure) {
     // finds a source shape if property is failing
-    let sourceShape = this.shapes.getQuads(undefined, SHACL('property'), shaclFailure.sourceShape)[0];
+    let sourceShape = this.shapes.getQuads(undefined, shacl('property'),
+      shaclFailure.sourceShape)[0];
     // if the whole shape is failing then leave sourceShape
     if (!sourceShape) sourceShape = shaclFailure.sourceShape;
     else sourceShape = sourceShape.subject;
-    let failure = {
+    /** @type {LH.StructuredData.Failure} */
+    const failure = {
       property: shaclFailure.path ? shaclFailure.path.value : undefined,
       message: shaclFailure.message.length > 0 ?
-        shaclFailure.message.map(x => x.value).join(". ") : undefined,
+        shaclFailure.message.map(/** @param {*} x */ x => x.value).join('. ') : undefined,
       shape: sourceShape.id,
       severity: this.getSeverity(shaclFailure.severity.value),
-    }
+      node: '',
+    };
     for (const [key, value] of Object.entries(this.annotations)) {
-      let annotation = this.getAnnotation(shaclFailure.sourceShape, namedNode(value));
+      const annotation = this.getAnnotation(shaclFailure.sourceShape, value);
       if (annotation) failure[key] = annotation;
     }
     return failure;
   }
 
   /**
-   * @param {string} data
-   * @param {{baseUrl: string|undefined}} options
-   * @returns {Promise<{baseUrl: string, quads: Store, failures: [StructuredDataFailure]}>}
+   * @param {string|LH.StructuredData.Store} data
+   * @param {{baseUrl?: string}} options
+   * @returns {Promise<LH.StructuredData.Report>}
    */
   async validate(data, options = {}) {
-    let baseUrl = options.baseUrl || utils.randomUrl();
-    let quads = await utils.inputToQuads(data, baseUrl);
+    const baseUrl = options.baseUrl || utils.dummyUrl();
+    let quads;
+    if (typeof data === 'string') {
+      quads = await parser.stringToQuads(data, baseUrl);
+    } else quads = data;
     let report;
     if (this.subclasses) {
-      let quadsWithSubclasses = quads.getQuads();
+      const quadsWithSubclasses = quads.getQuads();
       quadsWithSubclasses.push(...this.subclasses.getQuads());
       report = this.validator.validate(quadsWithSubclasses).results
         .map(x => this.toStructuredDataFailure(x));
@@ -103,21 +109,10 @@ class ShaclValidator {
     }
     return {
       baseUrl: baseUrl,
-      quads: quads,
+      store: quads,
       failures: report,
     };
   }
 }
 
-/**
- * @typedef {{
- *     property: string,
- *     message: string,
- *     severity: 'error'|'warning'|'info',
- *     shape: string
- * }} StructuredDataFailure
- */
-
-module.exports = {
-  Validator: ShaclValidator,
-}
+module.exports = {Validator: ShaclValidator};
