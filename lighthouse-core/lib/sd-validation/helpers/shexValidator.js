@@ -70,7 +70,7 @@ class ValidationReport {
           type: jsonReport.type,
           property: trpl.predicate,
           message: `Unexpected property ${trpl.predicate}`,
-          node: parentNode,
+          node: parentNode || '',
           shape: parentShape,
           severity: 'error',
         };
@@ -83,13 +83,13 @@ class ValidationReport {
       type: jsonReport.type,
       property: jsonReport.property || (jsonReport.constraint && jsonReport.constraint.predicate),
       message: '',
-      node: (jsonReport.triple && jsonReport.triple.subject) || parentNode,
+      node: (jsonReport.triple && jsonReport.triple.subject) || parentNode || '',
       shape: parentShape,
       severity: 'error',
     };
     switch (jsonReport.type) {
       case 'TypeMismatch':
-        failure.message = `Value provided for property ${failure.property} has a wrong type`;
+        failure.message = `Value provided for property ${failure.property} has an unexpected type`;
         this.simplify(jsonReport.errors, undefined, undefined);
         break;
       case 'MissingProperty':
@@ -150,13 +150,13 @@ class ValidationReport {
    */
   toStructuredDataReport() {
     return this.failures.map(err => {
-      /** @type LH.StructuredData.Failure */
+      /** @type {LH.StructuredData.Failure} */
       const failure = {
         property: err.property,
         message: err.message,
         shape: err.shape,
-        severity: 'error',
         node: err.node,
+        severity: 'error',
       };
       if (err.shape && err.property && this.annotations) {
         const shapeAnnotations = this.getAnnotations(err.shape, err.property);
@@ -186,13 +186,13 @@ class ShexValidator {
 
   /**
    * Validates data against ShEx shapes
-   * @param {string|Store} data
+   * @param {string|LH.StructuredData.Store} data
    * @param {string} shape -  identifier of the target shape
    * @param {{ [prop: string]: any }} options
-   * @returns {Promise<{baseUrl: string, quads: Store, failures: Array<LH.StructuredData.Failure>>}
+   * @returns {Promise<LH.StructuredData.Report>}
    */
   async validate(data, shape, options = {}) {
-    const baseUrl = options.baseUrl || utils.randomUrl();
+    const baseUrl = options.baseUrl || utils.dummyUrl();
     let quads;
     if (typeof data === 'string') {
       quads = await parser.stringToQuads(data, baseUrl);
@@ -208,10 +208,10 @@ class ShexValidator {
     }]), this.shapes, this.annotations);
     return {
       baseUrl: baseUrl,
-      quads: quads,
+      store: quads,
       failures: errors.toStructuredDataReport(),
     };
   }
 }
 
-module.exports = {Validator: ShexValidator}
+module.exports = {Validator: ShexValidator};

@@ -12,8 +12,6 @@ const ShexValidator = require('./helpers/shexValidator.js').Validator;
 const utils = require('./helpers/utils.js');
 const parsers = require('./helpers/parser.js');
 
-const Store = require('n3').Store;
-
 const namespace = require('rdflib').Namespace;
 const rdf = namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 const schema = namespace('http://schema.org/');
@@ -32,16 +30,16 @@ const shapeIds = shapes.shapes.map(shape => shape.id);
 // [property name in the validation report ->
 // URI of the property annotation, used in shapes]
 const annotations = {
-  url: schema('url'),
-  description: schema('description'),
-  severity: schema('identifier'),
+  url: schema('url').value,
+  description: schema('description').value,
+  severity: schema('identifier').value,
 };
 const shexValidator = new ShexValidator(shapes, {annotations: annotations});
 
 /**
- * Recursive validation against all services nodes
+ * Recursive validation against all service nodes in the hierarchy
  * @param {LH.StructuredData.Hierarchy} hierarchyNode
- * @param {Store} shapeStore
+ * @param {import('n3').Store} shapeStore
  * @param {*} id
  */
 async function recursiveValidate(hierarchyNode, shapeStore, id) {
@@ -50,12 +48,15 @@ async function recursiveValidate(hierarchyNode, shapeStore, id) {
 
   /** @type {Array<LH.StructuredData.Failure>} */
   let failures = [];
-  // validate only if the shape exists
+  // validate only if the corresponding shex shape exists
   if (shapeIds.includes(startShape)) {
     failures = (await shexValidator.validate(shapeStore, startShape, {baseUrl: id})).failures;
   }
 
-  failures.forEach(failure => failure.service = hierarchyNode.service);
+  failures.forEach(failure => {
+    failure.service = hierarchyNode.service;
+    failure.node = utils.removeUrls(type);
+  });
   const properties = new Set(failures.map(failure => failure.property));
 
   if (hierarchyNode.nested) {
@@ -71,7 +72,7 @@ async function recursiveValidate(hierarchyNode, shapeStore, id) {
 
 
 /**
- * @param {string[]} data JSON-LD, Microdata and RDFa data in the string format
+ * @param {Array<string>} data JSON-LD, Microdata and RDFa data in the string format
  * @param {string} url URL of the audited page, used as base for parsing
  * @return {Promise<Array<LH.StructuredData.Failure>>}
  */

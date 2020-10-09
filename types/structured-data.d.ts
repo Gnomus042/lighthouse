@@ -4,6 +4,8 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+import { NamedNode, BlankNode, Literal } from 'rdflib';
+
 declare global {
   module LH {
     module StructuredData {
@@ -12,11 +14,17 @@ declare global {
         property?: string;
         message?: string;
         shape?: string;
-        node?: string;
+        node: string;
         severity: string;
         service?: string;
         /** additional properties could be added for annotations */
         [propName: string]: any;
+      }
+      
+      export interface Report {
+        baseUrl: string;
+        store: Store;
+        failures: Array<Failure>;
       }
 
       export interface Hierarchy {
@@ -70,20 +78,13 @@ declare global {
         shapes: Array<ShExShape>;
       }
 
-      export interface ExpandedSchemaRepresentationItem {
-        [schemaRef: string]: Array<
-          string |
-          {
-            '@id'?: string;
-            '@type'?: string;
-            '@value'?: string;
-          }
-        >;
-      }
+      export type Store = import('n3').Store;
 
-      export type ExpandedSchemaRepresentation =
-        | Array<ExpandedSchemaRepresentationItem>
-        | ExpandedSchemaRepresentationItem;
+      export type Quad = {
+        subject: NamedNode | BlankNode;
+        predicate: NamedNode;
+        object: NamedNode | BlankNode | Literal;
+      }
     }
   }
 }

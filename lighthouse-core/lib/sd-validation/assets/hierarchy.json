@@ -2,27 +2,27 @@
     "service": "Schema",
     "nested": [
         {
-            "service": "Google",
+            "service": "ServiceB",
             "nested": [
                 {
-                    "service": "GoogleProduct1"
+                    "service": "ServiceBProduct1"
                 },
                 {
-                    "service": "GoogleProduct2"
+                    "service": "ServiceBProduct2"
                 },
                 {
-                    "service": "GoogleProduct3"
+                    "service": "ServiceBProduct3"
                 }
             ]
         },
         {
-            "service": "Bing"
+            "service": "ServiceA"
         },
         {
-            "service": "Yandex"
+            "service": "ServiceD"
         },
         {
-            "service": "Pinterest"
+            "service": "ServiceC"
         }
     ]
 }
