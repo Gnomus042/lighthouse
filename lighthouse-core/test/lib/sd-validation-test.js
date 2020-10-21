@@ -8,45 +8,33 @@
 /* eslint-env jest */
 
 const assert = require('assert').strict;
-const validateJSONLD = require('../../lib/sd-validation/sd-validation.js');
+const syntaxChecker = require('../../lib/sd-validation/syntax-checker.js');
+const ShexValidator = require('../../lib/sd-validation/helpers/shexValidator.js').Validator;
 
-describe('JSON validation', () => {
-  it('reports missing closing bracket', async () => {
-    const errors = await validateJSONLD(`{
+/* Syntax checkers tests */
+
+describe('Syntax checks', () => {
+  it('fails if json is missing closing bracket', async () => {
+    const error = syntaxChecker.checkJSON(`{
       "test": "test"
     `);
 
-    assert.equal(errors.length, 1);
-    assert.strictEqual(errors[0].lineNumber, 2);
-    assert.ok(errors[0].message.indexOf(`Expecting '}'`) === 0);
+    assert.strictEqual(error.lineNumber, 2);
+    assert.ok(error.message.indexOf(`Expecting '}'`) === 0);
   });
 
-  it('reports missing comma', async () => {
-    const errors = await validateJSONLD(`{
+  it('fails if json is missing comma', async () => {
+    const error = syntaxChecker.checkJSON(`{
       "test": "test"
       "test2": "test2"
     }`);
 
-    assert.equal(errors.length, 1);
-    assert.strictEqual(errors[0].lineNumber, 2);
-    assert.ok(errors[0].message.indexOf(`Expecting 'EOF', '}', ':', ',', ']'`) === 0);
+    assert.strictEqual(error.lineNumber, 2);
+    assert.ok(error.message.indexOf(`Expecting 'EOF', '}', ':', ',', ']'`) === 0);
   });
 
-  it('reports duplicated property', async () => {
-    const errors = await validateJSONLD(`{
-      "test": "test",
-      "test2": {
-        "test2-1": "test",
-        "test2-1": "test2"
-      }
-    }`);
-
-    assert.equal(errors.length, 1);
-    assert.ok(errors[0].message, `Duplicate key 'test2-1'`);
-  });
-
-  it('parses valid json', async () => {
-    const errors = await validateJSONLD(`{
+  it('passes valid json', async () => {
+    const error = syntaxChecker.checkJSON(`{
       "test": "test",
       "test2": {
         "test2-1": "test",
@@ -57,216 +45,180 @@ describe('JSON validation', () => {
       "test5": [1,2,3]
     }`);
 
-    assert.equal(errors.length, 0);
+    assert.strictEqual(error, null);
+  });
+
+  it('passes valid microdata', async () => {
+    const error = await syntaxChecker.checkMicrodata(`
+      <div itemscope itemtype="https://schema.org/Person">
+        <span itemprop="name"/>Jane Doe</span>
+        <img src="janedoe.jpg" itemprop="image" alt="Photo of Jane Doe"/>
+        <span itemprop="jobTitle">Professor</span>
+      </div>`, 'http://example.org/');
+    assert.strictEqual(error, null);
+  });
+
+  it('passes valid RDFa', async () => {
+    const error = await syntaxChecker.checkRDFa(`
+      <div vocab="https://schema.org/" typeof="Person">
+        <span property="name">Jane Doe</span>
+        <img src="janedoe.jpg" property="image" alt="Photo of Jane Doe"/>
+        <span property="jobTitle">Professor</span>
+      </div>`, 'http://example.org/');
+    assert.strictEqual(error, null);
   });
 });
 
-describe('JSON-LD validation', () => {
-  it('reports unknown keywords', async () => {
-    const errors = await validateJSONLD(`{
-      "@type": {},
-      "@context": {},
-      "@test": {}
-    }`);
+describe('ShEx validation', () => {
+  const shapes = `
+    PREFIX schema: <http://schema.org/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    BASE <https://schema.org/validation>
 
-    assert.equal(errors.length, 1);
-    assert.equal(errors[0].message, 'Unknown keyword "@test"');
-    assert.equal(errors[0].path, '@test');
-    assert.strictEqual(errors[0].lineNumber, 4);
-  });
+    <#Thing> {
+        schema:name Literal
+        // rdfs:comment "Name is required for SomeProduct";
+        schema:description Literal
+        // rdfs:comment "Description is required for SomeProduct"
+        // rdfs:label "warning";
+        schema:identifier /GTIN|UUID|ISBN/ *
+        // rdfs:label "warning";
+    }
 
-  it('reports invalid context', async () => {
-    const errors = await validateJSONLD(`{
-      "@context": {"x":"x"}
-    }`);
+    <#CreativeWork> @<#Thing> AND {
+        schema:text Literal ;
+    }
+  `;
+  const validator = new ShexValidator(shapes);
 
-    assert.equal(errors.length, 1);
-    assert.ok(errors[0].message.indexOf('@context terms must define an @id') !== -1);
-  });
-
-  it('reports invalid keyword value', async () => {
-    const errors = await validateJSONLD(`{
+  it('fails if some property is missing', async () => {
+    const data = `{
       "@context": "http://schema.org/",
-      "@type": 23
-    }`);
+      "@type": "Thing",
+      "description": "test1-description"
+    }`;
+    const errors = (await validator.validate(data, 'https://schema.org/validation#Thing', {baseUrl: 'http://example.org/'})).failures;
 
-    assert.equal(errors.length, 1);
-    assert.ok(errors[0].message.indexOf('"@type" value must a string') !== -1);
-  });
-
-  it('reports invalid id value', async () => {
-    const errors = await validateJSONLD(`{
-      "@context": {
-        "image": {
-          "@id": "@error"
-        }
-      }
-    }`);
-
-    assert.equal(errors.length, 1);
-    assert.ok(errors[0].message.indexOf('@id value must be an absolute IRI') !== -1);
-  });
-
-  it('reports invalid context URL', async () => {
-    const errors = await validateJSONLD(`{
-      "@context": "http://"
-    }`);
-
-    assert.equal(errors.length, 1);
-    assert.equal(errors[0].message, 'Error parsing URL: http://');
-  });
-});
-
-describe('schema.org validation', () => {
-  it('reports unknown types', async () => {
-    const errors = await validateJSONLD(`{
-      "@context": "http://schema.org",
-      "@type": "Cat"
-    }`);
-
-    assert.equal(errors.length, 1);
-    assert.equal(errors[0].message, 'Unrecognized schema.org type: http://schema.org/Cat');
-    assert.strictEqual(errors[0].lineNumber, 3);
-  });
-
-  it('handles arrays of json schemas', async () => {
-    const errors = await validateJSONLD(`[
+    assert.strictEqual(errors.length, 1);
+    assert.deepEqual(errors, [
       {
-        "@context": "http://schema.org",
-        "@type": "Cat"
+        property: 'http://schema.org/name',
+        message: 'Property http://schema.org/name not found',
+        shape: 'https://schema.org/validation#Thing',
+        node: 'http://example.org/',
+        severity: 'error',
+      },
+    ]);
+  });
+
+  it('passes if the data has all required properties', async () => {
+    const data = `{
+      "@context": "http://schema.org/",
+      "@type": "Thing",
+      "description": "test1-description",
+      "name": "test1"
+    }`;
+    const errors = (await validator.validate(data, 'https://schema.org/validation#Thing', {baseUrl: 'http://example.org/'})).failures;
+    assert.strictEqual(errors.length, 0);
+  });
+
+  it('fails if regex check is failing', async () => {
+    const data = `{
+      "@context": "https://schema.org/",
+      "@type": "Thing",
+      "name": "test1",
+      "description": "test1-description",
+      "identifier": "AAAA"
+    }`;
+    const errors = (await validator.validate(data, 'https://schema.org/validation#Thing', {baseUrl: 'http://example.org/'})).failures;
+    assert.strictEqual(errors.length, 1);
+    assert.deepEqual(errors, [
+      {
+        property: 'http://schema.org/identifier',
+        message: 'Value provided for property http://schema.org/identifier has an unexpected type',
+        shape: 'https://schema.org/validation#Thing',
+        node: 'http://example.org/',
+        severity: 'error',
+      },
+    ]);
+  });
+
+  it('fails if some required property is missing and regex check is failing', async () => {
+    const data = `{
+      "@context": "https://schema.org/",
+      "@type": "Thing",
+      "name": "test1",
+      "identifier": "AAAA"
+    }`;
+    const errors = (await validator.validate(data, 'https://schema.org/validation#Thing', {baseUrl: 'http://example.org/'})).failures;
+    assert.strictEqual(errors.length, 2);
+    assert.deepEqual(errors, [
+      {
+        property: 'http://schema.org/identifier',
+        message: 'Value provided for property http://schema.org/identifier has an unexpected type',
+        shape: 'https://schema.org/validation#Thing',
+        node: 'http://example.org/',
+        severity: 'error',
       },
       {
-        "@context": "http://schema.org",
-        "@type": "Dog"
-      }
-    ]`);
-
-    assert.equal(errors.length, 2);
-    assert.equal(errors[0].message, 'Unrecognized schema.org type: http://schema.org/Cat');
-    assert.equal(errors[1].message, 'Unrecognized schema.org type: http://schema.org/Dog');
-  });
-
-  it('reports unknown types for objects with multiple types', async () => {
-    const errors = await validateJSONLD(`{
-      "@context": "http://schema.org",
-      "@type": ["Article", "Dog"]
-    }`);
-
-    assert.equal(errors.length, 1);
-    assert.equal(errors[0].message, 'Unrecognized schema.org type: http://schema.org/Dog');
-  });
-
-  it('reports unexpected fields', async () => {
-    const errors = await validateJSONLD(`{
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "author": "Cat",
-      "datePublished": "Oct 29th 2017",
-      "dateModified": "Oct 29th 2017",
-      "headline": "Human's New Best Friend - Cat",
-      "image": "https://cats.rock/cat.bmp",
-      "publisher": "Cat Magazine",
-      "mainEntityOfPage": "https://cats.rock/magazine.html",
-      "controversial": true
-    }`);
-
-    assert.equal(errors.length, 1);
-    assert.equal(errors[0].validTypes[0], 'http://schema.org/Article');
-    assert.equal(errors[0].message, 'Unexpected property "controversial"');
-    assert.strictEqual(errors[0].lineNumber, 11);
-  });
-
-  it('passes if non-schema.org context', async () => {
-    const errors = await validateJSONLD(`{
-      "@context": "http://www.w3.org/ns/activitystreams",
-      "@type": "Create",
-      "actor": {
-        "@type": "Person",
-        "@id": "acct:sally@example.org",
-        "displayName": "Sally"
+        property: 'http://schema.org/description',
+        message: 'Property http://schema.org/description not found',
+        shape: 'https://schema.org/validation#Thing',
+        node: 'http://example.org/',
+        severity: 'error',
       },
-      "object": {
-        "@type": "Note",
-        "content": "This is a simple note"
+    ]);
+  });
+
+  it('should add annotations if they are defined', async () => {
+    const data = `{
+      "@context": "https://schema.org/",
+      "@type": "Thing",
+      "name": "test1",
+      "identifier": "AAAA"
+    }`;
+    const annotations = {
+      description: 'http://www.w3.org/2000/01/rdf-schema#comment',
+      severity: 'http://www.w3.org/2000/01/rdf-schema#label'
+    };
+    const annotatedValidator = new ShexValidator(shapes, {annotations: annotations});
+    const errors = (await annotatedValidator.validate(data, 'https://schema.org/validation#Thing', {baseUrl: 'http://example.org/'})).failures;
+    assert.strictEqual(errors.length, 2);
+    assert.deepEqual(errors, [
+      {
+        property: 'http://schema.org/identifier',
+        message: 'Value provided for property http://schema.org/identifier has an unexpected type',
+        shape: 'https://schema.org/validation#Thing',
+        node: 'http://example.org/',
+        severity: 'warning',
       },
-      "published": "2015-01-25T12:34:56Z"
-    }`);
-
-    assert.equal(errors.length, 0);
-  });
-
-  it('passes if everything is OK', async () => {
-    const errors = await validateJSONLD(`{
-      "@context": "http://schema.org",
-      "@type": "Article",
-      "author": "Cat",
-      "datePublished": "Oct 29th 2017",
-      "dateModified": "Oct 29th 2017",
-      "headline": "Human's New Best Friend - Cat",
-      "image": "https://cats.rock/cat.bmp",
-      "publisher": "Cat Magazine",
-      "mainEntityOfPage": "https://cats.rock/magazine.html"
-    }`);
-
-    assert.equal(errors.length, 0);
-  });
-
-  it('passes if valid json-ld uses absolute IRIs as keys', async () => {
-    const errors = await validateJSONLD(`{
-      "@type": "http://schema.org/Article",
-      "http://schema.org/author": {
-        "@type": "Person",
-        "http://schema.org/name": "Cat"
+      {
+        property: 'http://schema.org/description',
+        message: 'Property http://schema.org/description not found',
+        shape: 'https://schema.org/validation#Thing',
+        node: 'http://example.org/',
+        severity: 'warning',
+        description: 'Description is required for SomeProduct',
       },
-      "http://schema.org/datePublished": "Oct 29th 2017",
-      "http://schema.org/dateModified": "Oct 29th 2017"
-    }`);
-
-    assert.equal(errors.length, 0);
+    ]);
   });
 
-  it('fails if invalid json-ld uses absolute IRIs as keys', async () => {
-    const errors = await validateJSONLD(`{
-      "@type": "http://schema.org/Article",
-      "http://schema.org/author": {
-        "@type": "http://schema.org/Person",
-        "http://schema.org/invalidProperty": "",
-        "http://schema.org/name": "Cat"
+  it('should include failures from parent classes', async () => {
+    const data = `{
+      "@context": "http://schema.org/",
+      "@type": "CreativeWork",
+      "description": "test1-description"
+    }`;
+    const errors = (await validator.validate(data, 'https://schema.org/validation#Thing', {baseUrl: 'http://example.org/'})).failures;
+    assert.strictEqual(errors.length, 1);
+    assert.deepEqual(errors, [
+      {
+        property: 'http://schema.org/name',
+        message: 'Property http://schema.org/name not found',
+        shape: 'https://schema.org/validation#Thing',
+        node: 'http://example.org/',
+        severity: 'error',
       },
-      "http://schema.org/datePublished": "Oct 29th 2017",
-      "http://schema.org/dateModified": "Oct 29th 2017"
-    }`);
-
-    assert.equal(errors.length, 1);
-    assert.strictEqual(errors[0].lineNumber, 5);
-  });
-
-  it('fails with correct errors for a deeply nested json-ld snipppet', async () => {
-    const errors = await validateJSONLD(`{
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "author": {
-        "@type": "Person",
-        "name": "Cat",
-        "funder": {
-          "@type": "Organization",
-          "name": "Cat International",
-          "location": [
-            {
-              "@type": "Place",
-              "name": "Catworld"
-            },
-            {
-              "@type": "Place",
-              "some": "where"
-            }
-          ]
-        }
-      }
-    }`);
-
-    assert.equal(errors.length, 1);
-    assert.equal(errors[0].message, 'Unexpected property "some"');
-    assert.strictEqual(errors[0].lineNumber, 17);
+    ]);
   });
 });
