@@ -8,14 +8,14 @@
 
 const Audit = require('../audit.js');
 const i18n = require('../../lib/i18n/i18n.js');
-const validator = require('../../lib/sd-validation/shacl-schema-validator.js');
+const validator = require('../../lib/sd-validation/shex-schema-validator.js');
+const syntaxChecker = require('../../lib/sd-validation/syntax-checker.js');
 const utils = require('../../lib/sd-validation/helpers/utils.js');
 
 const UIStrings = {
   title: 'Structured data is valid',
   failureTitle: 'Structured data is not valid',
-  description: 'description here',
-
+  description: 'The audit provides a short list of improvements that could be done to the structured data on the tested webpage. To get a detailed validation report run the [Rich Results Test](https://search.google.com/test/rich-results) or the [Structured Data Linter](http://linter.structured-data.org/). [Learn more](https://web.dev/structured-data/).',
   emptyHeader: '',
 };
 
@@ -45,8 +45,12 @@ class StructuredData extends Audit {
       if (element.message) element.message = utils.removeUrls(element.message);
       if (element.property) element.property = utils.removeUrls(element.property);
       element.node = utils.removeUrls(element.node);
-      const url = element.url ? `[Learn more](${element.url})` : '';
-      element.message = `${element.message}. ${element.description || ''} ${url}`;
+      element.message = `${element.message}. ${element.description || ''}`;
+      element.url = {
+        type: 'link',
+        text: 'Learn more',
+        url: element.url,
+      };
     });
     /**
      * @param {{[propName: string]: Array<LH.StructuredData.Failure>}} res
@@ -59,13 +63,17 @@ class StructuredData extends Audit {
     const groupedByNode = report.reduce(groupBy, {});
     const items = [];
     for (const [key, value] of Object.entries(groupedByNode)) {
-      const item = {
-        property: key,
-        subItems: {
-          items: value,
-        },
-      };
-      items.push(item);
+      if (key === '') {
+        items.push(value);
+      } else {
+        const item = {
+          property: key,
+          subItems: {
+            items: value,
+          },
+        };
+        items.push(item);
+      }
     }
     return items;
   }
@@ -76,24 +84,47 @@ class StructuredData extends Audit {
    */
   static async audit(artifacts) {
     const data = [];
+    /** @type {Array<LH.StructuredData.Failure>} */
+    const report = [];
     for (const scriptElement of artifacts.ScriptElements) {
       if (scriptElement.type === 'application/ld+json' && scriptElement.content) {
-        data.push(scriptElement.content);
+        const jsonSyntaxCheck = syntaxChecker.checkJSON(scriptElement.content);
+        if (jsonSyntaxCheck) {
+          report.push({
+            message: jsonSyntaxCheck.message,
+            severity: 'error',
+            node: '',
+          });
+        } else {
+          data.push(scriptElement.content);
+        }
       }
     }
 
-    data.push(artifacts.MainDocumentContent);
-    const report = await validator(data, artifacts.URL.finalUrl);
-
+    const htmlSyntaxCheck = await syntaxChecker.checkMicrodata(artifacts.MainDocumentContent,
+      artifacts.URL.finalUrl) || await syntaxChecker.checkRDFa(artifacts.MainDocumentContent,
+      artifacts.URL.finalUrl);
+    if (htmlSyntaxCheck) {
+      report.push({
+        message: htmlSyntaxCheck.message,
+        severity: 'error',
+        node: '',
+      });
+    } else {
+      data.push(artifacts.MainDocumentContent);
+    }
+    const validationFailures = await validator(data, artifacts.URL.finalUrl);
+    if (validationFailures.length > 0) report.push(...validationFailures);
     const errorsCount = report.filter(x => x.severity === 'error').length;
     const warningsCount = report.filter(x => x.severity === 'warning').length;
     let score = (100 - errorsCount * 10 - warningsCount * 5) / 100.0;
-    score = score > 0.02 ? score : 0.02; // default value for even very bad markup would be 2%
+    score = score > 0.01 ? score : 0.01; // default value for even very bad markup should be 1%
 
     /** @type {LH.Audit.Details.Table['headings']} */
     const headings = [
       {key: 'property', itemType: 'text', subItemsHeading: {key: 'property'}, text: ''},
       {key: 'message', itemType: 'text', subItemsHeading: {key: 'message'}, text: ''},
+      {key: 'url', itemType: 'link', subItemsHeading: {key: 'url'}, text: ''},
       {key: 'service', itemType: 'text', subItemsHeading: {key: 'service'}, text: ''},
       {key: 'severity', itemType: 'text', subItemsHeading: {key: 'severity'}, text: ''},
     ];

@@ -47,7 +47,8 @@ function quadsToShapes(store) {
     for (const subQuad of typesQuads) {
       // if there is a node, that has current subject nested inside it,
       // then it is not root
-      if (store.getQuads(subQuad.subject.id, undefined, quad.subject.id).length > 0) {
+      if (store.getQuads(subQuad.subject.id, undefined, quad.subject.id).length > 0 &&
+        subQuad.subject.id !== quad.subject.id) {
         dependent = true;
         break;
       }
@@ -58,7 +59,7 @@ function quadsToShapes(store) {
   }
   const shapes = new Map();
   for (const id of rootShapesIds) {
-    getShape(id, store, shapes, []);
+    shapes.set(id, getShape(id, store, shapes, []));
   }
   return shapes;
 }
@@ -90,7 +91,7 @@ function getShape(id, store, shapes, parsed) {
   for (const quad of shapeQuads) {
     shapeStore.addQuad(quad);
   }
-  shapes.set(id, shapeStore);
+  return shapeStore;
 }
 
 /**

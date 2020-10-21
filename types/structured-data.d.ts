@@ -5,6 +5,7 @@
  */
 
 import { NamedNode, BlankNode, Literal } from 'rdflib';
+import unusedCss = require('../lighthouse-core/computed/unused-css');
 
 declare global {
   module LH {
@@ -20,10 +21,10 @@ declare global {
         /** additional properties could be added for annotations */
         [propName: string]: any;
       }
-      
+
       export interface Report {
         baseUrl: string;
-        store: Store;
+        store?: Store;
         failures: Array<Failure>;
       }
 
