@@ -80,12 +80,14 @@ module.exports = async function validateSchemaOrg(data, url) {
   /** @type {Array<LH.StructuredData.Failure>} */
   const report = [];
   for (const item of data) {
-    const shapes = utils.quadsToShapes(await parsers.stringToQuads(item, url));
-    for (const [id, shape] of shapes.entries()) {
-      const failures = utils.uniqueBy((await recursiveValidate(hierarchy, shape, id)),
-        ['property', 'shape', 'severity']);
-      if (failures.length > 0) report.push(...failures);
-    }
+    try {
+      const shapes = utils.quadsToShapes(await parsers.stringToQuads(item, url));
+      for (const [id, shape] of shapes.entries()) {
+        const failures = utils.uniqueBy((await recursiveValidate(hierarchy, shape, id)),
+          ['property', 'shape', 'severity']);
+        if (failures.length > 0) report.push(...failures);
+      }
+    } catch (e) {}
   }
   return report;
 };

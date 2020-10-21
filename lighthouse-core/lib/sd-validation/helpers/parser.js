@@ -80,7 +80,7 @@ async function parseMicrodata(text, baseUrl) {
  */
 function parseTurtle(text, baseUrl) {
   const turtleParser = new Parser({
-    format: 'text/turtle',
+    format: 'application/n-quads',
     baseIRI: baseUrl,
   });
   const store = new Store();
