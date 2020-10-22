@@ -177,6 +177,7 @@ class ShexValidator {
    */
   constructor(shapes, options = {}) {
     if (typeof shapes === 'string') {
+      // @ts-ignore
       this.shapes = shex.Parser.construct('', {}, {}).parse(shapes);
     } else {
       this.shapes = shapes;
@@ -200,7 +201,9 @@ class ShexValidator {
       quads = data;
     }
 
+    // @ts-ignore
     const db = shex.Util.makeN3DB(quads);
+    // @ts-ignore
     const validator = shex.Validator.construct(this.shapes);
     const errors = new ValidationReport(validator.validate(db, [{
       node: baseUrl,

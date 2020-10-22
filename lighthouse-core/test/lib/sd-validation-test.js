@@ -179,7 +179,7 @@ describe('ShEx validation', () => {
     }`;
     const annotations = {
       description: 'http://www.w3.org/2000/01/rdf-schema#comment',
-      severity: 'http://www.w3.org/2000/01/rdf-schema#label'
+      severity: 'http://www.w3.org/2000/01/rdf-schema#label',
     };
     const annotatedValidator = new ShexValidator(shapes, {annotations: annotations});
     const errors = (await annotatedValidator.validate(data, 'https://schema.org/validation#Thing', {baseUrl: 'http://example.org/'})).failures;
