@@ -10,6 +10,11 @@
 const assert = require('assert').strict;
 const syntaxChecker = require('../../lib/sd-validation/syntax-checker.js');
 const ShexValidator = require('../../lib/sd-validation/helpers/shex-validator.js').Validator;
+const localization = require('../../lib/sd-validation/helpers/localization-helper.js');
+
+const localizedAnnotations = {};
+const localizedMessages = localization.getMessages();
+
 
 /* Syntax checkers tests */
 
@@ -89,11 +94,13 @@ describe('ShEx validation', () => {
         schema:text Literal ;
     }
   `;
-  const validator = new ShexValidator(shapes);
+  const validator = new ShexValidator(shapes,
+    {annotations: localizedAnnotations, messages: localizedMessages});
 
   it('fails if some property is missing', async () => {
     const data = `{
       "@context": "http://schema.org/",
+      "@id": "http://example.org/",
       "@type": "Thing",
       "description": "test1-description"
     }`;
@@ -107,6 +114,7 @@ describe('ShEx validation', () => {
         shape: 'https://schema.org/validation#Thing',
         node: 'http://example.org/',
         severity: 'error',
+        severityLabel: 'error',
       },
     ]);
   });
@@ -114,6 +122,7 @@ describe('ShEx validation', () => {
   it('passes if the data has all required properties', async () => {
     const data = `{
       "@context": "http://schema.org/",
+      "@id": "http://example.org/",
       "@type": "Thing",
       "description": "test1-description",
       "name": "test1"
@@ -126,6 +135,7 @@ describe('ShEx validation', () => {
     const data = `{
       "@context": "https://schema.org/",
       "@type": "Thing",
+      "@id": "http://example.org/",
       "name": "test1",
       "description": "test1-description",
       "identifier": "AAAA"
@@ -139,6 +149,7 @@ describe('ShEx validation', () => {
         shape: 'https://schema.org/validation#Thing',
         node: 'http://example.org/',
         severity: 'error',
+        severityLabel: 'error',
       },
     ]);
   });
@@ -147,6 +158,7 @@ describe('ShEx validation', () => {
     const data = `{
       "@context": "https://schema.org/",
       "@type": "Thing",
+      "@id": "http://example.org/",
       "name": "test1",
       "identifier": "AAAA"
     }`;
@@ -159,6 +171,7 @@ describe('ShEx validation', () => {
         shape: 'https://schema.org/validation#Thing',
         node: 'http://example.org/',
         severity: 'error',
+        severityLabel: 'error',
       },
       {
         property: 'http://schema.org/description',
@@ -166,6 +179,7 @@ describe('ShEx validation', () => {
         shape: 'https://schema.org/validation#Thing',
         node: 'http://example.org/',
         severity: 'error',
+        severityLabel: 'error',
       },
     ]);
   });
@@ -174,6 +188,7 @@ describe('ShEx validation', () => {
     const data = `{
       "@context": "https://schema.org/",
       "@type": "Thing",
+      "@id": "http://example.org/",
       "name": "test1",
       "identifier": "AAAA"
     }`;
@@ -181,7 +196,9 @@ describe('ShEx validation', () => {
       description: 'http://www.w3.org/2000/01/rdf-schema#comment',
       severity: 'http://www.w3.org/2000/01/rdf-schema#label',
     };
-    const annotatedValidator = new ShexValidator(shapes, {annotations: annotations});
+    const annotatedValidator = new ShexValidator(shapes,
+      {annotations: localizedAnnotations, messages: localizedMessages},
+      {annotations: annotations});
     const errors = (await annotatedValidator.validate(data, 'https://schema.org/validation#Thing', {baseUrl: 'http://example.org/'})).failures;
     assert.strictEqual(errors.length, 2);
     assert.deepEqual(errors, [
@@ -191,6 +208,7 @@ describe('ShEx validation', () => {
         shape: 'https://schema.org/validation#Thing',
         node: 'http://example.org/',
         severity: 'warning',
+        severityLabel: 'warning',
       },
       {
         property: 'http://schema.org/description',
@@ -198,6 +216,7 @@ describe('ShEx validation', () => {
         shape: 'https://schema.org/validation#Thing',
         node: 'http://example.org/',
         severity: 'warning',
+        severityLabel: 'warning',
         description: 'Description is required for SomeProduct',
       },
     ]);
@@ -206,6 +225,7 @@ describe('ShEx validation', () => {
   it('should include failures from parent classes', async () => {
     const data = `{
       "@context": "http://schema.org/",
+      "@id": "http://example.org/",
       "@type": "CreativeWork",
       "description": "test1-description"
     }`;
@@ -218,6 +238,7 @@ describe('ShEx validation', () => {
         shape: 'https://schema.org/validation#Thing',
         node: 'http://example.org/',
         severity: 'error',
+        severityLabel: 'error',
       },
     ]);
   });

@@ -27,7 +27,7 @@ class StructuredData extends Audit {
    */
   static get meta() {
     return {
-      id: 'link-text',
+      id: 'structured-data',
       title: str_(UIStrings.title),
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
