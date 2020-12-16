@@ -22,9 +22,8 @@ const errors = require('./errors.js');
  */
 async function parseJsonLd(text, baseUrl) {
   const data = JSON.parse(text);
-  data['@id'] = baseUrl;
-  const nquads = await jsonld.toRDF(data, {format: 'application/n-quads'});
-  return parseTurtle(nquads, baseUrl);
+  const nquads = await jsonld.toRDF(data, {format: 'application/n-quads', base: baseUrl});
+  return parseNQuads(nquads, baseUrl);
 }
 
 
@@ -42,11 +41,14 @@ async function parseRdfa(text, baseUrl) {
     const store = new Store();
     const rdfaParser = new RdfaParser({baseIRI: baseUrl, contentType: 'text/html'});
     textStream.pipe(rdfaParser)
-            .on('data', /** @param {LH.StructuredData.Quad} quad */ quad => {
-              store.addQuad(quad);
-            })
-            .on('error', /** @param {*} err */ err => rej(err))
-            .on('end', () => res(store));
+      .on('data', quad => {
+        store.addQuad(quad);
+      })
+      .on('error', err => rej(err))
+      .on('end', () => {
+        if (store.getQuads().length === 0) res(undefined);
+        res(store);
+      });
   });
 }
 
@@ -65,12 +67,32 @@ async function parseMicrodata(text, baseUrl) {
     const store = new Store();
     const rdfaParser = new MicrodataParser({baseIRI: baseUrl});
     textStream.pipe(rdfaParser)
-      .on('data', /** @param {LH.StructuredData.Quad} quad */ quad => {
+      .on('data', quad => {
         store.addQuad(quad);
       })
-      .on('error', /** @param {*} err */ err => rej(err))
-      .on('end', () => res(store));
+      .on('error', err => rej(err))
+      .on('end', () => {
+        if (store.getQuads().length === 0) res(undefined);
+        res(store);
+      });
   });
+}
+
+/**
+ * @param {string} text - input data
+ * @param {string} baseUrl - main shape URL
+ * @return {Store}
+ */
+function parseNQuads(text, baseUrl) {
+  const turtleParser = new Parser({
+    format: 'application/n-quads',
+    baseIRI: baseUrl,
+  });
+  const store = new Store();
+  turtleParser.parse(text).forEach(quad => {
+    store.addQuad(quad);
+  });
+  return store;
 }
 
 
@@ -118,8 +140,8 @@ async function stringToQuads(text, url) {
     await tryParse(rdfaParser);
   if (res === undefined || res.getQuads().length === 0) {
     throw new errors.InvalidDataError('Error while parsing the data. ' +
-            'This could be caused by incorrect data or incorrect data format. ' +
-            'Possible formats: json-ld, microdata, rdfa');
+      'This could be caused by incorrect data or incorrect data format. ' +
+      'Possible formats: json-ld, microdata, rdfa');
   }
   return res;
 }

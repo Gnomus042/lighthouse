@@ -8,11 +8,15 @@
 const fs = require('fs');
 const path = require('path');
 
-const ShexValidator = require('./helpers/shexValidator.js').Validator;
+const i18n = require('../i18n/i18n.js');
+
+const ShexValidator = require('./helpers/shex-validator.js').Validator;
 const utils = require('./helpers/utils.js');
 const parsers = require('./helpers/parser.js');
+const localization = require('./helpers/localization-helper.js');
+const errors = require('./helpers/errors.js');
 
-const namespace = require('rdflib').Namespace;
+const namespace = utils.namespace;
 const rdf = namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 const schema = namespace('http://schema.org/');
 const shex = namespace('http://schema.org/shex#');
@@ -22,7 +26,7 @@ const shex = namespace('http://schema.org/shex#');
 // order (e.g. Schema -> Google -> GoogleAds -> ...)
 const hierarchy = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'hierarchy.json'))
   .toString());
-/** @type {LH.StructuredData.ShExSchema} ShEx shapes in the ShExJ format */
+/** @type {LH.StructuredData.ShEx.Schema} ShEx shapes in the ShExJ format */
 const shapes = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'full.shexj')).toString());
 const shapeIds = shapes.shapes.map(shape => shape.id);
 
@@ -30,11 +34,16 @@ const shapeIds = shapes.shapes.map(shape => shape.id);
 // [property name in the validation report ->
 // URI of the property annotation, used in shapes]
 const annotations = {
-  url: schema('url').value,
-  description: schema('description').value,
-  severity: schema('identifier').value,
+  url: schema('url'),
+  description: schema('description'),
+  severity: schema('identifier'),
 };
-const shexValidator = new ShexValidator(shapes, {annotations: annotations});
+const locale = i18n.lookupLocale().toString();
+const localeAnnotations = localization.getAnnotations(locale);
+const localeMessages = localization.getMessages(locale);
+const shexValidator = new ShexValidator(shapes,
+  {annotations: localeAnnotations, messages: localeMessages},
+  {annotations: annotations});
 
 /**
  * Recursive validation against all service nodes in the hierarchy
@@ -43,8 +52,13 @@ const shexValidator = new ShexValidator(shapes, {annotations: annotations});
  * @param {*} id
  */
 async function recursiveValidate(hierarchyNode, shapeStore, id) {
-  const type = utils.removeUrls(shapeStore.getQuads(id, rdf('type'), undefined)[0].object.value);
-  const startShape = shex(`Valid${hierarchyNode.service}${utils.removeUrls(type)}`).value;
+  const typeQuads = shapeStore.getQuads(id, rdf('type'), undefined);
+  if (typeQuads.length === 0) {
+    throw new errors.InvalidDataError(
+      'Markup doesn\'t have a type. Validation can\'t be performed');
+  }
+  const type = utils.removeUrls(typeQuads[0].object.value);
+  const startShape = shex(`Valid${hierarchyNode.service}${utils.removeUrls(type)}`);
 
   /** @type {Array<LH.StructuredData.Failure>} */
   let failures = [];
@@ -87,7 +101,9 @@ module.exports = async function validateSchemaOrg(data, url) {
           ['property', 'shape', 'severity']);
         if (failures.length > 0) report.push(...failures);
       }
-    } catch (e) {}
+    } catch (e) {
+      if (!(e instanceof errors.InvalidDataError)) throw e;
+    }
   }
   return report;
 };

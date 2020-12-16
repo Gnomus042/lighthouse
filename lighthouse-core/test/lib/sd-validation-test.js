@@ -9,7 +9,7 @@
 
 const assert = require('assert').strict;
 const syntaxChecker = require('../../lib/sd-validation/syntax-checker.js');
-const ShexValidator = require('../../lib/sd-validation/helpers/shexValidator.js').Validator;
+const ShexValidator = require('../../lib/sd-validation/helpers/shex-validator.js').Validator;
 
 /* Syntax checkers tests */
 
