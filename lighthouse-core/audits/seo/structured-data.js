@@ -45,15 +45,16 @@ class StructuredData extends Audit {
       if (element.message) element.message = utils.removeUrls(element.message);
       if (element.property) element.property = utils.removeUrls(element.property);
       element.node = utils.removeUrls(element.node);
-      element.message = `${element.message}. ${element.description || ''}`;
+      element.message = `${(element.severityLabel || element.severity).toUpperCase()}:
+        ${element.message}. ${element.description || ''}`;
       element.url = {
         type: 'link',
-        text: 'Learn more',
+        text: element.service,
         url: element.url,
       };
     });
     /**
-     * @param {{[propName: string]: Array<LH.StructuredData.Failure>}} res
+     * @param {Object.<string, Array<LH.StructuredData.Failure>>} res
      * @param {LH.StructuredData.Failure} reportItem
      */
     const groupBy = (res, reportItem) => {
@@ -125,8 +126,6 @@ class StructuredData extends Audit {
       {key: 'property', itemType: 'text', subItemsHeading: {key: 'property'}, text: ''},
       {key: 'message', itemType: 'text', subItemsHeading: {key: 'message'}, text: ''},
       {key: 'url', itemType: 'link', subItemsHeading: {key: 'url'}, text: ''},
-      {key: 'service', itemType: 'text', subItemsHeading: {key: 'service'}, text: ''},
-      {key: 'severity', itemType: 'text', subItemsHeading: {key: 'severity'}, text: ''},
     ];
 
     const items = StructuredData.reportToTable(report);

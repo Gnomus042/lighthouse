@@ -7,11 +7,16 @@
 declare module 'n3' {
     export class Parser {
         constructor(options: any);
-        parse(nquads: any): Array<any>;
+        parse(nquads: string): Array<LH.StructuredData.RDF.Quad>;
     }
 
     export class Store {
-        addQuad(quad: any):null;
-        getQuads(subject?: any, predicate?: any, object?: any):Array<any>;
+        addQuad(quad: LH.StructuredData.RDF.Quad):null;
+        getQuads(subject?: LH.StructuredData.RDF.Term | string,
+                 predicate?: LH.StructuredData.RDF.Term | string,
+                 object?: LH.StructuredData.RDF.Term | string):Array<LH.StructuredData.RDF.Quad>;
+        getSubjects(predicate?: LH.StructuredData.RDF.Term | string,
+                    object?: LH.StructuredData.RDF.Term | string):
+          Array<LH.StructuredData.RDF.NamedNode | LH.StructuredData.RDF.BlankNode>;
     }
 }
