@@ -16,3 +16,5 @@ coverage/**
 !.eslintrc.js
 
 lighthouse-core/scripts/legacy-javascript/variants
+
+lighthouse-core/lib/sd-validation/libs/shex.js
