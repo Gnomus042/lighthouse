@@ -140,6 +140,8 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
+    "@shexjs/core": "^1.0.0-alpha.10",
+    "@shexjs/parser": "^1.0.0-alpha.10",
     "axe-core": "3.5.5",
     "chrome-launcher": "^0.13.3",
     "configstore": "^3.1.1",

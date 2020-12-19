@@ -4,23 +4,13 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-declare module 'rdf-validate-shacl' {
-    interface SHACLReport {
-        results: [{
-            path?: any;
-            message: Array<any>;
-            sourceShape: any;
 
-        }];
-    }
+declare module '@shexjs/parser' {
+  import {Schema} from "@shexjs";
 
-    class SHACLValidator {
-        constructor(quads: Array<any>);
-        validate(quads: Array<any>): SHACLReport;
-    }
+  export function construct(param1: string, param2: object, param3: object): {
+    parse(shapes: string): Schema;
+  }
 
-
-    export = SHACLValidator;
 }
-
 

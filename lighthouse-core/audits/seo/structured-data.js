@@ -13,10 +13,12 @@ const syntaxChecker = require('../../lib/sd-validation/syntax-checker.js');
 const utils = require('../../lib/sd-validation/helpers/utils.js');
 
 const UIStrings = {
+  /** Title of a Lighthouse audit that provides detail on the site's structured data. This descriptive title is shown when the structured data is present and configured correctly.*/
   title: 'Structured data is valid',
+  /** Title of a Lighthouse audit that provides detail on the site's structured data. This descriptive title is shown when the structured data contain errors.*/
   failureTitle: 'Structured data is not valid',
+  /** Description of a Lighthouse audit that tells the user *why* they need to have valid structured data. This is displayed after a user expands the section to see more. No character length limits. */
   description: 'The audit provides a short list of improvements that could be done to the structured data on the tested webpage. To get a detailed validation report run the [Rich Results Test](https://search.google.com/test/rich-results) or the [Structured Data Linter](http://linter.structured-data.org/). [Learn more](https://web.dev/structured-data/).',
-  emptyHeader: '',
 };
 
 const str_ = i18n.createMessageInstanceIdFn(__filename, UIStrings);

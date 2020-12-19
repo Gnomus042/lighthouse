@@ -18,7 +18,7 @@ const errors = require('./errors.js');
  * Parses json-ld to quads into the n3.Store
  * @param {string} text - input data
  * @param {string} baseUrl - main shape URL
- * @return {Promise<LH.StructuredData.Store>}
+ * @return {Promise<Store>}
  */
 async function parseJsonLd(text, baseUrl) {
   const data = JSON.parse(text);
@@ -31,7 +31,7 @@ async function parseJsonLd(text, baseUrl) {
  * Parse RDFa to quads into the n3.Store
  * @param {string} text - input data
  * @param {string} baseUrl - main shape URL
- * @return {Promise<LH.StructuredData.Store>}
+ * @return {Promise<Store>}
  */
 async function parseRdfa(text, baseUrl) {
   const textStream = new Readable();
@@ -57,7 +57,7 @@ async function parseRdfa(text, baseUrl) {
  * Parses microdata to quads into the n3.Store
  * @param {string} text - input data
  * @param {string} baseUrl - main shape URL
- * @return {Promise<LH.StructuredData.Store>}
+ * @return {Promise<Store>}
  */
 async function parseMicrodata(text, baseUrl) {
   const textStream = new Readable();
@@ -115,7 +115,7 @@ function parseTurtle(text, baseUrl) {
 /**
  * Helper for trying to parse input text into a certain format
  * @param {*} parser parser function
- * @returns {Promise<undefined|LH.StructuredData.Store>}
+ * @returns {Promise<undefined|Store>}
  */
 async function tryParse(parser) {
   let quads;
@@ -129,7 +129,7 @@ async function tryParse(parser) {
  * Transforms input to quads
  * @param {string} text - input data
  * @param {string} url - main shape URL
- * @returns {Promise<LH.StructuredData.Store>}
+ * @returns {Promise<Store>}
  */
 async function stringToQuads(text, url) {
   const jsonParser = async () => await parseJsonLd(text, url);
