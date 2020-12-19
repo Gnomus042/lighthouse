@@ -26,7 +26,7 @@ const shex = namespace('http://schema.org/shex#');
 // order (e.g. Schema -> Google -> GoogleAds -> ...)
 const hierarchy = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'hierarchy.json'))
   .toString());
-/** @type {LH.StructuredData.ShEx.Schema} ShEx shapes in the ShExJ format */
+/** @type {import('@shexjs').Schema} ShEx shapes in the ShExJ format */
 const shapes = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'full.shexj')).toString());
 const shapeIds = shapes.shapes.map(shape => shape.id);
 

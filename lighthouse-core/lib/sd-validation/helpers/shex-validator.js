@@ -5,9 +5,8 @@
  */
 'use strict';
 
-/** @type LH.StructuredData.ShEx.ShExJS */
-// @ts-ignore
-const shex = require('../libs/shex.js');
+const shexParser = require('@shexjs/parser');
+const shex = require('@shexjs/core');
 const utils = require('./utils.js');
 const errors = require('./errors.js');
 const parser = require('./parser.js');
@@ -19,8 +18,8 @@ const rdfs = namespace('http://www.w3.org/2000/01/rdf-schema#');
 
 class ValidationReport {
   /**
-   * @param {LH.StructuredData.ShEx.Report} jsonReport - report from shex.js, which needs to be simplified
-   * @param {LH.StructuredData.ShEx.Schema} schema - parsed shapes in ShExJ format
+   * @param {import('@shexjs').Report} jsonReport - report from shex.js, which needs to be simplified
+   * @param {import('@shexjs').Schema} schema - parsed shapes in ShExJ format
    * @param {{annotations: LH.StructuredData.LocalizedAnnotations,
    *  messages: LH.StructuredData.LocalizedMessages}} localization - localized messages and annotations
    * @param {{annotations?:object}} options
@@ -42,7 +41,7 @@ class ValidationReport {
 
   /**
    * Simplifies shex.js nested report into a linear structure
-   * @param {LH.StructuredData.ShEx.Report} jsonReport
+   * @param {import('@shexjs').Report} jsonReport
    * @param {string|undefined} parentNode
    * @param {string|undefined} parentShape
    */
@@ -128,8 +127,8 @@ class ValidationReport {
 
   /**
    * Recursively parses ShExJ Shape structure to get the core Shape with properties
-   * @param {LH.StructuredData.ShEx.Shape} node
-   * @returns {LH.StructuredData.ShEx.Shape|undefined}
+   * @param {import('@shexjs').Shape} node
+   * @returns {import('@shexjs').Shape|undefined}
    */
   getShapeCore(node) {
     if (node.type === 'Shape') {
@@ -228,14 +227,14 @@ class ValidationReport {
 
 class ShexValidator {
   /**
-   * @param {LH.StructuredData.ShEx.Schema|string} shapes - ShExJ shapes
+   * @param {import('@shexjs').Schema|string} shapes - ShExJ shapes
    * @param {{annotations: LH.StructuredData.LocalizedAnnotations,
    *  messages: LH.StructuredData.LocalizedMessages}} localization - localized messages and annotations
    * @param {{annotations?:object}} options
    */
   constructor(shapes, localization, options = {}) {
     if (typeof shapes === 'string') {
-      this.shapes = shex.Parser.construct('', {}, {}).parse(shapes);
+      this.shapes = shexParser.construct('', {}, {}).parse(shapes);
     } else {
       this.shapes = shapes;
     }

@@ -61,71 +61,6 @@ declare global {
         }
       }
 
-      export module ShEx {
-        export module ShExJS {
-          export module Parser {
-            export type N3db = any;
-            function construct(param1: string, param2: object, param3: object): {
-              parse(shapes: string): ShEx.Schema;
-            };
-          }
-          export module Util {
-            function makeN3DB(data: string|import('n3').Store): Parser.N3db;
-          }
-          export module Validator {
-            function construct(shapes: ShEx.Schema): {
-              validate(db: Parser.N3db, params: Array<{shape: string, node: string}>): ShEx.Report;
-            };
-          }
-        }
-
-        export interface ReportItem {
-          type: string;
-          property?: string;
-          node?: string;
-          shape?: string;
-          unexpectedTriples?: Array<{ predicate?: string }>;
-          triple?: { subject?: string };
-          ctx?: { predicate?: string };
-          code?: string;
-          constraint?: { predicate?: string };
-          errors: Array<ReportItem>;
-        }
-
-        export type Report = ReportItem | Array<ReportItem>;
-
-        export interface TripleConstraint {
-          type: 'TripleConstraint';
-          predicate: string;
-          annotations?: Array<{
-            predicate: string;
-            object: { value: string };
-          }>;
-        }
-
-        export interface TargetShape {
-          type: 'Shape';
-          id: string;
-          expression: {
-            type: string;
-            expressions: Array<TripleConstraint>;
-          };
-        }
-
-        export interface IntermediateShape {
-          type: 'ShapeAnd' | 'ShapeOr';
-          shapeExprs: Array<Shape>;
-          id: string;
-        }
-
-        export type Shape = TargetShape | IntermediateShape;
-
-        export interface Schema {
-          type: string;
-          shapes: Array<Shape>;
-        }
-      }
-
       export type LocalizedAnnotation = {
         '@shape': string,
         '@property': string,
@@ -143,10 +78,6 @@ declare global {
         failureTypes: {
           [typeLabel: string]: string,
         }
-      }
-
-      export type LocalizationFormatting = {
-        [labelToBeReplaces: string]: string
       }
     }
   }
