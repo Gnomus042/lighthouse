@@ -31,7 +31,7 @@ async function parseJsonLd(text, baseUrl) {
  * Parse RDFa to quads into the n3.Store
  * @param {string} text - input data
  * @param {string} baseUrl - main shape URL
- * @return {Promise<Store>}
+ * @return {Promise<Store|undefined>}
  */
 async function parseRdfa(text, baseUrl) {
   const textStream = new Readable();
@@ -57,7 +57,7 @@ async function parseRdfa(text, baseUrl) {
  * Parses microdata to quads into the n3.Store
  * @param {string} text - input data
  * @param {string} baseUrl - main shape URL
- * @return {Promise<Store>}
+ * @return {Promise<Store|undefined>}
  */
 async function parseMicrodata(text, baseUrl) {
   const textStream = new Readable();
