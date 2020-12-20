@@ -7,14 +7,14 @@
 
 /* eslint-env jest */
 
-const bin = require('../../bin.js');
-
 jest.mock('../../run.js', () => ({runLighthouse: jest.fn()}));
 jest.mock('../../cli-flags.js', () => ({getFlags: jest.fn()}));
 jest.mock('../../sentry-prompt.js', () => ({askPermission: jest.fn()}));
 jest.mock('../../../lighthouse-core/lib/sentry.js', () => ({init: jest.fn()}));
 jest.mock('lighthouse-logger', () => ({setLevel: jest.fn()}));
 jest.mock('update-notifier', () => () => ({notify: () => {}}));
+
+const bin = require('../../bin.js');
 
 /** @type {jest.Mock} */
 let getCLIFlagsFn;
@@ -142,25 +142,6 @@ describe('CLI bin', function() {
       await bin.begin();
 
       expect(getRunLighthouseArgs()[1]).toHaveProperty('outputPath', '');
-    });
-  });
-
-  describe('extraHeaders', () => {
-    it('should convert extra headers to object', async () => {
-      // @ts-ignore - see TODO: in bin.js
-      cliFlags = {...cliFlags, extraHeaders: '{"foo": "bar"}'};
-      await bin.begin();
-
-      expect(getRunLighthouseArgs()[1]).toHaveProperty('extraHeaders', {foo: 'bar'});
-    });
-
-    it('should read extra headers from file', async () => {
-      const headersFile = require.resolve('../fixtures/extra-headers/valid.json');
-      // @ts-ignore - see TODO: in bin.js
-      cliFlags = {...cliFlags, extraHeaders: headersFile};
-      await bin.begin();
-
-      expect(getRunLighthouseArgs()[1]).toHaveProperty('extraHeaders', require(headersFile));
     });
   });
 

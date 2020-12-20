@@ -28,7 +28,7 @@ describe('Performance: Timing budget audit', () => {
     context = {
       computedCache: new Map(),
       settings: {
-        throttlingMethod: 'simulate',
+        throttlingMethod: 'devtools',
       },
     };
   });
@@ -63,15 +63,15 @@ describe('Performance: Timing budget audit', () => {
       const items = result.details.items;
       // Failing Budget
       expect(items[0].label).toBeDisplayString('Estimated Input Latency');
-      expect(items[0].measurement).toBeCloseTo(77.8);
-      expect(items[0].overBudget).toBeCloseTo(67.8);
+      expect(items[0].measurement).toBeCloseTo(17.07);
+      expect(items[0].overBudget).toBeCloseTo(7.07);
     });
 
     it('calculates the "overBudget" column correctly', async () => {
       const result = await TimingBudgetAudit.audit(artifacts, context);
 
       // Failing Budget
-      expect(result.details.items[0].overBudget).toBeCloseTo(67.8);
+      expect(result.details.items[0].overBudget).toBeCloseTo(7.07);
 
       // Passing Budget
       expect(result.details.items[1].overBudget).toBeUndefined();
@@ -111,7 +111,7 @@ describe('Performance: Timing budget audit', () => {
           if (metric === 'largest-contentful-paint') {
             expect(result.details.items[0].measurement).toEqual(undefined);
           } else if (metric === 'cumulative-layout-shift') {
-            expect(result.details.items[0].measurement).toEqual(0);
+            expect(result.details.items[0].measurement.value).toEqual(0);
           } else {
             expect(result.details.items[0].measurement).toBeGreaterThanOrEqual(1);
           }

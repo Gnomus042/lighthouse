@@ -24,7 +24,7 @@ const UIStrings = {
    * @description A warning message that is shown when the user tried to follow the advice of the audit, but it's not working as expected. Forgetting to set the `crossorigin` HTML attribute, or setting it to an incorrect value, on the link is a common mistake when adding preload links.
    * @example {https://example.com} preloadURL
    * */
-  crossoriginWarning: 'A preload <link> was found for "{preloadURL}" but was not used ' +
+  crossoriginWarning: 'A preload `<link>` was found for "{preloadURL}" but was not used ' +
     'by the browser. Check that you are using the `crossorigin` attribute properly.',
 };
 
@@ -149,11 +149,10 @@ class UsesRelPreloadAudit extends Audit {
     modifiedGraph.traverse(node => {
       if (node.type !== 'network') return;
 
-      const networkNode = /** @type {LH.Gatherer.Simulation.GraphNetworkNode} */ (node);
       if (node.isMainDocument()) {
-        mainDocumentNode = networkNode;
-      } else if (networkNode.record && urls.has(networkNode.record.url)) {
-        nodesToPreload.push(networkNode);
+        mainDocumentNode = node;
+      } else if (node.record && urls.has(node.record.url)) {
+        nodesToPreload.push(node);
       }
     });
 
@@ -172,7 +171,7 @@ class UsesRelPreloadAudit extends Audit {
     // Once we've modified the dependencies, simulate the new graph with flexible ordering.
     const simulationAfterChanges = simulator.simulate(modifiedGraph, {flexibleOrdering: true});
     const originalNodesByRecord = Array.from(simulationBeforeChanges.nodeTimings.keys())
-        // @ts-ignore we don't care if all nodes without a record collect on `undefined`
+        // @ts-expect-error we don't care if all nodes without a record collect on `undefined`
         .reduce((map, node) => map.set(node.record, node), new Map());
 
     const results = [];
@@ -221,7 +220,7 @@ class UsesRelPreloadAudit extends Audit {
     // sort results by wastedTime DESC
     results.sort((a, b) => b.wastedMs - a.wastedMs);
 
-    /** @type {Array<string>|undefined} */
+    /** @type {Array<LH.IcuMessage>|undefined} */
     let warnings;
     const failedURLs = UsesRelPreloadAudit.getURLsFailedToPreload(graph);
     if (failedURLs.size) {

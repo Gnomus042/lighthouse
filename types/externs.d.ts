@@ -7,30 +7,6 @@
 import _Crdp from 'devtools-protocol/types/protocol';
 import _CrdpMappings from 'devtools-protocol/types/protocol-mapping'
 
-// Convert unions (T1 | T2 | T3) into tuples ([T1, T2, T3]).
-// https://stackoverflow.com/a/52933137/2788187 https://stackoverflow.com/a/50375286
-type UnionToIntersection<U> =
-(U extends any ? (k: U)=>void : never) extends ((k: infer I)=>void) ? I : never
-
-type UnionToFunctions<U> =
-  U extends unknown ? (k: U) => void : never;
-
-type IntersectionOfFunctionsToType<F> =
-  F extends { (a: infer A): void; (b: infer B): void; (c: infer C): void; (d: infer D): void; } ? [A, B, C, D] :
-  F extends { (a: infer A): void; (b: infer B): void; (c: infer C): void; } ? [A, B, C] :
-  F extends { (a: infer A): void; (b: infer B): void; } ? [A, B] :
-  F extends { (a: infer A): void } ? [A] :
-  never;
-
-type SplitType<T> =
-  IntersectionOfFunctionsToType<UnionToIntersection<UnionToFunctions<T>>>;
-
-// (T1 | T2 | T3) -> [RecursivePartial(T1), RecursivePartial(T2), RecursivePartial(T3)]
-type RecursivePartialUnion<T, S=SplitType<T>> = {[P in keyof S]: RecursivePartial<S[P]>};
-
-// Return length of a tuple.
-type GetLength<T extends any[]> = T extends { length: infer L } ? L : never;
-
 declare global {
   // Augment Intl to include
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales
@@ -51,30 +27,13 @@ declare global {
   };
 
   /** Make optional all properties on T and any properties on object properties of T. */
-  type RecursivePartial<T> = {
-    [P in keyof T]+?:
-      // RE: First two conditions.
-      // If type is a union, map each individual component and transform the resultant tuple back into a union.
-      // Only up to 4 components of a union is supported (all but the last few are dropped). For more, modify the second condition
-      // and `IntersectionOfFunctionsToType`.
-      // Ex: `{passes: PassJson[] | null}` - T[P] doesn't exactly match the array-recursing condition, so without these first couple
-      // conditions, it would fall through to the last condition (would just return T[P]).
-
-      // RE: First condition.
-      // Guard against large string unions, which would be unreasonable to support (much more than 4 components is common).
-
-      SplitType<T[P]> extends string[] ? T[P] :
-      GetLength<SplitType<T[P]>> extends 2|3|4 ? RecursivePartialUnion<T[P]>[number] :
-
-      // Recurse into arrays.
-      T[P] extends (infer U)[] ? RecursivePartial<U>[] :
-
-      // Recurse into objects.
-      T[P] extends (object|undefined) ? RecursivePartial<T[P]> :
-
-      // Strings, numbers, etc. (terminal types) end here.
-      T[P];
-  };
+  type RecursivePartial<T> =
+    // Recurse into arrays and tuples: elements aren't (newly) optional, but any properties they have are.
+    T extends (infer U)[] ? RecursivePartial<U>[] :
+    // Recurse into objects: properties and any of their properties are optional.
+    T extends object ? {[P in keyof T]?: RecursivePartial<T[P]>} :
+    // Strings, numbers, etc. (terminal types) end here.
+    T;
 
   /** Recursively makes all properties of T read-only. */
   export type Immutable<T> =
@@ -105,6 +64,34 @@ declare global {
   type FirstParamType<T extends (arg1: any, ...args: any[]) => any> =
     T extends (arg1: infer P, ...args: any[]) => any ? P : never;
 
+  /**
+   * Split string `S` on delimiter `D`.
+   * From https://github.com/microsoft/TypeScript/pull/40336#issue-476562046
+   */
+  type Split<S extends string, D extends string> =
+    string extends S ? string[] :
+    S extends '' ? [] :
+    S extends `${infer T}${D}${infer U}` ? [T, ...Split<U, D>] :
+    [S];
+
+  /**
+  * Join an array of strings using camelCase capitalization rules.
+  */
+  type StringsToCamelCase<T extends unknown[]> =
+    T extends [] ? '' :
+    T extends [string, ...infer U] ? `${T[0]}${Capitalize<StringsToCamelCase<U>>}` :
+    string;
+
+  /**
+  * If `S` is a kebab-style string `S`, convert to camelCase.
+  */
+  type KebabToCamelCase<S> = S extends string ? StringsToCamelCase<Split<S, '-'>> : S;
+
+  /** Returns T with any kebab-style property names rewritten as camelCase. */
+  type CamelCasify<T> = {
+    [K in keyof T as KebabToCamelCase<K>]: T[K];
+  }
+
   module LH {
     // re-export useful type modules under global LH module.
     export import Crdp = _Crdp;
@@ -134,9 +121,22 @@ declare global {
       serverResponseTimeByOrigin: {[origin: string]: number};
     }
 
-    export type Locale = 'en-US'|'en'|'en-AU'|'en-GB'|'en-IE'|'en-SG'|'en-ZA'|'en-IN'|'ar-XB'|'ar'|'bg'|'bs'|'ca'|'cs'|'da'|'de'|'el'|'en-XA'|'en-XL'|'es'|'es-419'|'es-AR'|'es-BO'|'es-BR'|'es-BZ'|'es-CL'|'es-CO'|'es-CR'|'es-CU'|'es-DO'|'es-EC'|'es-GT'|'es-HN'|'es-MX'|'es-NI'|'es-PA'|'es-PE'|'es-PR'|'es-PY'|'es-SV'|'es-US'|'es-UY'|'es-VE'|'fi'|'fil'|'fr'|'he'|'hi'|'hr'|'hu'|'gsw'|'id'|'in'|'it'|'iw'|'ja'|'ko'|'ln'|'lt'|'lv'|'mo'|'nl'|'nb'|'no'|'pl'|'pt'|'pt-PT'|'ro'|'ru'|'sk'|'sl'|'sr'|'sr-Latn'|'sv'|'ta'|'te'|'th'|'tl'|'tr'|'uk'|'vi'|'zh'|'zh-HK'|'zh-TW';
+    export type Locale = 'en-US'|'en'|'en-AU'|'en-GB'|'en-IE'|'en-SG'|'en-ZA'|'en-IN'|'ar-XB'|'ar'|'bg'|'ca'|'cs'|'da'|'de'|'el'|'en-XA'|'en-XL'|'es'|'es-419'|'es-AR'|'es-BO'|'es-BR'|'es-BZ'|'es-CL'|'es-CO'|'es-CR'|'es-CU'|'es-DO'|'es-EC'|'es-GT'|'es-HN'|'es-MX'|'es-NI'|'es-PA'|'es-PE'|'es-PR'|'es-PY'|'es-SV'|'es-US'|'es-UY'|'es-VE'|'fi'|'fil'|'fr'|'he'|'hi'|'hr'|'hu'|'gsw'|'id'|'in'|'it'|'iw'|'ja'|'ko'|'lt'|'lv'|'mo'|'nl'|'nb'|'no'|'pl'|'pt'|'pt-PT'|'ro'|'ru'|'sk'|'sl'|'sr'|'sr-Latn'|'sv'|'ta'|'te'|'th'|'tl'|'tr'|'uk'|'vi'|'zh'|'zh-HK'|'zh-TW';
 
     export type OutputMode = 'json' | 'html' | 'csv';
+
+    export type ScreenEmulationSettings = {
+      /** Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override. */
+      width: number;
+      /** Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override. */
+      height: number;
+      /** Overriding device scale factor value. 0 disables the override. */
+      deviceScaleFactor: number;
+      /** Whether to emulate mobile device. This includes viewport meta tag, overlay scrollbars, text autosizing and more. */
+      mobile: boolean;
+      /** Whether screen emulation is disabled. If true, the other emulation settings are ignored. */
+      disabled: boolean;
+    };
 
     /**
      * Options that are found in both the flags used by the Lighthouse module
@@ -161,10 +161,14 @@ declare global {
       gatherMode?: boolean | string;
       /** Flag indicating that the browser storage should not be reset for the audit. */
       disableStorageReset?: boolean;
-      /** How emulation (useragent, device screen metrics, touch) should be applied. `none` indicates Lighthouse should leave the host browser as-is. */
-      emulatedFormFactor?: 'mobile'|'desktop'|'none';
-      /** Dangerous setting only to be used by Lighthouse team. Disables the device metrics and touch emulation that emulatedFormFactor defines. Details in emulation.js */
-      internalDisableDeviceScreenEmulation?: boolean
+
+      /** How Lighthouse should interpret this run in regards to scoring performance metrics and skipping mobile-only tests in desktop. Must be set even if throttling/emulation is being applied outside of Lighthouse. */
+      formFactor?: 'mobile'|'desktop';
+      /** Screen emulation properties (width, height, dpr, mobile viewport) to apply or an object of `{disabled: true}` if Lighthouse should avoid applying screen emulation. If either emulation is applied outside of Lighthouse, or it's being run on a mobile device, it typically should be set to disabled. For desktop, we recommend applying consistent desktop screen emulation. */
+      screenEmulation?: Partial<ScreenEmulationSettings>;
+      /** User Agent string to apply, `false` to not change the host's UA string, or `true` to use Lighthouse's default UA string. */
+      emulatedUserAgent?: string | boolean;
+
       /** The method used to throttle the network. */
       throttlingMethod?: 'devtools'|'simulate'|'provided';
       /** The throttling config settings. */
@@ -211,7 +215,7 @@ declare global {
       chromeIgnoreDefaultFlags: boolean;
       chromeFlags: string | string[];
       /** Output path for the generated results. */
-      outputPath: string;
+      outputPath?: string;
       /** Flag to save the trace contents and screenshots to disk. */
       saveAssets: boolean;
       /** Flag to open the report immediately. */
@@ -223,7 +227,7 @@ declare global {
       /** Flag to print a list of all required trace categories. */
       listTraceCategories: boolean;
       /** A preset audit of selected audit categories to run. */
-      preset?: 'experimental'|'perf';
+      preset?: 'experimental'|'perf'|'desktop';
       /** A flag to enable logLevel 'verbose'. */
       verbose: boolean;
       /** A flag to enable logLevel 'silent'. */
@@ -274,6 +278,13 @@ declare global {
       [futureProps: string]: any;
     }
 
+    /** The type of the Profile & ProfileChunk event in Chromium traces. Note that this is subtly different from Crdp.Profiler.Profile. */
+    export interface TraceCpuProfile {
+      nodes?: Array<{id: number, callFrame: {functionName: string, url?: string}, parent?: number}>
+      samples?: Array<number>
+      timeDeltas?: Array<number>
+    }
+
     /**
      * @see https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
      */
@@ -300,6 +311,15 @@ declare global {
           page?: string;
           readyState?: number;
           requestId?: string;
+          startTime?: number;
+          timeDeltas?: TraceCpuProfile['timeDeltas'];
+          cpuProfile?: TraceCpuProfile;
+          callFrame?: Required<TraceCpuProfile>['nodes'][0]['callFrame']
+          /** Marker for each synthetic CPU profiler event for the range of _potential_ ts values. */
+          _syntheticProfilerRange?: {
+            earliestPossibleTimestamp: number
+            latestPossibleTimestamp: number
+          }
           stackTrace?: {
             url: string
           }[];
@@ -308,6 +328,7 @@ declare global {
           url?: string;
           is_main_frame?: boolean;
           cumulative_score?: number;
+          id?: string;
           nodeId?: number;
           impacted_nodes?: Array<{
             node_id: number,
@@ -316,6 +337,8 @@ declare global {
           }>;
           score?: number,
           had_recent_input?: boolean;
+          compositeFailed?: number;
+          unsupportedProperties?: string[];
         };
         frame?: string;
         name?: string;
@@ -323,11 +346,15 @@ declare global {
       };
       pid: number;
       tid: number;
+      /** Timestamp of the event in microseconds. */
       ts: number;
       dur: number;
       ph: 'B'|'b'|'D'|'E'|'e'|'F'|'I'|'M'|'N'|'n'|'O'|'R'|'S'|'T'|'X';
       s?: 't';
       id?: string;
+      id2?: {
+        local?: string;
+      };
     }
 
     export interface DevToolsJsonTarget {
@@ -339,5 +366,11 @@ declare global {
       url: string;
       webSocketDebuggerUrl: string;
     }
+  }
+
+  interface Window {
+    /** Used by FullPageScreenshot gatherer. */
+    __lighthouseNodesDontTouchOrAllVarianceGoesAway: Map<HTMLElement, string>;
+    __lighthouseExecutionContextId?: number;
   }
 }

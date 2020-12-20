@@ -14,7 +14,6 @@ const WIDTH = 800;
 const HEIGHT = 600;
 
 function generateImage(clientSize, naturalSize, props, src = 'https://google.com/logo.png') {
-  const image = {src, mimeType: 'image/png'};
   const clientRect = {
     clientRect: {
       top: 0,
@@ -23,8 +22,15 @@ function generateImage(clientSize, naturalSize, props, src = 'https://google.com
       right: clientSize.displayedWidth,
     },
   };
-  Object.assign(image, clientSize, naturalSize, clientRect, props);
-  return image;
+  return {
+    cssComputedObjectFit: 'fill',
+    src,
+    mimeType: 'image/png',
+    ...clientSize,
+    ...naturalSize,
+    ...clientRect,
+    ...props,
+  };
 }
 
 describe('Images: size audit', () => {
@@ -112,7 +118,7 @@ describe('Images: size audit', () => {
     clientSize: [100, 100],
     naturalSize: [5, 5],
     props: {
-      usesObjectFit: true,
+      cssComputedObjectFit: 'cover',
     },
   });
 
@@ -121,7 +127,7 @@ describe('Images: size audit', () => {
     clientSize: [100, 100],
     naturalSize: [5, 5],
     props: {
-      usesPixelArtScaling: true,
+      cssComputedImageRendering: 'pixelated',
     },
   });
 
@@ -130,7 +136,7 @@ describe('Images: size audit', () => {
     clientSize: [100, 100],
     naturalSize: [5, 5],
     props: {
-      usesSrcSetDensityDescriptor: true,
+      srcset: 'https://google.com/logo.png 1x',
     },
   });
 
@@ -319,12 +325,20 @@ describe('Images: size audit', () => {
       });
     });
 
-    describe('DPR = 2.625', () => {
+    describe('DPR = higher than 2', () => {
       testImage('is an icon with right size', {
         score: 1,
         clientSize: [64, 64],
         naturalSize: [128, 128],
         devicePixelRatio: 2.625,
+
+      });
+
+      testImage('is an icon with right size', {
+        score: 1,
+        clientSize: [64, 64],
+        naturalSize: [128, 128],
+        devicePixelRatio: 3,
       });
 
       testImage('is an icon with an invalid size', {
@@ -339,6 +353,13 @@ describe('Images: size audit', () => {
         clientSize: [65, 65],
         naturalSize: [98, 98],
         devicePixelRatio: 2.625,
+      });
+
+      testImage('has right size', {
+        score: 1,
+        clientSize: [65, 65],
+        naturalSize: [98, 98],
+        devicePixelRatio: 3,
       });
 
       testImage('has an invalid size', {
@@ -424,6 +445,6 @@ describe('Images: size audit', () => {
       },
     });
     assert.equal(result.details.items.length, 1);
-    assert.equal(result.details.items[0].expectedSize, '217 x 109');
+    assert.equal(result.details.items[0].expectedSize, '160 x 80');
   });
 });

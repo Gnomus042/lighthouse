@@ -9,7 +9,7 @@ const lighthouse = require('../lighthouse-core/index.js');
 const RawProtocol = require('../lighthouse-core/gather/connections/raw.js');
 const log = require('lighthouse-logger');
 const {registerLocaleData, lookupLocale} = require('../lighthouse-core/lib/i18n/i18n.js');
-const desktopDense4G = require('../lighthouse-core/config/constants.js').throttling.desktopDense4G;
+const constants = require('../lighthouse-core/config/constants.js');
 
 /** @typedef {import('../lighthouse-core/gather/connections/connection.js')} Connection */
 
@@ -28,9 +28,15 @@ function createConfig(categoryIDs, device) {
   /** @type {LH.SharedFlagsSettings} */
   const settings = {
     onlyCategories: categoryIDs,
+    // In DevTools, emulation is applied _before_ Lighthouse starts (to deal with viewport emulation bugs). go/xcnjf
+    // As a result, we don't double-apply viewport emulation.
+    screenEmulation: {disabled: true},
   };
   if (device === 'desktop') {
-    settings.throttling = desktopDense4G;
+    settings.throttling = constants.throttling.desktopDense4G;
+    // UA emulation, however, is lost in the protocol handover from devtools frontend to the lighthouse_worker. So it's always applied.
+    settings.emulatedUserAgent = constants.userAgents.desktop;
+    settings.formFactor = 'desktop';
   }
 
   return {
@@ -59,26 +65,25 @@ if (typeof module !== 'undefined' && module.exports) {
   // work for LH because of https://github.com/browserify/browserify/issues/968
   // Instead, since this file is only ever run in node for testing, expose a
   // bundle entry point as global.
-  // @ts-ignore
+  // @ts-expect-error
   global.runBundledLighthouse = lighthouse;
 }
 
 // Expose only in DevTools' worker
-// @ts-ignore
 if (typeof self !== 'undefined') {
   // TODO: refactor and delete `global.isDevtools`.
   global.isDevtools = true;
 
-  // @ts-ignore
+  // @ts-expect-error
   self.setUpWorkerConnection = setUpWorkerConnection;
-  // @ts-ignore
+  // @ts-expect-error
   self.runLighthouse = lighthouse;
-  // @ts-ignore
+  // @ts-expect-error
   self.createConfig = createConfig;
-  // @ts-ignore
+  // @ts-expect-error
   self.listenForStatus = listenForStatus;
-  // @ts-ignore
+  // @ts-expect-error
   self.registerLocaleData = registerLocaleData;
-  // @ts-ignore
+  // @ts-expect-error
   self.lookupLocale = lookupLocale;
 }

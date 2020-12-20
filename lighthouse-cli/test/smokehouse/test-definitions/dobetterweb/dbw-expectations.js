@@ -13,7 +13,6 @@ const expectations = [
   {
     artifacts: {
       HostFormFactor: 'desktop',
-      TestedAsMobileDevice: true,
       Stacks: [{
         id: 'jquery',
       }, {
@@ -22,7 +21,7 @@ const expectations = [
       }, {
         id: 'wordpress',
       }],
-      MainDocumentContent: /^<!doctype html>.*DoBetterWeb Mega Tester.*aggressive-promise-polyfill.*<\/html>\n$/s,
+      MainDocumentContent: /^<!doctype html>.*DoBetterWeb Mega Tester.*aggressive-promise-polyfill.*<\/html>[\r\n]*$/s,
       LinkElements: [
         {
           rel: 'stylesheet',
@@ -197,6 +196,12 @@ const expectations = [
           },
         },
       ],
+      GlobalListeners: [{
+        type: 'unload',
+        scriptId: /^\d+$/,
+        lineNumber: '>300',
+        columnNumber: '>30',
+      }],
     },
     lhr: {
       requestedUrl: 'http://localhost:10200/dobetterweb/dbw_tester.html',
@@ -212,8 +217,13 @@ const expectations = [
                 url: 'http://localhost:10200/dobetterweb/dbw_tester.html',
               },
               {
-                source: 'Runtime.exception',
+                source: 'exception',
                 description: /^Error: A distinctive error\s+at http:\/\/localhost:10200\/dobetterweb\/dbw_tester.html:\d+:\d+$/,
+                url: 'http://localhost:10200/dobetterweb/dbw_tester.html',
+              },
+              {
+                source: 'console.error',
+                description: 'Error! Error!',
                 url: 'http://localhost:10200/dobetterweb/dbw_tester.html',
               },
               {
@@ -242,17 +252,12 @@ const expectations = [
         'is-on-https': {
           score: 0,
           details: {
-            items: {
-              length: 1,
-            },
-          },
-        },
-        'uses-http2': {
-          score: 0,
-          details: {
-            items: {
-              length: '>15',
-            },
+            items: [
+              {
+                url: 'http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
+                resolution: 'Allowed',
+              },
+            ],
           },
         },
         'external-anchors-use-rel-noopener': {
@@ -397,49 +402,87 @@ const expectations = [
         },
         'dom-size': {
           score: 1,
-          numericValue: 147,
+          numericValue: 149,
           details: {
             items: [
-              {statistic: 'Total DOM Elements', value: '147'},
-              {statistic: 'Maximum DOM Depth', value: '4'},
+              {statistic: 'Total DOM Elements', value: 149},
+              {statistic: 'Maximum DOM Depth', value: 4},
               {
                 statistic: 'Maximum Child Elements',
-                value: '100',
-                element: {value: '<div id="shadow-root-container">'},
+                value: 100,
+                node: {snippet: '<div id="shadow-root-container">'},
               },
             ],
+          },
+        },
+        'no-unload-listeners': {
+          score: 0,
+          details: {
+            items: [{
+              source: {
+                type: 'source-location',
+                url: 'http://localhost:10200/dobetterweb/dbw_tester.html',
+                urlProvider: 'network',
+                line: '>300',
+                column: '>30',
+              },
+            }],
+          },
+        },
+        'full-page-screenshot': {
+          score: null,
+          details: {
+            type: 'full-page-screenshot',
+            screenshot: {
+              width: 360,
+              // Allow for differences in platforms.
+              height: '3755±5',
+              data: /^data:image\/jpeg;.{500,}/,
+            },
+            nodes: {
+              'page-0-IMG': {
+                // Test that these are numbers and in the ballpark.
+                top: '650±50',
+                bottom: '650±50',
+                left: '10±10',
+                right: '120±20',
+                width: '120±20',
+                height: '20±20',
+              },
+              // And then many more nodes.
+            },
           },
         },
       },
     },
   },
-  // TODO(COMPAT): Uncomment when Chrome m84 lands
-  // {
-  //   artifacts: {
-  //     InspectorIssues: {
-  //       mixedContent: [
-  //         {
-  //           resourceType: 'Image',
-  //           resolutionStatus: 'MixedContentWarning',
-  //           insecureURL: 'http://www.mixedcontentexamples.com/Content/Test/steveholt.jpg',
-  //           mainResourceURL: 'https://www.mixedcontentexamples.com/Test/NonSecureImage',
-  //           request: {
-  //             url: 'http://www.mixedcontentexamples.com/Content/Test/steveholt.jpg',
-  //           },
-  //         },
-  //       ],
-  //     },
-  //   },
-  //   lhr: {
-  //     requestedUrl: 'https://www.mixedcontentexamples.com/Test/NonSecureImage',
-  //     finalUrl: 'https://www.mixedcontentexamples.com/Test/NonSecureImage',
-  //     audits: {
-  //       'is-on-https': {
-  //         score: 0,
-  //       },
-  //     },
-  //   },
-  // },
+  {
+    artifacts: {
+      InspectorIssues: {
+        mixedContent: [
+          {
+            _minChromiumMilestone: 88, // We went from Warning to AutoUpgrade in https://chromium-review.googlesource.com/c/chromium/src/+/2480817
+            resourceType: 'Image',
+            resolutionStatus: 'MixedContentAutomaticallyUpgraded',
+            insecureURL: 'http://www.mixedcontentexamples.com/Content/Test/steveholt.jpg',
+            mainResourceURL: 'https://www.mixedcontentexamples.com/Test/NonSecureImage',
+            request: {
+              url: 'http://www.mixedcontentexamples.com/Content/Test/steveholt.jpg',
+            },
+          },
+        ],
+      },
+    },
+    lhr: {
+      requestedUrl: 'https://www.mixedcontentexamples.com/Test/NonSecureImage',
+      finalUrl: 'https://www.mixedcontentexamples.com/Test/NonSecureImage',
+      audits: {
+        'is-on-https': {
+          score: 0,
+        },
+      },
+    },
+  },
 ];
 
 module.exports = expectations;

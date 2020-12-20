@@ -17,6 +17,8 @@ const DOM = require('../../../../report/html/renderer/dom.js');
 const DetailsRenderer = require('../../../../report/html/renderer/details-renderer.js');
 const ReportUIFeatures = require('../../../../report/html/renderer/report-ui-features.js');
 const CategoryRenderer = require('../../../../report/html/renderer/category-renderer.js');
+const ElementScreenshotRenderer =
+  require('../../../../report/html/renderer/element-screenshot-renderer.js');
 const CriticalRequestChainRenderer = require(
     '../../../../report/html/renderer/crc-details-renderer.js');
 const ReportRenderer = require('../../../../report/html/renderer/report-renderer.js');
@@ -37,6 +39,7 @@ describe('ReportRenderer', () => {
     global.CriticalRequestChainRenderer = CriticalRequestChainRenderer;
     global.DetailsRenderer = DetailsRenderer;
     global.CategoryRenderer = CategoryRenderer;
+    global.ElementScreenshotRenderer = ElementScreenshotRenderer;
 
     // lazy loaded because they depend on CategoryRenderer to be available globally
     global.PerformanceCategoryRenderer =
@@ -70,6 +73,7 @@ describe('ReportRenderer', () => {
     global.CriticalRequestChainRenderer = undefined;
     global.DetailsRenderer = undefined;
     global.CategoryRenderer = undefined;
+    global.ElementScreenshotRenderer = undefined;
     global.PerformanceCategoryRenderer = undefined;
     global.PwaCategoryRenderer = undefined;
   });
@@ -185,6 +189,18 @@ describe('ReportRenderer', () => {
 
       const warningEls = output.querySelectorAll('.lh-warnings--toplevel > ul > li');
       assert.strictEqual(warningEls.length, sampleResults.runWarnings.length);
+    });
+
+    it('renders links in the warning section', () => {
+      const warningResults = Object.assign({}, sampleResults, {
+        runWarnings: ['[I am a link](https://example.com/)'],
+      });
+      const container = renderer._dom._document.body;
+      const output = renderer.renderReport(warningResults, container);
+
+      const warningEls = output.querySelectorAll('.lh-warnings--toplevel ul li a');
+      expect(warningEls).toHaveLength(1);
+      expect(warningEls[0].href).toEqual('https://example.com/');
     });
 
     it('renders a footer', () => {

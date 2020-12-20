@@ -65,7 +65,7 @@ describe('FirstInteractive computed artifact:', () => {
       optimistic: Math.round(result.optimisticEstimate.timeInMs),
       pessimistic: Math.round(result.pessimisticEstimate.timeInMs),
     }).toMatchSnapshot();
-    assert.equal(result.optimisticEstimate.nodeTimings.size, 19);
+    assert.equal(result.optimisticEstimate.nodeTimings.size, 20);
     assert.equal(result.pessimisticEstimate.nodeTimings.size, 80);
     assert.ok(result.optimisticGraph, 'should have created optimistic graph');
     assert.ok(result.pessimisticGraph, 'should have created pessimistic graph');
@@ -95,7 +95,7 @@ describe('FirstInteractive computed artifact:', () => {
           traceEnd: 4500,
         },
         timestamps: {
-          navigationStart: 0,
+          timeOrigin: 0,
         },
       })).rejects.toThrow(/FMP_TOO_LATE/);
     });
@@ -110,7 +110,7 @@ describe('FirstInteractive computed artifact:', () => {
           traceEnd: 12000,
         },
         timestamps: {
-          navigationStart: 600 * 1000,
+          timeOrigin: 600 * 1000,
         },
       });
 
@@ -128,7 +128,7 @@ describe('FirstInteractive computed artifact:', () => {
           traceEnd: 12000,
         },
         timestamps: {
-          navigationStart: 0,
+          timeOrigin: 0,
         },
       });
 
@@ -145,7 +145,7 @@ describe('FirstInteractive computed artifact:', () => {
           traceEnd: 12000,
         },
         timestamps: {
-          navigationStart: 0,
+          timeOrigin: 0,
         },
       });
 
@@ -164,7 +164,7 @@ describe('FirstInteractive computed artifact:', () => {
           traceEnd: 12000,
         },
         timestamps: {
-          navigationStart: 0,
+          timeOrigin: 0,
         },
       });
 
@@ -185,7 +185,7 @@ describe('FirstInteractive computed artifact:', () => {
           traceEnd: 24000,
         },
         timestamps: {
-          navigationStart: 0,
+          timeOrigin: 0,
         },
       });
 

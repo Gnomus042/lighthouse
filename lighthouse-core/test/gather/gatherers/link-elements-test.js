@@ -23,6 +23,7 @@ describe('Link Elements gatherer', () => {
       hreflang: '',
       as: '',
       crossOrigin: null,
+      node: null,
       ...overrides,
     };
   }
@@ -30,7 +31,7 @@ describe('Link Elements gatherer', () => {
   function getPassData({linkElementsInDOM = [], headers = []}) {
     const url = 'https://example.com';
     const loadData = {networkRecords: [{url, responseHeaders: headers, resourceType: 'Document'}]};
-    const driver = {evaluateAsync: () => Promise.resolve(linkElementsInDOM)};
+    const driver = {evaluate: () => Promise.resolve(linkElementsInDOM)};
     const passContext = {driver, url};
     return [passContext, loadData];
   }

@@ -13,11 +13,13 @@ describe('Performance: largest-contentful-paint-element audit', () => {
   it('correctly surfaces the LCP element', async () => {
     const artifacts = {
       TraceElements: [{
-        metricName: 'largest-contentful-paint',
-        devtoolsNodePath: '1,HTML,3,BODY,5,DIV,0,HEADER',
-        selector: 'div.l-header > div.chorus-emc__content',
-        nodeLabel: 'My Test Label',
-        snippet: '<h1 class="test-class">',
+        traceEventType: 'largest-contentful-paint',
+        node: {
+          devtoolsNodePath: '1,HTML,3,BODY,5,DIV,0,HEADER',
+          selector: 'div.l-header > div.chorus-emc__content',
+          nodeLabel: 'My Test Label',
+          snippet: '<h1 class="test-class">',
+        },
       }],
     };
 

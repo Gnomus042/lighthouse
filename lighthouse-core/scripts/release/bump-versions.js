@@ -10,17 +10,23 @@ const path = require('path');
 const glob = require('glob');
 
 const NEW_VERSION = process.argv[2];
-if (!/^\d+\.\d+\.\d+$/.test(NEW_VERSION)) throw new Error('Usage: node bump-versions.json x.x.x');
+if (!/^\d+\.\d+\.\d+(-dev\.\d{8})?$/.test(NEW_VERSION)) {
+  throw new Error('Usage: node bump-versions.json x.x.x');
+}
+
 const ignore = [
   '**/node_modules/**',
-  'docs/recipes/auth/package.json',
   'changelog.md',
+  'docs/recipes/auth/package.json',
+  'docs/recipes/custom-gatherer-puppeteer/package.json',
+  'docs/recipes/integration-test/package.json',
 ];
 
 for (const file of glob.sync('**/{package.json,*.md}', {ignore})) {
   let text;
   if (file === 'package.json') {
     const pkg = require(path.resolve(file));
+    if (pkg.version.startsWith('file')) continue;
     pkg.version = NEW_VERSION;
     text = JSON.stringify(pkg, null, 2) + '\n';
   } else {

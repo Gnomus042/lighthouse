@@ -1,7 +1,6 @@
-# Lighthouse  [![Linux Build Status](https://img.shields.io/travis/GoogleChrome/lighthouse/master.svg)](https://travis-ci.org/GoogleChrome/lighthouse) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/46a5yoqc3hk59bl5/branch/master?svg=true)](https://ci.appveyor.com/project/paulirish/lighthouse/branch/master) [![Coverage Status](https://img.shields.io/coveralls/GoogleChrome/lighthouse/master.svg)](https://coveralls.io/github/GoogleChrome/lighthouse?branch=master) [![NPM lighthouse package](https://img.shields.io/npm/v/lighthouse.svg)](https://npmjs.org/package/lighthouse)
+# Lighthouse  [![GitHub Actions Status Badge](https://github.com/GoogleChrome/lighthouse/workflows/💡🏠/badge.svg)](https://github.com/GoogleChrome/lighthouse/actions) [![Linux Build Status](https://img.shields.io/travis/GoogleChrome/lighthouse/master.svg)](https://travis-ci.org/GoogleChrome/lighthouse) [![Coverage Status](https://img.shields.io/coveralls/GoogleChrome/lighthouse/master.svg)](https://coveralls.io/github/GoogleChrome/lighthouse?branch=master) [![Build tracker for Lighthouse](https://img.shields.io/badge/buildtracker-ok-blue)](https://lh-build-tracker.herokuapp.com/) [![NPM lighthouse package](https://img.shields.io/npm/v/lighthouse.svg)](https://npmjs.org/package/lighthouse)
 
 > Lighthouse analyzes web apps and web pages, collecting modern performance metrics and insights on developer best practices.
-
 
 - Using Lighthouse
   - [Using Lighthouse in Chrome DevTools](#using-lighthouse-in-chrome-devtools)
@@ -9,15 +8,17 @@
   - [Using the Node CLI](#using-the-node-cli)
     * [CLI options](#cli-options)
   - [Using the Node module](#using-the-node-module)
-- [Viewing a report](#viewing-a-report)
-  * [Online Viewer](#online-viewer)
-- [Docs & Recipes](#docs--recipes)
-- [Developing Lighthouse](#develop)
-  * [Setup](#setup)
-  * [Run](#run)
-  * [Tests](#tests)
+  - [Viewing a report](#viewing-a-report)
+    * [Online Viewer](#online-viewer)
+  - [Docs & Recipes](#docs--recipes)
+  - [Developing Lighthouse](#develop)
+    * [Setup](#setup)
+    * [Run](#run)
+    * [Tests](#tests)
+    * [Docs](#docs)
 - Associated Products and Projects
-  - [Lighthouse Integrations](#lighthouse-integrations)
+  - [Lighthouse Integrations in Web Perf services](#lighthouse-integrations-in-web-perf-services)
+  - [Lighthouse Integrations in non-Web Perf services](#lighthouse-integrations-in-non-web-perf-services)
   - [Plugins](#plugins)
   - [Related Projects](#related-projects)
 - [FAQ](#faq)
@@ -36,7 +37,7 @@ Lighthouse is integrated directly into the Chrome DevTools, under the "Lighthous
 
 **Run it**: open Chrome DevTools, select the Lighthouse panel, and hit "Generate report".
 
-<img src="https://raw.githubusercontent.com/GoogleChrome/lighthouse/e7997b3db01de3553d8cb208a40f3d4fd350195c/assets/example_dev_tools.png" alt="Lighthouse integration in Chrome DevTools" width="500px">
+<img src="https://raw.githubusercontent.com/GoogleChrome/lighthouse/4dbab6bf5466e7220980bccd2f5883f4ad661725/assets/example_dev_tools.png" alt="Lighthouse integration in Chrome DevTools" width="500px">
 
 ## Using the Chrome extension
 
@@ -50,7 +51,7 @@ The Chrome extension was available prior to Lighthouse being available in Chrome
 
 The Node CLI provides the most flexibility in how Lighthouse runs can be configured and reported. Users who want more advanced usage, or want to run Lighthouse in an automated fashion should use the Node CLI.
 
-_Lighthouse requires Node 10 LTS (10.13) or later._
+_Lighthouse requires Node 12 LTS (12.x) or later._
 
 **Installation**:
 
@@ -66,82 +67,86 @@ By default, Lighthouse writes the report to an HTML file. You can control the ou
 
 ### CLI options
 
+<!-- To update the help output:
+  node lighthouse-cli --help | pbcopy
+-->
+
 ```
 $ lighthouse --help
 
-lighthouse <url>
+lighthouse <url> <options>
 
 Logging:
-  --verbose  Displays verbose logging                                                                                                      [boolean]
-  --quiet    Displays no progress, debug logs or errors                                                                                    [boolean]
+  --verbose  Displays verbose logging  [boolean] [default: false]
+  --quiet    Displays no progress, debug logs, or errors  [boolean] [default: false]
 
 Configuration:
-  --save-assets                  Save the trace & devtools log to disk                                                                     [boolean]
-  --list-all-audits              Prints a list of all available audits and exits                                                           [boolean]
-  --list-trace-categories        Prints a list of all required trace categories and exits                                                  [boolean]
-  --print-config                 Print the normalized config for the given config and options, then exit.                                  [boolean]
-  --additional-trace-categories  Additional categories to capture with the trace (comma-delimited).
+  --save-assets                  Save the trace contents & devtools logs to disk  [boolean] [default: false]
+  --list-all-audits              Prints a list of all available audits and exits  [boolean] [default: false]
+  --list-trace-categories        Prints a list of all required trace categories and exits  [boolean] [default: false]
+  --print-config                 Print the normalized config for the given config and options, then exit.  [boolean] [default: false]
+  --additional-trace-categories  Additional categories to capture with the trace (comma-delimited).  [string]
   --config-path                  The path to the config JSON.
-                                 An example config file: lighthouse-core/config/lr-desktop-config.js
-  --budget-path                  The path to the budget.json file for LightWallet.
-  --chrome-flags                 Custom flags to pass to Chrome (space-delimited). For a full list of flags, see
-                                 http://peter.sh/experiments/chromium-command-line-switches/.
-
-                                 Environment variables:
-                                 CHROME_PATH: Explicit path of intended Chrome binary. If set must point to an executable of a build of
-                                 Chromium version 66.0 or later. By default, any detected Chrome Canary or Chrome (stable) will be launched.
-                                                                                                                                       [default: ""]
-  --port                         The port to use for the debugging protocol. Use 0 for a random port                                    [default: 0]
-  --preset                       Use a built-in configuration.                                            [choices: "experimental", "perf"]
-                                 WARNING: If the --config-path flag is provided, this preset will be ignored.
-  --hostname                     The hostname to use for the debugging protocol.                                              [default: "localhost"]
-  --max-wait-for-load            The timeout (in milliseconds) to wait before the page is considered done loading and the run should continue.
-                                 WARNING: Very high values can lead to large traces and instability                                 [default: 45000]
-  --emulated-form-factor         Controls the emulated device form factor (mobile vs. desktop) if not disabled                      [choices: "mobile", "desktop", "none"] [default: "mobile"]
-  --enable-error-reporting       Enables error reporting, overriding any saved preference. --no-enable-error-reporting will do the opposite. More:
-                                 https://git.io/vFFTO
-  --gather-mode, -G              Collect artifacts from a connected browser and save to disk. If audit-mode is not also enabled, the run will quit
-                                 early.                                                                                                    [boolean]
-  --audit-mode, -A               Process saved artifacts from disk                                                                         [boolean]
+                                 An example config file: lighthouse-core/config/lr-desktop-config.js  [string]
+  --preset                       Use a built-in configuration.
+                                 WARNING: If the --config-path flag is provided, this preset will be ignored.  [string] [choices: "perf", "experimental", "desktop"]
+  --chrome-flags                 Custom flags to pass to Chrome (space-delimited). For a full list of flags, see https://bit.ly/chrome-flags
+                                 Additionally, use the CHROME_PATH environment variable to use a specific Chrome binary. Requires Chromium version 66.0 or later. If omitted, any detected Chrome Canary or Chrome stable will be used.  [string] [default: ""]
+  --port                         The port to use for the debugging protocol. Use 0 for a random port  [number] [default: 0]
+  --hostname                     The hostname to use for the debugging protocol.  [string] [default: "localhost"]
+  --form-factor                  Determines how performance metrics are scored and if mobile-only audits are skipped. For desktop, --preset=desktop instead.  [string] [choices: "mobile", "desktop"]
+  --screenEmulation              Sets screen emulation parameters. See also --preset. Use --screenEmulation.disabled to disable. Otherwise set these 4 parameters individually: --screenEmulation.mobile --screenEmulation.width=360 --screenEmulation.height=640 --screenEmulation.deviceScaleFactor=2
+  --emulatedUserAgent            Sets useragent emulation  [string]
+  --max-wait-for-load            The timeout (in milliseconds) to wait before the page is considered done loading and the run should continue. WARNING: Very high values can lead to large traces and instability  [number]
+  --enable-error-reporting       Enables error reporting, overriding any saved preference. --no-enable-error-reporting will do the opposite. More: https://git.io/vFFTO  [boolean]
+  --gather-mode, -G              Collect artifacts from a connected browser and save to disk. (Artifacts folder path may optionally be provided). If audit-mode is not also enabled, the run will quit early.
+  --audit-mode, -A               Process saved artifacts from disk. (Artifacts folder path may be provided, otherwise defaults to ./latest-run/)
+  --only-audits                  Only run the specified audits  [array]
+  --only-categories              Only run the specified categories. Available categories: accessibility, best-practices, performance, pwa, seo  [array]
+  --skip-audits                  Run everything except these audits  [array]
+  --budget-path                  The path to the budget.json file for LightWallet.  [string]
 
 Output:
-  --output       Reporter for the results, supports multiple values                        [choices: "json", "html", "csv"] [default: "html"]
+  --output       Reporter for the results, supports multiple values. choices: "json", "html", "csv"  [array] [default: ["html"]]
   --output-path  The file path to output the results. Use 'stdout' to write to stdout.
-                 If using JSON output, default is stdout.
-                 If using HTML or CSV output, default is a file in the working directory with a name based on the test URL and date.
-                 If using multiple outputs, --output-path is appended with the standard extension for each output type. "reports/my-run" -> "reports/my-run.report.html", "reports/my-run.report.json", etc.
-                 Example: --output-path=./lighthouse-results.html
-  --view         Open HTML report in your browser                                                                                          [boolean]
+                   If using JSON output, default is stdout.
+                   If using HTML or CSV output, default is a file in the working directory with a name based on the test URL and date.
+                   If using multiple outputs, --output-path is appended with the standard extension for each output type. "reports/my-run" -> "reports/my-run.report.html", "reports/my-run.report.json", etc.
+                   Example: --output-path=./lighthouse-results.html  [string]
+  --view         Open HTML report in your browser  [boolean] [default: false]
 
 Options:
-  --help                        Show help                                                                                                  [boolean]
-  --version                     Show version number                                                                                        [boolean]
-  --cli-flags-path              The path to a JSON file that contains the desired CLI flags to apply.
-                                Flags specified at the command line will still override the file-based ones.
-  --blocked-url-patterns        Block any network requests to the specified URL patterns                                                     [array]
-  --disable-storage-reset       Disable clearing the browser cache and other storage APIs before a run                                     [boolean]
-  --throttling-method                  Controls throttling method         [choices: "devtools", "provided", "simulate"]
+  --version                            Show version number  [boolean]
+  --help                               Show help  [boolean]
+  --cli-flags-path                     The path to a JSON file that contains the desired CLI flags to apply. Flags specified at the command line will still override the file-based ones.
+  --locale                             The locale/language the report should be formatted in
+  --blocked-url-patterns               Block any network requests to the specified URL patterns  [array]
+  --disable-storage-reset              Disable clearing the browser cache and other storage APIs before a run  [boolean]
+  --throttling-method                  Controls throttling method  [string] [choices: "devtools", "provided", "simulate"]
+  --throttling
   --throttling.rttMs                   Controls simulated network RTT (TCP layer)
   --throttling.throughputKbps          Controls simulated network download throughput
   --throttling.requestLatencyMs        Controls emulated network RTT (HTTP layer)
   --throttling.downloadThroughputKbps  Controls emulated network download throughput
   --throttling.uploadThroughputKbps    Controls emulated network upload throughput
   --throttling.cpuSlowdownMultiplier   Controls simulated + emulated CPU throttling
-  --extra-headers               Set extra HTTP Headers to pass with request                                                                 [string]
+  --extra-headers                      Set extra HTTP Headers to pass with request
+  --precomputed-lantern-data-path      Path to the file where lantern simulation data should be read from, overwriting the lantern observed estimates for RTT and server latency.  [string]
+  --lantern-data-output-path           Path to the file where lantern simulation data should be written to, can be used in a future run with the `precomputed-lantern-data-path` flag.  [string]
+  --plugins                            Run the specified plugins  [array]
+  --channel  [string] [default: "cli"]
+  --chrome-ignore-default-flags  [boolean] [default: false]
 
 Examples:
-  lighthouse <url> --view                                                   Opens the HTML report in a browser after the run completes
-  lighthouse <url> --config-path=./myconfig.js                              Runs Lighthouse with your own configuration: custom audits, report
-                                                                            generation, etc.
-  lighthouse <url> --output=json --output-path=./report.json --save-assets  Save trace, devtoolslog, and named JSON report.
-  lighthouse <url> --emulated-form-factor=none                              Disable device emulation and all throttling.
-    --throttling-method=provided
-  lighthouse <url> --chrome-flags="--window-size=412,660"                   Launch Chrome with a specific window size
-  lighthouse <url> --quiet --chrome-flags="--headless"                      Launch Headless Chrome, turn off logging
-  lighthouse <url> --extra-headers "{\"Cookie\":\"monster=blue\"}"          Stringify\'d JSON HTTP Header key/value pairs to send in requests
-  lighthouse <url> --extra-headers=./path/to/file.json                      Path to JSON file of HTTP Header key/value pairs to send in requests
-  lighthouse <url> --only-categories=performance,pwa                        Only run the specified categories. Available categories: accessibility,
-                                                                            best-practices, performance, pwa, seo.
+  lighthouse <url> --view                                                                          Opens the HTML report in a browser after the run completes
+  lighthouse <url> --config-path=./myconfig.js                                                     Runs Lighthouse with your own configuration: custom audits, report generation, etc.
+  lighthouse <url> --output=json --output-path=./report.json --save-assets                         Save trace, screenshots, and named JSON report.
+  lighthouse <url> --screenEmulation.disabled --throttling-method=provided --no-emulatedUserAgent  Disable device emulation and all throttling
+  lighthouse <url> --chrome-flags="--window-size=412,660"                                          Launch Chrome with a specific window size
+  lighthouse <url> --quiet --chrome-flags="--headless"                                             Launch Headless Chrome, turn off logging
+  lighthouse <url> --extra-headers "{\"Cookie\":\"monster=blue\", \"x-men\":\"wolverine\"}"        Stringify'd JSON HTTP Header key/value pairs to send in requests
+  lighthouse <url> --extra-headers=./path/to/file.json                                             Path to JSON file of HTTP Header key/value pairs to send in requests
+  lighthouse <url> --only-categories=performance,pwa                                               Only run the specified categories. Available categories: accessibility, best-practices, performance, pwa, seo
 
 For more information on Lighthouse, see https://developers.google.com/web/tools/lighthouse/.
 ```
@@ -317,13 +322,15 @@ This section details services that have integrated Lighthouse data. If you're wo
 
 * **[Web Page Test](https://www.webpagetest.org)** — An [open source](https://github.com/WPO-Foundation/webpagetest) tool for measuring and analyzing the performance of web pages on real devices. Users can choose to produce a Lighthouse report alongside the analysis of WebPageTest results.
 
-   * **[HTTPArchive](http://httparchive.org/)** - HTTPArchive tracks how the web is built by crawling 500k pages with Web Page Test, including Lighthouse results, and stores the information in BigQuery where it is [publicly available](https://discuss.httparchive.org/t/quickstart-guide-to-exploring-the-http-archive/682).
+* **[HTTPArchive](http://httparchive.org/)** - HTTPArchive tracks how the web is built by crawling 500k pages with Web Page Test, including Lighthouse results, and stores the information in BigQuery where it is [publicly available](https://discuss.httparchive.org/t/quickstart-guide-to-exploring-the-http-archive/682).
 
 * **[Calibre](https://calibreapp.com)** - Calibre is a comprehensive performance monitoring platform running on Lighthouse. See the performance impact of your work before it hits production with GitHub Pull Request Reviews. Track the impact of Third Party scripts. Automate your performance system with a developer-first Node.js API. Try Calibre with a free 15-day trial.
 
 * **[DebugBear](https://www.debugbear.com/)** - DebugBear is a website monitoring tool based on Lighthouse. See how your scores and metrics changed over time, with a focus on understanding what caused each change. DebugBear is a paid product with a free 30-day trial.
 
 * **[Treo](https://treo.sh)** - Treo is Lighthouse as a Service. It provides regression testing, geographical regions, custom networks, and integrations with GitHub & Slack. Treo is a paid product with plans for solo-developers and teams.
+
+* **[Screpy](https://screpy.com)** - Screpy is a web analysis tool that can analyze all pages of your websites in one dashboard and monitor them with your team. It's powered by Lighthouse and it also includes some different analysis tools (SERP, W3C, Uptime, etc). Screpy has free and paid plans.
 
 * **[Lighthouse Keeper](https://lighthouse-keeper.com/)** - Lighthouse Keeper monitors your pages' Lighthouse scores and notifies you if they drop below your thresholds. Lighthouse Keeper is a free service that monitors up to 3 URLs once per day.
 
@@ -335,7 +342,9 @@ This section details services that have integrated Lighthouse data. If you're wo
 
 * **[Foo](https://www.foo.software/lighthouse)** - Lighthouse-as-a-service offering free and premium plans. Provides monitoring and historical reporting of Lighthouse audits with CircleCI, GitHub, and other integrations. Features include Slack notifications, PR comment reporting and more.
 
-* **[PageSpeed Green](https://pagespeed.green/)** - Website loading speed monitoring service. Track PageSpeed performance for unlimited web pages from multiple regions. Check all code changes for PageSpeed degradations by integrating to your CD/CI using CLI. Powered By Google Lighthouse and Puppeteer. PageSpeed Green is a freemium product with monthly monitoring of up to 200 audits for free.
+* **[Apdex](https://apdex.co)** - Apdex is a website performance service. The main features are historical Lighthouse report visualizations, mobile/desktop options, alerts, uptime monitoring, and more. There are flexible paid plans and a 30-day free trial.
+
+* **[Websu](https://websu.io)** - Websu is an open source project to provide Lighthouse-as-a-Service through a simple HTTP REST API. The main features are ability to host and deploy in your own environment and historical Lighthouse report summaries.
 
 ## Lighthouse Integrations in non-Web Perf services
 
@@ -344,6 +353,8 @@ This section details services that have integrated Lighthouse data. If you're wo
 * **[SEO Guard](https://www.seo-guard.com)** — SEO Guard is a website monitoring solution. It provides metrics based on Lighthouse scores. The service is offered via free and paid premium plans.
 
 * **[Fluxguard](https://fluxguard.com/)** - Fluxguard provides website DOM change monitoring orchestrated with Google Puppeteer, and audited by Lighthouse. Fluxguard is a freemium product, with monthly monitoring of up to 75 pages for free.
+
+* **[Microlink](https://microlink.io)** — Microlink is a cloud browser as API. It offers Lighthouse reports on demand, making it easy to build any service on top. Similar functionality is available via the underlying open-source project named browserless.
 
 * **[Wattspeed](https://wattspeed.com/)** — Wattspeed is a free tool that generates snapshots - historical captures of your web pages that include Lighthouse scores, a list of technologies, W3C HTML validator results, DOM size, mixed content info, and more.
 
@@ -381,10 +392,12 @@ Other awesome open source projects that use Lighthouse.
 * **[lighthouse-mocha-example](https://github.com/rishichawda/lighthouse-mocha-example)** - Run Lighthouse performance tests with Mocha and chrome-launcher.
 * **[lighthouse-monitor](https://github.com/verivox/lighthouse-monitor)** - Run Lighthouse against all your URLs. Send metrics to any backend you want, save all reports with automatic data retention, and compare any two results in a web UI.
 * **[lighthouse-persist](https://github.com/foo-software/lighthouse-persist)** - Run Lighthouse and upload HTML reports to an AWS S3 bucket.
+* **[lighthouse-viewer](https://github.com/dvelasquez/lighthouse-viewer/tree/main/packages/lighthouse-viewer)** - Render the Lighthouse JSON into a report, using the Lighthouse Report Renderer repackaged as UMD and ESM. Also available with React, Svelte and Vue wrappers.
 * **[lighthouse4u](https://github.com/godaddy/lighthouse4u)** - LH4U provides Google Lighthouse as a service, surfaced by both a friendly UI+API, and backed by Elastic Search for easy querying and visualization.
 * **[performance-budgets](https://performance-budgets.netlify.com/)** - Easily assert Lighthouse budgets with Docker.
 * **[pwmetrics](https://github.com/paulirish/pwmetrics/)** - Gather performance metrics
 * **[react-lighthouse-viewer](https://www.npmjs.com/package/react-lighthouse-viewer)** - Render a Lighthouse JSON report in a React Component.
+* **[site-audit-seo](https://github.com/viasite/site-audit-seo)** - CLI tool for SEO site audit, crawl site, lighthouse each page. Output to console and tables in csv, xlsx, json, web or Google Drive.
 * **[webpack-lighthouse-plugin](https://github.com/addyosmani/webpack-lighthouse-plugin)** - Run Lighthouse from a Webpack build.
 * **[is-website-vulnerable](https://github.com/lirantal/is-website-vulnerable)** - An open source Node.js CLI tool that finds publicly known security vulnerabilities in a website's frontend JavaScript libraries.
 * **[cypress-audit](https://github.com/mfrachet/cypress-audit)** - Run Lighthouse and Pa11y audits directly in your E2E test suites.

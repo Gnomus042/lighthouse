@@ -17,7 +17,7 @@ _Some incomplete notes_
 * **Category** - Roll-up collection of audits and audit groups into a user-facing section of the report (eg. `Best Practices`). Applies weighting and overall scoring to the section. Examples: PWA, Accessibility, Best Practices.
 * **Audit title** - Short user-visible title for the successful audit. eg. “All image elements have `[alt]` attributes.”
 * **Audit failureTitle** - Short user-visible title for a failing audit. eg. “Some image elements do not have `[alt]` attributes.”
-* **Audit description** - Explanation of why the user should care about the audit. Not necessarily how to fix it, unless there is no external link that explains it. ([See description guidelines](CONTRIBUTING.md#description-guidelines)). eg. “Informative elements should aim for short, descriptive alternate text. Decorative elements can be ignored with an empty alt attribute. [Learn more].”
+* **Audit description** - Explanation of why the user should care about the audit. Not necessarily how to fix it, unless there is no external link that explains it. ([See description guidelines](../CONTRIBUTING.md#audit-description-guidelines)). eg. “Informative elements should aim for short, descriptive alternate text. Decorative elements can be ignored with an empty alt attribute. [Learn more].”
 
 ## Protocol
 
@@ -64,13 +64,13 @@ Trace-of-tab identifies trace events for key moments (navigation start, first me
   processEvents: [/* all trace events in the main process */],
   mainThreadEvents: [/* all trace events on the main thread */],
   timings: {
-    navigationStart: 0,
-    firstPaint: 150, // firstPaint time in ms after nav start
+    timeOrigin: 0, // timeOrigin is always 0 ms
+    firstPaint: 150, // firstPaint time in ms after time origin
     /* other key moments */
-    traceEnd: 16420, // traceEnd time in ms after nav start
+    traceEnd: 16420, // traceEnd time in ms after time origin
   },
   timestamps: {
-    navigationStart: 623000000, // navigationStart timestamp in microseconds
+    timeOrigin: 623000000, // timeOrigin timestamp in microseconds, marks the start of the navigation of interest
     firstPaint: 623150000, // firstPaint timestamp in microseconds
     /* other key moments */
     traceEnd: 639420000, // traceEnd timestamp in microseconds

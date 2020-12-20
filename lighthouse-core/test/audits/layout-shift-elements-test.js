@@ -14,11 +14,13 @@ describe('Performance: layout-shift-elements audit', () => {
   it('correctly surfaces a single CLS element', async () => {
     const artifacts = {
       TraceElements: [{
-        metricName: 'cumulative-layout-shift',
-        devtoolsNodePath: '1,HTML,3,BODY,5,DIV,0,HEADER',
-        selector: 'div.l-header > div.chorus-emc__content',
-        nodeLabel: 'My Test Label',
-        snippet: '<h1 class="test-class">',
+        traceEventType: 'layout-shift',
+        node: {
+          devtoolsNodePath: '1,HTML,3,BODY,5,DIV,0,HEADER',
+          selector: 'div.l-header > div.chorus-emc__content',
+          nodeLabel: 'My Test Label',
+          snippet: '<h1 class="test-class">',
+        },
         score: 0.3,
       }],
     };
@@ -34,11 +36,13 @@ describe('Performance: layout-shift-elements audit', () => {
 
   it('correctly surfaces multiple CLS elements', async () => {
     const clsElement = {
-      metricName: 'cumulative-layout-shift',
-      devtoolsNodePath: '1,HTML,3,BODY,5,DIV,0,HEADER',
-      selector: 'div.l-header > div.chorus-emc__content',
-      nodeLabel: 'My Test Label',
-      snippet: '<h1 class="test-class">',
+      traceEventType: 'layout-shift',
+      node: {
+        devtoolsNodePath: '1,HTML,3,BODY,5,DIV,0,HEADER',
+        selector: 'div.l-header > div.chorus-emc__content',
+        nodeLabel: 'My Test Label',
+        snippet: '<h1 class="test-class">',
+      },
     };
     const artifacts = {
       TraceElements: Array(4).fill(clsElement),

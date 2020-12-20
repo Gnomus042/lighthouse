@@ -18,33 +18,18 @@ const expectations = [
       requestedUrl: 'https://airhorner.com',
       finalUrl: 'https://airhorner.com/',
       audits: {
-        'is-on-https': {
-          score: 1,
-        },
         'redirects-http': {
           score: 1,
         },
         'service-worker': {
           score: 1,
         },
-        'works-offline': {
-          score: 1,
-        },
-        'offline-start-url': {
-          score: 1,
-        },
         'viewport': {
           score: 1,
         },
-        'without-javascript': {
-          score: 1,
-        },
-        'load-fast-enough-for-pwa': {
-        // Ignore speed test; just verify that it ran.
-        },
         'installable-manifest': {
           score: 1,
-          details: {items: [pwaDetailsExpectations]},
+          details: {items: [], debugData: {manifestUrl: 'https://airhorner.com/manifest.json'}},
         },
         'splash-screen': {
           score: 1,
@@ -83,41 +68,24 @@ const expectations = [
       requestedUrl: 'https://www.chromestatus.com/features',
       finalUrl: 'https://www.chromestatus.com/features',
       audits: {
-        'is-on-https': {
-          score: 1,
-        },
         'redirects-http': {
           score: 1,
         },
         'service-worker': {
-          score: 1,
-        },
-        'works-offline': {
-          score: 1,
-        },
-        'offline-start-url': {
-          score: 1,
+          score: 0,
         },
         'viewport': {
           score: 1,
         },
-        'without-javascript': {
-          score: 1,
-        },
-        'load-fast-enough-for-pwa': {
-        // Ignore speed test; just verify that it ran.
-        },
         'installable-manifest': {
-          score: 1,
-          details: {items: [pwaDetailsExpectations]},
+          score: 0,
+          details: {items: [{reason: 'No manifest was fetched'}]},
         },
         'splash-screen': {
-          score: 1,
-          details: {items: [pwaDetailsExpectations]},
+          score: 0,
         },
         'themed-omnibox': {
-          score: 1,
-          details: {items: [pwaDetailsExpectations]},
+          score: 0,
         },
         'content-width': {
           score: 1,

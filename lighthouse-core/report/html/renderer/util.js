@@ -70,7 +70,7 @@ class Util {
     for (const audit of Object.values(clone.audits)) {
       // Turn 'not-applicable' (LHR <4.0) and 'not_applicable' (older proto versions)
       // into 'notApplicable' (LHR ≥4.0).
-      // @ts-ignore tsc rightly flags that these values shouldn't occur.
+      // @ts-expect-error tsc rightly flags that these values shouldn't occur.
       // eslint-disable-next-line max-len
       if (audit.scoreDisplayMode === 'not_applicable' || audit.scoreDisplayMode === 'not-applicable') {
         audit.scoreDisplayMode = 'notApplicable';
@@ -79,8 +79,9 @@ class Util {
       if (audit.details) {
         // Turn `auditDetails.type` of undefined (LHR <4.2) and 'diagnostic' (LHR <5.0)
         // into 'debugdata' (LHR ≥5.0).
-        // @ts-ignore tsc rightly flags that these values shouldn't occur.
+        // @ts-expect-error tsc rightly flags that these values shouldn't occur.
         if (audit.details.type === undefined || audit.details.type === 'diagnostic') {
+          // @ts-expect-error details is of type never.
           audit.details.type = 'debugdata';
         }
 
@@ -423,12 +424,10 @@ class Util {
         networkThrottling = Util.i18n.strings.runtimeUnknown;
     }
 
-    let deviceEmulation = Util.i18n.strings.runtimeNoEmulation;
-    if (settings.emulatedFormFactor === 'mobile') {
-      deviceEmulation = Util.i18n.strings.runtimeMobileEmulation;
-    } else if (settings.emulatedFormFactor === 'desktop') {
-      deviceEmulation = Util.i18n.strings.runtimeDesktopEmulation;
-    }
+    // TODO(paulirish): revise Runtime Settings strings: https://github.com/GoogleChrome/lighthouse/pull/11796
+    const deviceEmulation = settings.formFactor === 'mobile'
+      ? Util.i18n.strings.runtimeMobileEmulation
+      : Util.i18n.strings.runtimeDesktopEmulation;
 
     return {
       deviceEmulation,
@@ -494,8 +493,18 @@ class Util {
  */
 Util.reportJson = null;
 
+/**
+ * An always-increasing counter for making unique SVG ID suffixes.
+ */
+Util.getUniqueSuffix = (() => {
+  let svgSuffix = 0;
+  return function() {
+    return svgSuffix++;
+  };
+})();
+
 /** @type {I18n} */
-// @ts-ignore: Is set in report renderer.
+// @ts-expect-error: Is set in report renderer.
 Util.i18n = null;
 
 /**
@@ -586,6 +595,8 @@ Util.UIStrings = {
   runtimeSettingsUANetwork: 'User agent (network)',
   /** Label for a row in a table that shows the estimated CPU power of the machine running Lighthouse. Example row values: 532, 1492, 783. */
   runtimeSettingsBenchmark: 'CPU/Memory Power',
+  /** Label for a row in a table that shows the version of the Axe library used. Example row values: 2.1.0, 3.2.3 */
+  runtimeSettingsAxeVersion: 'Axe version',
 
   /** Label for button to create an issue against the Lighthouse Github project. */
   footerIssue: 'File an issue',

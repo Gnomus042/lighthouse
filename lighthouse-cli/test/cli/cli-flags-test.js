@@ -14,14 +14,14 @@ describe('CLI bin', function() {
     getFlags('chrome://version');
     const yargs = require('yargs');
 
-    // @ts-ignore - getGroups is private
+    // @ts-expect-error - getGroups is private
     const optionGroups = yargs.getGroups();
     /** @type {string[]} */
     const allOptions = [];
     Object.keys(optionGroups).forEach(key => {
       allOptions.push(...optionGroups[key]);
     });
-    // @ts-ignore - getUsageInstance is private
+    // @ts-expect-error - getUsageInstance is private
     const optionsWithDescriptions = Object.keys(yargs.getUsageInstance().getDescriptions());
 
     allOptions.forEach(opt => {
@@ -72,5 +72,26 @@ describe('CLI bin', function() {
       '--enabled-features=NetworkService,VirtualTime',
     ]);
     expect(flags.blockedUrlPatterns).toEqual(['.*x,y\\.png']);
+  });
+
+  describe('extraHeaders', () => {
+    it('should convert extra headers to object', async () => {
+      const flags = getFlags([
+        'http://www.example.com',
+        '--extra-headers="{"foo": "bar"}"',
+      ].join(' '));
+
+      expect(flags).toHaveProperty('extraHeaders', {foo: 'bar'});
+    });
+
+    it('should read extra headers from file', async () => {
+      const headersFile = require.resolve('../fixtures/extra-headers/valid.json');
+      const flags = getFlags([
+        'http://www.example.com',
+        `--extra-headers=${headersFile}`,
+      ].join(' '));
+
+      expect(flags).toHaveProperty('extraHeaders', require(headersFile));
+    });
   });
 });

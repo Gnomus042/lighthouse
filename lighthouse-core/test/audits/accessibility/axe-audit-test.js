@@ -26,7 +26,7 @@ describe('Accessibility: axe-audit', () => {
         Accessibility: {
           violations: [{
             id: 'fake-aria-fail',
-            nodes: [{}],
+            nodes: [],
             help: 'http://example.com/',
           }],
         },
@@ -128,13 +128,19 @@ describe('Accessibility: axe-audit', () => {
         Accessibility: {
           incomplete: [{
             id: 'fake-axe-failure-case',
-            nodes: [{html: '<input id="multi-label-form-element" />'}],
+            nodes: [{
+              html: '<input id="multi-label-form-element" />',
+              node: {},
+            }],
             help: 'http://example.com/',
           }],
           // TODO: remove: axe-core v3.3.0 backwards-compatibility test
           violations: [{
             id: 'fake-axe-failure-case',
-            nodes: [{html: '<input id="multi-label-form-element" />'}],
+            nodes: [{
+              html: '<input id="multi-label-form-element" />',
+              node: {},
+            }],
             help: 'http://example.com/',
           }],
         },
@@ -168,5 +174,37 @@ describe('Accessibility: axe-audit', () => {
       const output = FakeA11yAudit.audit(artifacts);
       assert.equal(output.score, 0);
     });
+  });
+
+  it('prefers our getOuterHTMLSnippet() string over axe\'s html string', () => {
+    class FakeA11yAudit extends AxeAudit {
+      static get meta() {
+        return {
+          id: 'fake-axe-snippet-case',
+          title: 'Example title',
+          scoreDisplayMode: 'informative',
+          requiredArtifacts: ['Accessibility'],
+        };
+      }
+    }
+    const artifacts = {
+      Accessibility: {
+        violations: [
+          {
+            id: 'fake-axe-snippet-case',
+            nodes: [{
+              html: '<input id="axes-source" />',
+              node: {
+                snippet: '<input id="snippet"/>',
+              },
+            }],
+            help: 'http://example.com/',
+          },
+        ],
+      },
+    };
+
+    const output = FakeA11yAudit.audit(artifacts);
+    expect(output.details.items[0].node.snippet).toMatch(`<input id="snippet"/>`);
   });
 });
