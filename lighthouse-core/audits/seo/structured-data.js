@@ -9,7 +9,6 @@
 const Audit = require('../audit.js');
 const i18n = require('../../lib/i18n/i18n.js');
 const validator = require('../../lib/sd-validation/shex-schema-validator.js');
-const syntaxChecker = require('../../lib/sd-validation/syntax-checker.js');
 const utils = require('../../lib/sd-validation/helpers/utils.js');
 
 const UIStrings = {
@@ -91,31 +90,12 @@ class StructuredData extends Audit {
     const report = [];
     for (const scriptElement of artifacts.ScriptElements) {
       if (scriptElement.type === 'application/ld+json' && scriptElement.content) {
-        const jsonSyntaxCheck = syntaxChecker.checkJSON(scriptElement.content);
-        if (jsonSyntaxCheck) {
-          report.push({
-            message: jsonSyntaxCheck.message,
-            severity: 'error',
-            node: '',
-          });
-        } else {
           data.push(scriptElement.content);
-        }
       }
     }
 
-    const htmlSyntaxCheck = await syntaxChecker.checkMicrodata(artifacts.MainDocumentContent,
-      artifacts.URL.finalUrl) || await syntaxChecker.checkRDFa(artifacts.MainDocumentContent,
-      artifacts.URL.finalUrl);
-    if (htmlSyntaxCheck) {
-      report.push({
-        message: htmlSyntaxCheck.message,
-        severity: 'error',
-        node: '',
-      });
-    } else {
-      data.push(artifacts.MainDocumentContent);
-    }
+    data.push(artifacts.MainDocumentContent);
+
     const validationFailures = await validator(data, artifacts.URL.finalUrl);
     if (validationFailures.length > 0) report.push(...validationFailures);
     const errorsCount = report.filter(x => x.severity === 'error').length;

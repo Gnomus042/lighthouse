@@ -8,71 +8,11 @@
 /* eslint-env jest */
 
 const assert = require('assert').strict;
-const syntaxChecker = require('../../lib/sd-validation/syntax-checker.js');
 const ShexValidator = require('../../lib/sd-validation/helpers/shex-validator.js').Validator;
 const localization = require('../../lib/sd-validation/helpers/localization-helper.js');
 
 const localizedAnnotations = {};
 const localizedMessages = localization.getMessages();
-
-
-/* Syntax checkers tests */
-
-describe('Syntax checks', () => {
-  it('fails if json is missing closing bracket', async () => {
-    const error = syntaxChecker.checkJSON(`{
-      "test": "test"
-    `);
-
-    assert.strictEqual(error.lineNumber, 2);
-    assert.ok(error.message.indexOf(`Expecting '}'`) === 0);
-  });
-
-  it('fails if json is missing comma', async () => {
-    const error = syntaxChecker.checkJSON(`{
-      "test": "test"
-      "test2": "test2"
-    }`);
-
-    assert.strictEqual(error.lineNumber, 2);
-    assert.ok(error.message.indexOf(`Expecting 'EOF', '}', ':', ',', ']'`) === 0);
-  });
-
-  it('passes valid json', async () => {
-    const error = syntaxChecker.checkJSON(`{
-      "test": "test",
-      "test2": {
-        "test2-1": "test",
-        "test2-2": "test2"
-      },
-      "test3": null,
-"test4": 123,
-      "test5": [1,2,3]
-    }`);
-
-    assert.strictEqual(error, null);
-  });
-
-  it('passes valid microdata', async () => {
-    const error = await syntaxChecker.checkMicrodata(`
-      <div itemscope itemtype="https://schema.org/Person">
-        <span itemprop="name"/>Jane Doe</span>
-        <img src="janedoe.jpg" itemprop="image" alt="Photo of Jane Doe"/>
-        <span itemprop="jobTitle">Professor</span>
-      </div>`, 'http://example.org/');
-    assert.strictEqual(error, null);
-  });
-
-  it('passes valid RDFa', async () => {
-    const error = await syntaxChecker.checkRDFa(`
-      <div vocab="https://schema.org/" typeof="Person">
-        <span property="name">Jane Doe</span>
-        <img src="janedoe.jpg" property="image" alt="Photo of Jane Doe"/>
-        <span property="jobTitle">Professor</span>
-      </div>`, 'http://example.org/');
-    assert.strictEqual(error, null);
-  });
-});
 
 describe('ShEx validation', () => {
   const shapes = `
