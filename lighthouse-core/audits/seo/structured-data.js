@@ -82,9 +82,10 @@ class StructuredData extends Audit {
 
   /**
    * @param {LH.Artifacts} artifacts
+   * @param {LH.Audit.Context} context
    * @return {Promise<LH.Audit.Product>}
    */
-  static async audit(artifacts) {
+  static async audit(artifacts, context) {
     const data = [];
     /** @type {Array<LH.StructuredData.Failure>} */
     const report = [];
