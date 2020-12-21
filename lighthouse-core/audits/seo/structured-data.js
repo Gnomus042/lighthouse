@@ -90,7 +90,7 @@ class StructuredData extends Audit {
     const report = [];
     for (const scriptElement of artifacts.ScriptElements) {
       if (scriptElement.type === 'application/ld+json' && scriptElement.content) {
-          data.push(scriptElement.content);
+        data.push(scriptElement.content);
       }
     }
 
