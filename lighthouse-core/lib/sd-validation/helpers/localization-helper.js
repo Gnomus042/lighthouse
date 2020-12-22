@@ -5,11 +5,6 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-
-const errors = require('./errors.js');
-
 const DEFAULT_LOCALE = 'en';
 
 /**
@@ -17,15 +12,27 @@ const DEFAULT_LOCALE = 'en';
  * @param {string|undefined} locale
  * @returns {LH.StructuredData.LocalizedAnnotations}
  */
+
+/** @type Object.<string, {annotations: LH.StructuredData.LocalizedAnnotations, messages: LH.StructuredData.LocalizedMessages}> */
+const locales = {
+  'en': {
+    annotations: require('../assets/localization/annotations/en.json'),
+    messages: require('../assets/localization/messages/en.json'),
+  },
+  'ru': {
+    annotations: require('../assets/localization/annotations/ru.json'),
+    messages: require('../assets/localization/messages/ru.json'),
+  },
+};
+
+/**
+ * Get messages localization for a given locale
+ * @param {string|undefined} locale
+ * @returns {LH.StructuredData.LocalizedAnnotations}
+ */
 function getAnnotations(locale = undefined) {
   locale = locale || DEFAULT_LOCALE;
-  const annotationsPath = path.join(__dirname, '..', 'assets', 'localization',
-    'annotations', `${locale}.json`);
-  if (!fs.existsSync(annotationsPath)) {
-    throw new errors.LocalizationError(
-      `Annotations localization is not defined for locale ${locale}`);
-  }
-  return JSON.parse(fs.readFileSync(annotationsPath).toString());
+  return locales[locale].annotations;
 }
 
 /**
@@ -35,13 +42,7 @@ function getAnnotations(locale = undefined) {
  */
 function getMessages(locale = undefined) {
   locale = locale || DEFAULT_LOCALE;
-  const messagesPath = path.join(__dirname, '..', 'assets', 'localization',
-    'messages', `${locale}.json`);
-  if (!fs.existsSync(messagesPath)) {
-    throw new errors.LocalizationError(
-      `Messages localization is not defined for locale ${locale}`);
-  }
-  return JSON.parse(fs.readFileSync(messagesPath).toString());
+  return locales[locale].messages;
 }
 
 module.exports = {

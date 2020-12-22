@@ -29,21 +29,24 @@ declare module '@shexjs' {
       predicate: string;
       object: { value: string };
     }>;
+    [propName: string]: any;
   }
 
   export interface TargetShape {
     type: 'Shape';
     id: string;
-    expression: {
+    expression: TripleConstraint | {
       type: string;
       expressions: Array<TripleConstraint>;
     };
+    [propName: string]: any;
   }
 
   export interface IntermediateShape {
-    type: 'ShapeAnd' | 'ShapeOr';
+    type: string;
     shapeExprs: Array<Shape>;
     id: string;
+    [propName: string]: any;
   }
 
   export type Shape = TargetShape | IntermediateShape;

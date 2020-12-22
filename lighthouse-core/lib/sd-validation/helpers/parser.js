@@ -7,7 +7,7 @@
 
 const Store = require('n3').Store;
 const Parser = require('n3').Parser;
-const jsonld = require('jsonld');
+const JsonLdParser = require('jsonld-streaming-parser').JsonLdParser;
 const Readable = require('stream').Readable;
 const RdfaParser = require('rdfa-streaming-parser').RdfaParser;
 const MicrodataParser = require('microdata-rdf-streaming-parser').MicrodataRdfParser;
@@ -18,12 +18,25 @@ const errors = require('./errors.js');
  * Parses json-ld to quads into the n3.Store
  * @param {string} text - input data
  * @param {string} baseUrl - main shape URL
- * @return {Promise<Store>}
+ * @return {Promise<Store|undefined>}
  */
 async function parseJsonLd(text, baseUrl) {
-  const data = JSON.parse(text);
-  const nquads = await jsonld.toRDF(data, {format: 'application/n-quads', base: baseUrl});
-  return parseNQuads(nquads, baseUrl);
+  const textStream = new Readable();
+  textStream.push(text);
+  textStream.push(null);
+  return new Promise((res, rej) => {
+    const store = new Store();
+    const jsonLdParser = new JsonLdParser({baseIRI: baseUrl});
+    textStream.pipe(jsonLdParser)
+      .on('data', quad => {
+        store.addQuad(quad);
+      })
+      .on('error', err => rej(err))
+      .on('end', () => {
+        if (store.getQuads().length === 0) res(undefined);
+        res(store);
+      });
+  });
 }
 
 
