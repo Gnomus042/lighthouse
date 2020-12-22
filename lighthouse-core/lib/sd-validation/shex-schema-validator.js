@@ -5,9 +5,6 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-
 const i18n = require('../i18n/i18n.js');
 
 const ShexValidator = require('./helpers/shex-validator.js').Validator;
@@ -24,10 +21,11 @@ const shex = namespace('http://schema.org/shex#');
 
 // hierarchy of services in the tree format, used for identifying validation
 // order (e.g. Schema -> Google -> GoogleAds -> ...)
-const hierarchy = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'hierarchy.json'))
-  .toString());
+const hierarchy = require('./assets/hierarchy.json');
+
 /** @type {import('@shexjs').Schema} ShEx shapes in the ShExJ format */
-const shapes = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'full.shexj')).toString());
+// @ts-ignore
+const shapes = require('./assets/shexj.json');
 const shapeIds = shapes.shapes.map(shape => shape.id);
 
 // Annotations map, used in the current version of ShEx shapes
