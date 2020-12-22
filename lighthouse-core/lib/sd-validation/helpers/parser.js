@@ -96,6 +96,7 @@ async function parseMicrodata(text, baseUrl) {
  * @param {string} baseUrl - main shape URL
  * @return {Store}
  */
+// eslint-disable-next-line no-unused-vars
 function parseNQuads(text, baseUrl) {
   const turtleParser = new Parser({
     format: 'application/n-quads',
